@@ -580,7 +580,7 @@ export default {
         timePrior: 1, // 用时加权
         loadPrior: 4 // 满载率加权
       }
-
+      console.log(problem);
       this.$router.push({
         name: 'page_result',
         query: {
@@ -630,7 +630,7 @@ export default {
         timePrior: 1, // 用时加权
         loadPrior: 4 // 满载率加权
       }
-
+      console.log(problem);
       this.$router.push({
         name: 'page_result',
         query: {

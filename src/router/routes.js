@@ -23,13 +23,13 @@ const frameIn = [
       },
       // 演示页面
       {
-        path: 'page1',
-        name: 'page1',
+        path: 'page_coordinate',
+        name: 'page_coordinate',
         meta: {
           title: '坐标查询',
           auth: true
         },
-        component: _import('demo/page1')
+        component: _import('demo/page_coordinate')
       },
       {
         path: 'page2',

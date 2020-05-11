@@ -91,7 +91,7 @@ export default {
         for (var i = 0; i < outdata.length; i++) {
           outdata.map(v => {
             let obj = {};
-            obj.edges = { u: v["name_a"], v: i, w: v[i] };
+            obj = { u: v["name_a"], v: i, w: v[i] };
             new_outdata.push(obj);
           });
         }
@@ -153,6 +153,7 @@ export default {
         };
         console.log(new_test);
         var new_problem = {
+          routeMode: true,
           nodes: new_nodes,
           edges: new_outdata,
           vehicles: new_vehicles,

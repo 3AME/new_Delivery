@@ -105,6 +105,7 @@ export default {
         };
         console.log(new_test);
         newproblem_edges = {
+          routeMode: false,
           nodes:new_nodes,
           edges: newproblem_edges.edges,
           vehicles: new_vehicles,
