@@ -58,6 +58,7 @@
 import Vue from 'vue'
 import pluginImport from '@d2-projects/vue-table-import'
 Vue.use(pluginImport)
+var outdata
 export default {
   data () {
     return {
