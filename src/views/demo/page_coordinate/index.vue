@@ -43,6 +43,7 @@
         </el-button>
       </el-upload>
     </div>
+    <div contenteditable="true">
     <el-table v-bind="table">
       <el-table-column
         v-for="(item, index) in table.columns"
@@ -51,6 +52,7 @@
         :label="item.label">
       </el-table-column>
     </el-table>
+    </div>
   </d2-container>
 </template>
 
