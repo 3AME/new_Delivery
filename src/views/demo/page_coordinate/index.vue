@@ -5,11 +5,7 @@
         <d2-icon name="search"/>
           查询
       </el-button>
-<<<<<<< Updated upstream
-      <el-collapse v-model="activeNames" @change="handleChange">
-=======
       <el-collapse @change="handleChange">
->>>>>>> Stashed changes
       <el-collapse-item title="文件内容要求" name="1">
      <span>
        进入坐标形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序随意：<br />
@@ -62,7 +58,6 @@
 import Vue from 'vue'
 import pluginImport from '@d2-projects/vue-table-import'
 Vue.use(pluginImport)
-
 export default {
   data () {
     return {
@@ -89,9 +84,6 @@ export default {
         })
       return false
     },
-<<<<<<< Updated upstream
-    inquery () { },
-=======
     inquery () {
       if (outdata == null) {
         alert('请先上传文件')
@@ -179,7 +171,6 @@ export default {
         })
       }
     },
->>>>>>> Stashed changes
     handleChange (val) {
       console.log(val)
     }

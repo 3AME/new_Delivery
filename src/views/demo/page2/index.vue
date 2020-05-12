@@ -5,11 +5,7 @@
         <d2-icon name="search"/>
           查询
       </el-button>
-<<<<<<< Updated upstream
-       <el-collapse v-model="activeNames" @change="handleChange">
-=======
       <el-collapse  @change="handleChange">
->>>>>>> Stashed changes
       <el-collapse-item title="文件内容要求" name="1">
      <span>
        进入路线形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序随意：<br />
@@ -23,11 +19,7 @@
            <th>Vehicle_number</th>
            <th>Vehicle_mileage</th>
            <th>remand</th>
-<<<<<<< Updated upstream
-           <th>name a</th>
-=======
            <th>name_a</th>
->>>>>>> Stashed changes
            <th>1</th>
            <th>2</th>
            <th>3</th>
@@ -74,7 +66,7 @@
 import Vue from 'vue'
 import pluginImport from '@d2-projects/vue-table-import'
 Vue.use(pluginImport)
-
+var outdata
 export default {
   data () {
     return {
@@ -101,9 +93,6 @@ export default {
         })
       return false
     },
-<<<<<<< Updated upstream
-    inquery () { },
-=======
     inquery () {
       // eslint-disable-next-line camelcase
       var num_node = this.input
@@ -226,7 +215,6 @@ export default {
         })
       }
     },
->>>>>>> Stashed changes
     handleChange (val) {
       console.log(val)
     }
