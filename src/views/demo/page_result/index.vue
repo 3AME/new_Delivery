@@ -1,15 +1,14 @@
 <template>
   <el-container class="container">
     <el-aside width="230px" class="aside">
-      <el-row>
-         <el-button style="margin: 8px;" @click="goBack()" size="mini" round>返回</el-button>
+      <div style="text-align: center;">
         <el-switch
           v-if="problem&&problem.nodes.length !== 0"
           v-model="hideRoute"
           @change="toggleRoute()"
           active-text="隐藏无关路线"
         ></el-switch>
-      </el-row>
+      </div>
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <span>最优结果</span>
@@ -31,7 +30,7 @@
     </el-aside>
     <el-container>
       <div style="height:100%; width: 100%">
-        <svg style="height:100%; width: 100%" ref="svg" />
+        <svg id="graph_svg" style="height:100%; width: 100%" ref="svg" />
       </div>
     </el-container>
   </el-container>
@@ -78,9 +77,6 @@ export default {
   },
   deactivated () {},
   methods: {
-    goBack() {
-      this.$router.go(-1);
-    },
     solve (
       problem, // VRP问题描述
       popsize = 100, // 种群大小
@@ -357,7 +353,7 @@ export default {
       const margin = { top: 30, right: 30, bottom: 30, left: 30 }
 
       let svg = d3
-        .select('svg')
+        .select('svg#graph_svg')
         .attr('preserveAspectRatio', 'xMidYMid meet')
         .attr('viewBox', '0 0 ' + width + ' ' + height)
 
@@ -745,7 +741,7 @@ export default {
 
       // let svg = d3.select("svg");
       let svg = d3
-        .select('svg')
+        .select('svg#graph_svg')
         .attr('preserveAspectRatio', 'xMidYMid meet')
         .attr('viewBox', '0 0 ' + width + ' ' + height)
 

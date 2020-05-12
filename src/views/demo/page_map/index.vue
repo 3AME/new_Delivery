@@ -21,40 +21,16 @@
           </div>
         </el-card>
 
-        <div class="div-tag">
-          <div class="el-submenu__title"
-        style="padding-left: 20px;">
-        <i class="fa fa-folder-o"></i>
-        <span style="font-size: 12px;">测试节点</span>
-        <!-- <i class="el-submenu__icon-arrow el-icon-arrow-down"></i> -->
-        <i @click="handleClose(path)" class="el-submenu__icon-arrow el-icon-arrow-down i-tag el-icon-delete" style="font-size: 16px;"></i>
-        </div>
-        <div style="text-align: center;">
-            需求量
-            <!-- <el-select
-              filterable
-              allow-create
-              default-first-option
-              placeholder="需求量"
-              size="mini"
-            >
-              <el-option v-for="item in need_options" :key="item" :label="item" :value="item"></el-option>
-            </el-select> -->
-          </div>
-        </div>
-
         <el-card v-if="polylinePath.length == 0" class="box-card">
           <div style="text-align: center;">空空如也</div>
         </el-card>
 
-        <div class="box-card" v-else v-for="(path, index) in polylinePath" :key="path.name">
+        <!-- <div class="box-card" v-else v-for="(path, index) in polylinePath" :key="path.name">
           <div class="div-tag" v-if="index == 0">中心节点</div>
           <div class="div-tag" v-else>子节点</div>
           <hr />
           <div class="div-tag" @click="onTagClick(path)">{{path.name}}</div>
           <div class="div-tag" v-if="index != 0">
-            <!-- 需求量{{ path.need }} -->
-            <!-- <el-input placeholder="需求量" v-model="path.need" size="mini" clearable></el-input> -->
             需求量
             <el-select
               v-model="path.need"
@@ -70,7 +46,31 @@
           <div style="text-align: center;">
             <i @click="handleClose(path)" class="i-tag el-icon-delete" style="font-size: 16px;"></i>
           </div>
+        </div> -->
+
+        <div class="div-tag" v-else v-for="(path, index) in polylinePath" :key="path.name">
+          <div class="el-submenu__title"
+        style="padding-left: 20px;">
+        <i class="fa fa-folder-o"></i>
+        <span style="font-size: 12px;">{{path.name}}</span>
+        <!-- <i class="el-submenu__icon-arrow el-icon-arrow-down"></i> -->
+        <i @click="handleClose(path)" class="el-submenu__icon-arrow el-icon-arrow-down i-tag el-icon-delete" style="font-size: 16px;"></i>
         </div>
+        <div style="text-align: center;" v-if="index != 0">
+            <!-- 需求量 -->
+            <el-select
+              v-model="path.need"
+              filterable
+              allow-create
+              default-first-option
+              placeholder="需求量"
+              size="mini"
+            >
+              <el-option v-for="item in need_options" :key="item" :label="item" :value="item"></el-option>
+            </el-select>
+          </div>
+        </div>
+
       </el-aside>
       <el-container>
         <div style="height:100%; width: 100%">
@@ -580,7 +580,7 @@ export default {
         timePrior: 1, // 用时加权
         loadPrior: 4 // 满载率加权
       }
-      console.log(problem);
+      console.log(problem)
       this.$router.push({
         name: 'page_result',
         query: {
@@ -630,7 +630,7 @@ export default {
         timePrior: 1, // 用时加权
         loadPrior: 4 // 满载率加权
       }
-      console.log(problem);
+      console.log(problem)
       this.$router.push({
         name: 'page_result',
         query: {
@@ -690,6 +690,7 @@ export default {
   padding-bottom: 4px;
   padding-left: 10px;
   padding-right: 10px;
+  text-align: center;
 }
 
 .div-tag {
