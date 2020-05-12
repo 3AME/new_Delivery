@@ -10,10 +10,6 @@
         <div class="div-row">
           <el-button size="mini" @click="testCoordMode()" round>测试坐标形式</el-button>
         </div>
-        <div class="div-row">
-          <el-button size="mini" @click="goToHistoryPage()" round>查询历史记录</el-button>
-        </div>
-
         <el-card class="box-card">
           <div class="clearfix">
             <span>节点列表</span>
@@ -513,11 +509,6 @@ export default {
       this.polylinePath.splice(0, this.polylinePath.length)
       this.drivingPath.splice(0, this.drivingPath.length)
       this.logisticsCenter = undefined
-    },
-    goToHistoryPage () {
-      this.$router.push({
-        name: 'page_history'
-      })
     },
     // 打印一个对象所有属性的值
     printObj (obj) {
