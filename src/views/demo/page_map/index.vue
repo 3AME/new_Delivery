@@ -577,8 +577,8 @@ export default {
           { id: 5, depot: 0, load: 5, mileage: 35, count: 1 }
         ],
         distancePrior: 5, // 路程加权
-        timePrior: 1, // 用时加权
-        loadPrior: 4 // 满载率加权
+        timePrior: 0, // 用时加权
+        loadPrior: 0 // 满载率加权
       }
       console.log(problem);
       this.$router.push({
