@@ -5,7 +5,11 @@
         <d2-icon name="search"/>
           查询
       </el-button>
+<<<<<<< Updated upstream
       <el-collapse v-model="activeNames" @change="handleChange">
+=======
+      <el-collapse @change="handleChange">
+>>>>>>> Stashed changes
       <el-collapse-item title="文件内容要求" name="1">
      <span>
        进入坐标形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序随意：<br />
@@ -85,7 +89,97 @@ export default {
         })
       return false
     },
+<<<<<<< Updated upstream
     inquery () { },
+=======
+    inquery () {
+      if (outdata == null) {
+        alert('请先上传文件')
+      } else {
+        console.log('未处理的outdata:')
+        console.log(outdata)
+        let problem = []
+        outdata.map(v => {
+          let obj = {}
+          // obj.nodes={type:v["type"],id:v["name"],x:v["X"],y:v["Y"],demand:v["remand"]};
+          // obj.edges = "euc2d";
+          obj.nodes = {
+            type: v['type'],
+            id: v['name'],
+            demand: v['remand']
+          }
+          obj.edges = { x: v['X'], y: v['Y'] }
+          obj.vehicles = {
+            id: v['name'],
+            depot: v['Vehicle_id'],
+            load: v['Vehicle_load'],
+            count: v['Vehicle_number']
+          }
+          obj.distancePrior = 5
+          obj.timePrior = 1
+          obj.loadPrior = 4
+          problem.push(obj)
+        })
+        console.log(problem)
+        // eslint-disable-next-line camelcase
+        let new_nodes = problem.map(obj => {
+          return obj.nodes
+        })
+        // let newproblem_edges = {
+        //   edges: "euc2d"
+        // };
+        // eslint-disable-next-line camelcase
+        let newproblem_edges = problem.map(obj => {
+          return obj.edges
+        })
+        // eslint-disable-next-line camelcase
+        let new_vehicles = problem.map(obj => {
+          if (obj.vehicles !== undefined) {
+            return obj.vehicles
+          } else {
+            console.log('value is undefined')
+          }
+        })
+        // new_vehicles.splice(0);
+        console.log(new_vehicles)
+        for (var i = new_vehicles.length - 1; i >= 0; i--) {
+          if (
+            new_vehicles[i].load === undefined ||
+            new_vehicles[i].count === undefined
+          ) {
+            new_vehicles.splice(i, 2) // 删除excel数据中出现的undefined
+          }
+        }
+        console.log(new_vehicles)
+        // eslint-disable-next-line camelcase
+        let new_test = {
+          distancePrior: 5, // 路程加权
+          timePrior: 1, // 用时加权
+          loadPrior: 4 // 满载率加权
+        }
+        console.log(new_test)
+        // eslint-disable-next-line camelcase
+        newproblem_edges = {
+          routeMode: false,
+          nodes: new_nodes,
+          edges: newproblem_edges,
+          vehicles: new_vehicles,
+          distancePrior: new_test.distancePrior,
+          timePrior: new_test.timePrior,
+          loadPrior: new_test.loadPrior
+        }
+        // newproblem_edges=newproblem_edges.filter( res=> {return res!="undefined"});
+        // newproblem_edges.filter(Boolean);
+        console.log(newproblem_edges)
+        this.$router.push({
+          name: 'page_result',
+          query: {
+            problem: newproblem_edges
+          }
+        })
+      }
+    },
+>>>>>>> Stashed changes
     handleChange (val) {
       console.log(val)
     }
