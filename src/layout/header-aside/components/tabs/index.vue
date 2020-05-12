@@ -10,6 +10,7 @@
             :menulist="tagName === '/index' ? contextmenuListIndex : contextmenuList"
             @rowClick="contextmenuClick"/>
         </d2-contextmenu>
+        <!-- :value="current" -->
         <el-tabs
           class="d2-multiple-page-control d2-multiple-page-sort"
           :value="current"
@@ -155,6 +156,8 @@ export default {
      * @param {object} event 事件
      */
     handleClick (tab, event) {
+      console.log('current=' + this.current)
+      console.log('tab.name=' + tab.name)
       // 找到点击的页面在 tag 列表里是哪个
       const page = this.opened.find(page => page.fullPath === tab.name)
       const { name, params, query } = page
@@ -169,6 +172,12 @@ export default {
     }
   },
   mounted () {
+    console.log('current=' + this.current)
+    if (this.current === '/') {
+      const page = this.opened.find(page => page.fullPath === '/index')
+      const { name, params, query } = page
+      if (page) this.$router.push({ name, params, query })
+    }
     const el = document.querySelectorAll('.d2-multiple-page-sort .el-tabs__nav')[0]
     Sortable.create(el, {
       onEnd: (evt) => {

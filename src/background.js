@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, dialog, ipcMain } from 'electron'
 import {
   createProtocol
   /* installVueDevtools */
@@ -16,11 +16,16 @@ protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: tru
 
 function createWindow () {
   // Create the browser window.
-  win = new BrowserWindow({ width: 800,
+  win = new BrowserWindow({
+    width: 1000,
     height: 600,
     webPreferences: {
       nodeIntegration: true
-    } })
+    },
+    show: false
+  })
+  win.maximize()
+  win.show()
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -34,6 +39,20 @@ function createWindow () {
 
   win.on('closed', () => {
     win = null
+  })
+
+  ipcMain.on('open-save-dialog', (event, fileName) => {
+    console.log('event=' + Object.keys(event))
+    console.log('fileName=' + fileName)
+    dialog.showSaveDialog({
+      defaultPath: fileName, // '导出数据'
+      title: '导出',
+      filters: [
+        { name: 'Excel Files', extensions: ['xlsx', 'xls'] },
+        { name: 'All Files', extensions: ['*'] } ]
+    }, res => {
+      win.webContents.send('selectedItem', res)
+    })
   })
 }
 

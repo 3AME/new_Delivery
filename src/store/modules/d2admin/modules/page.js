@@ -15,7 +15,7 @@ export default {
     // 已经加载多标签页数据 https://github.com/d2-projects/d2-admin/issues/201
     openedLoaded: false,
     // 当前页面
-    current: '',
+    current: '/index',
     // 需要缓存的页面 name
     keepAlive: []
   },
