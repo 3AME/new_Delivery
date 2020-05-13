@@ -1,9 +1,9 @@
 <template>
-  <el-container class="container">
+  <el-container class="container" style="padding: 10px;">
     <el-aside width="230px" class="aside">
       <div style="text-align: center;">
         <el-switch
-          v-if="problem&&problem.nodes.length !== 0"
+          v-if="problem && problem.routeMode && problem.nodes.length !== 0"
           v-model="hideRoute"
           @change="toggleRoute()"
           active-text="隐藏无关路线"
@@ -24,7 +24,16 @@
           <span>最优路线</span>
           <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
         </div>
-        <div v-for="(route, index) in routes" :key="index" class="text-item">车辆{{ route }}</div>
+        <div
+          v-for="(route, index) in routes"
+          :key="index"
+          class="text-item"
+          @click="toggleVisible(route, index)"
+        >
+        <!-- @change="onCheckedChange(route, index)" -->
+          <el-checkbox  v-model="route.checked" style="margin-right: 5px;"></el-checkbox>
+          车辆{{ route.text }}
+        </div>
       </el-card>
       <!-- {{ result }} -->
     </el-aside>
@@ -53,6 +62,7 @@ export default {
   },
   mounted () {
     console.log('mounted')
+    this.hideRoute = false
 
     let me = this
     window.onresize = () => {
@@ -68,7 +78,12 @@ export default {
     }
   },
   activated () {
+    // if (this.problem === this.$route.query.problem) {
+    //   return
+    // }
     console.log('activated')
+    this.problem = this.$route.query.problem
+    this.hideRoute = false
     d3.selectAll('svg > *').remove()
     this.problem = this.$route.query.problem
     console.log('names=' + this.problem.names)
@@ -246,9 +261,18 @@ export default {
       })
     },
     toggleRoute () {
-      var visibility = this.hideRoute ? 'hidden' : 'visible'
+      let visibility = this.hideRoute ? 'hidden' : 'visible'
       d3.selectAll('.link-edge-normal').attr('visibility', visibility)
       d3.selectAll('.link-text-normal').attr('visibility', visibility)
+    },
+    toggleVisible (route, i) {
+      route.checked = !route.checked
+      this.onCheckedChange(route, i)
+    },
+    onCheckedChange (route, i) {
+      let visibility = route.checked ? 'visible' : 'hidden'
+      d3.selectAll('.link-edge-route-' + i).attr('visibility', visibility)
+      d3.selectAll('.link-text-route-' + i).attr('visibility', visibility)
     },
     // 散点图
     showScatterGraph () {
@@ -267,18 +291,19 @@ export default {
       var edges = []
 
       var legendTexts = []
+      // let vid = 0
       plan.plan.forEach(function (item) {
         item.trips.forEach(function (trip) {
           let text = item.vid + ' : '
           var tempRoute = 0
-
           trip.route.forEach(function (route, i) {
             if (i !== 0) {
               edges.push({
                 source: tempRoute,
                 target: route,
                 // value: value,
-                vid: item.vid
+                // vid: item.vid
+                vid: legendTexts.length
               })
               text += ' → '
             }
@@ -290,8 +315,12 @@ export default {
             }
             tempRoute = route
           })
-          legendTexts.push(text)
+          legendTexts.push({
+            text: text,
+            checked: true
+          })
           // this.routes.push(text);
+          // vid++
         })
       })
       this.routes = legendTexts
@@ -417,7 +446,7 @@ export default {
         .append('path')
         .attr('class', function (d) {
           if (d.vid !== undefined) {
-            return 'link-edge-route'
+            return 'link-edge-route-' + d.vid
           } else {
             return 'link-edge-normal'
           }
@@ -466,7 +495,7 @@ export default {
         var dr = Math.sqrt(dx * dx + dy * dy)
         var unevenCorrection = d.sameUneven ? 0 : 0.5
         var arc =
-            (dr * d.maxSameHalf) / (d.sameIndexCorrected - unevenCorrection)
+          (dr * d.maxSameHalf) / (d.sameIndexCorrected - unevenCorrection)
 
         if (d.sameMiddleLink) {
           arc = 0
@@ -557,7 +586,7 @@ export default {
           .enter()
           .append('text')
           .text(function (d) {
-            return d
+            return d.text
           })
           .attr('class', 'legend')
           .attr('y', function (d, i) {
@@ -648,7 +677,8 @@ export default {
                 source: tempRoute,
                 target: route,
                 value: value,
-                vid: item.vid
+                // vid: item.vid
+                vid: legendTexts.length
               })
               text += ' → '
             }
@@ -659,7 +689,10 @@ export default {
             }
             tempRoute = route
           })
-          legendTexts.push(text)
+          legendTexts.push({
+            text: text,
+            checked: true
+          })
         })
       })
       this.routes = legendTexts
@@ -804,7 +837,7 @@ export default {
         .append('path')
         .attr('class', function (d) {
           if (d.vid !== undefined) {
-            return 'link-edge-route'
+            return 'link-edge-route-' + d.vid
           } else {
             return 'link-edge-normal'
           }
@@ -869,7 +902,7 @@ export default {
         .append('text')
         .attr('class', function (d) {
           if (d.vid !== undefined) {
-            return 'link-text-route'
+            return 'link-text-route-' + d.vid
           } else {
             return 'link-text-normal'
           }
@@ -967,7 +1000,7 @@ export default {
         var dr = Math.sqrt(dx * dx + dy * dy)
         var unevenCorrection = d.sameUneven ? 0 : 0.5
         var arc =
-            (dr * d.maxSameHalf) / (d.sameIndexCorrected - unevenCorrection)
+          (dr * d.maxSameHalf) / (d.sameIndexCorrected - unevenCorrection)
 
         if (d.sameMiddleLink) {
           arc = 0
@@ -1004,7 +1037,7 @@ export default {
           .enter()
           .append('text')
           .text(function (d) {
-            return d
+            return d.text
           })
           .attr('class', 'legend')
           .attr('y', function (d, i) {
