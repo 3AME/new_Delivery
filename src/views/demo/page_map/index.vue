@@ -1,27 +1,29 @@
 <template>
   <el-container class="container">
-      <el-aside width="230px" class="aside">
-        <div class="div-row">
-          <el-button size="mini" type="success" style="margin-top: 10px;" @click="test()">地图查询</el-button>
+    <el-aside width="230px" class="aside">
+      <div class="div-row">
+        <el-button size="mini" type="success" style="margin-top: 10px;" @click="test()">地图查询</el-button>
+      </div>
+      <div class="div-row">
+        <el-button size="mini" @click="testRouteMode()">测试路线形式</el-button>
+      </div>
+      <div class="div-row">
+        <el-button size="mini" @click="testCoordMode()">测试坐标形式</el-button>
+      </div>
+      <el-divider></el-divider>
+      <div class="box-card">
+        <div class="clearfix">
+          <span>节点列表</span>
+          <el-button @click="clearTags()" style="float: right; padding: 3px 0" type="text">清空</el-button>
         </div>
-        <div class="div-row">
-          <el-button size="mini" @click="testRouteMode()">测试路线形式</el-button>
-        </div>
-        <div class="div-row">
-          <el-button size="mini" @click="testCoordMode()">测试坐标形式</el-button>
-        </div>
-        <el-card class="box-card">
-          <div class="clearfix">
-            <span>节点列表</span>
-            <el-button @click="clearTags()" style="float: right; padding: 3px 0" type="text">清空</el-button>
-          </div>
-        </el-card>
+      </div>
+      <el-divider></el-divider>
 
-        <el-card v-if="polylinePath.length == 0" class="box-card">
-          <div style="text-align: center;">空空如也</div>
-        </el-card>
+      <div v-if="polylinePath.length == 0" class="box-card">
+        <div style="text-align: center;">空空如也</div>
+      </div>
 
-        <!-- <div class="box-card" v-else v-for="(path, index) in polylinePath" :key="path.name">
+      <!-- <div class="box-card" v-else v-for="(path, index) in polylinePath" :key="path.name">
           <div class="div-tag" v-if="index == 0">中心节点</div>
           <div class="div-tag" v-else>子节点</div>
           <hr />
@@ -42,17 +44,42 @@
           <div style="text-align: center;">
             <i @click="handleClose(path)" class="i-tag el-icon-delete" style="font-size: 16px;"></i>
           </div>
-        </div> -->
+      </div>-->
 
-        <div class="div-tag" v-else v-for="(path, index) in polylinePath" :key="path.name">
-          <div class="el-submenu__title"
-        style="padding-left: 20px;">
-        <i class="fa fa-folder-o"></i>
-        <span style="font-size: 12px;">{{path.name}}</span>
-        <!-- <i class="el-submenu__icon-arrow el-icon-arrow-down"></i> -->
-        <i @click="handleClose(path)" class="el-submenu__icon-arrow el-icon-arrow-down i-tag el-icon-delete" style="font-size: 16px;"></i>
+      <!-- <div class="div-tag" v-else v-for="(path, index) in polylinePath" :key="path.name">
+        <div class="el-submenu__title" style="padding-left: 20px;">
+          <i class="fa fa-folder-o"></i>
+          <span style="font-size: 12px;">{{path.name}}</span>
+          <i
+            @click="handleClose(path)"
+            class="el-submenu__icon-arrow el-icon-arrow-down i-tag el-icon-delete"
+            style="font-size: 16px;"
+          ></i>
         </div>
         <div style="text-align: center;" v-if="index != 0">
+          <el-select
+            v-model="path.need"
+            filterable
+            allow-create
+            default-first-option
+            placeholder="需求量"
+            size="mini"
+          >
+            <el-option v-for="item in need_options" :key="item" :label="item" :value="item"></el-option>
+          </el-select>
+        </div>
+      </div>-->
+
+      <el-collapse v-else v-model="activeName" accordion>
+        <el-collapse-item
+          v-for="(path, index) in polylinePath"
+          :key="path.name"
+          :title="path.name"
+          :name="index"
+        >
+          <div class="div-tag" style="text-align: center;" v-if="index == 0">中心节点</div>
+          <div class="div-tag" style="text-align: center;" v-else>子节点</div>
+          <div style="text-align: center;" v-if="index != 0">
             <!-- 需求量 -->
             <el-select
               v-model="path.need"
@@ -65,82 +92,85 @@
               <el-option v-for="item in need_options" :key="item" :label="item" :value="item"></el-option>
             </el-select>
           </div>
-        </div>
+          <div style="text-align: center;">
+            <i @click="handleClose(path)" class="i-tag el-icon-delete" style="font-size: 16px;"></i>
+          </div>
+        </el-collapse-item>
+      </el-collapse>
+    </el-aside>
+    <el-container>
+      <div style="height:100%; width: 100%">
+        <baidu-map
+          :ak="ak"
+          :center="center"
+          :scroll-wheel-zoom="isScrollWheelZoom"
+          style="height:100%"
+          :zoom="12"
+          @click="handleChange"
+          @load="handleMapLoaded"
+          class="ele-form-bmap"
+        >
+          <bm-geolocation
+            :autoLocation="true"
+            :showAddressBar="true"
+            @locationSuccess="handleChange"
+            anchor="BMAP_ANCHOR_BOTTOM_RIGHT"
+            v-if="isShowGeolocation"
+          ></bm-geolocation>
 
-      </el-aside>
-      <el-container>
-        <div style="height:100%; width: 100%">
-          <baidu-map
-            :ak="ak"
-            :center="center"
-            :scroll-wheel-zoom="isScrollWheelZoom"
-            style="height:100%"
-            :zoom="12"
-            @click="handleChange"
-            @load="handleMapLoaded"
-            class="ele-form-bmap"
-          >
-            <bm-geolocation
-              :autoLocation="true"
-              :showAddressBar="true"
-              @locationSuccess="handleChange"
-              anchor="BMAP_ANCHOR_BOTTOM_RIGHT"
-              v-if="isShowGeolocation"
-            ></bm-geolocation>
+          <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT" v-if="isShowNavigation"></bm-navigation>
 
-            <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT" v-if="isShowNavigation"></bm-navigation>
-
-            <bm-control :offset="{width: '10px', height: '10px'}">
-              <bm-auto-complete
+          <bm-control :offset="{width: '10px', height: '10px'}">
+            <bm-auto-complete
+              v-model="searchValue"
+              :sugStyle="{zIndex: 999999}"
+              @confirm="onAutoComplete"
+            >
+              <el-input
+                :placeholder="logisticsCenter == undefined ? '搜索并添加中心节点' : '搜索并添加子节点'"
                 v-model="searchValue"
-                :sugStyle="{zIndex: 999999}"
-                @confirm="onAutoComplete"
-              >
-                <el-input
-                  :placeholder="logisticsCenter == undefined ? '搜索并添加中心节点' : '搜索并添加子节点'"
-                  v-model="searchValue"
-                  clearable
-                ></el-input>
-                <!-- <input
+                clearable
+              ></el-input>
+              <!-- <input
                 type="text"
                 :placeholder="logisticsCenter == undefined ? '搜索并添加中心节点' : '搜索并添加子节点'"
                 class="serachinput"
-                />-->
-              </bm-auto-complete>
-            </bm-control>
-            <bm-local-search
-              :auto-viewport="true"
-              :keyword="searchValue"
-              :pageCapacity="10"
-              :panel="false"
-              @searchcomplete="handleSearchEnd"
-              v-if="isSearching"
-            ></bm-local-search>
-            <bm-marker
-              v-for="(item,index) in polylinePath"
-              :key="index"
-              :position="item"
-              :dragging="true"
-              animation="BMAP_ANIMATION_BOUNCE"
-            />
+              />-->
+            </bm-auto-complete>
+          </bm-control>
+          <bm-local-search
+            :auto-viewport="true"
+            :keyword="searchValue"
+            :pageCapacity="10"
+            :panel="false"
+            @searchcomplete="handleSearchEnd"
+            v-if="isSearching"
+          ></bm-local-search>
+          <bm-marker
+            v-for="(item,index) in polylinePath"
+            :key="index"
+            :position="item"
+            :dragging="true"
+            animation="BMAP_ANIMATION_BOUNCE"
+          />
 
-            <bm-view style="width:100%;height:100%"></bm-view>
-            <bm-driving
-              v-for="(item, index) in drivingPath"
-              :key="-index - 1"
-              :start="item.start"
-              :end="item.end"
-              startCity="成都市"
-              endCity="成都市"
-              :auto-viewport="true"
-              @onpolylinesset="onPolylinesSet"
-              @resultshtmlset="resultsHtmlSet"
-              @searchcomplete="searchComplete"
-            />
-          </baidu-map>
-        </div>
-      </el-container>
+          <bm-view style="width:100%;height:100%"></bm-view>
+          <bm-driving
+            v-for="(item, index) in drivingPath"
+            :key="-index - 1"
+            :start="item.start"
+            :end="item.end"
+            startCity="成都市"
+            endCity="成都市"
+            :auto-viewport="true"
+            @onpolylinesset="onPolylinesSet"
+            @resultshtmlset="resultsHtmlSet"
+            @searchcomplete="searchComplete"
+          />
+        </baidu-map>
+      </div>
     </el-container>
+  </el-container>
 </template>
 
 <script>
@@ -184,15 +214,15 @@ export default {
       ],
       selectMode: false,
       inputVisible: false,
-      need_options: [
-        0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0
-      ]
+      need_options: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+      activeName: '0'
     }
   },
   methods: {
     test () {
       if (this.polylinePath.length < 3) {
-        this.$message({
+        this.$notify({
+          title: '警告',
           message: '节点过少，请在地图上添加节点！',
           type: 'warning'
         })
@@ -232,7 +262,11 @@ export default {
       problem.nodes.push({ type: 'depot', id: 0, demand: '任意' })
       for (var i = 1; i < this.polylinePath.length; i++) {
         // problem.customers.push(this.polylinePath[i].need);
-        problem.nodes.push({ type: 'customer', id: i, demand: this.polylinePath[i].need })
+        problem.nodes.push({
+          type: 'customer',
+          id: i,
+          demand: this.polylinePath[i].need
+        })
       }
 
       console.log('test problem=' + JSON.stringify(problem))
@@ -336,7 +370,8 @@ export default {
       newOne.lng += (Math.random() - 0.5) / 10
       newOne.lat += (Math.random() - 0.5) / 10
       this.polylinePath.push(newOne)
-      this.$message({
+      this.$notify({
+        title: '成功',
         message: '添加' + newOne.name + '成功',
         type: 'success'
       })
@@ -728,5 +763,9 @@ export default {
   -webkit-box-shadow: #666 0px 0px 10px;
   -moz-box-shadow: #666 0px 0px 10px;
   box-shadow: #666 0px 0px 10px;
+}
+
+.el-collapse-item__header {
+  padding-left: 8px;
 }
 </style>

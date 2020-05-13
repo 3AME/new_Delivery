@@ -46,8 +46,7 @@ const frameIn = [
         meta: {
           title: '地图选择',
           auth: true,
-          keepAlive: true,
-          cache: true
+          keepAlive: true
         },
         component: _import('demo/page_map')
       },
@@ -57,8 +56,7 @@ const frameIn = [
         meta: {
           title: '结果显示',
           auth: true,
-          keepAlive: true,
-          cache: true
+          keepAlive: true
         },
         component: _import('demo/page_result')
       },
@@ -68,8 +66,7 @@ const frameIn = [
         meta: {
           title: '历史记录',
           auth: true,
-          keepAlive: true,
-          cache: true
+          keepAlive: true
         },
         component: _import('demo/page_history')
       },

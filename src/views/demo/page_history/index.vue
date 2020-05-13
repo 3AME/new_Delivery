@@ -1,6 +1,6 @@
 <template>
-  <div style="background: #fff; height: 100%">
-    <el-table :data="querys">
+  <div style="background: #fff;">
+    <el-table :data="querys" style="height: 100%;">
       <!-- <el-table-column type="selection" width="55"></el-table-column> -->
       <el-table-column prop="title" label="标题" width="300px">
         <template slot-scope="scope">
@@ -33,19 +33,20 @@
       </el-table-column>
       <el-table-column align="right">
         <template slot="header">
-          <el-popover ref="popover1" placement="bottom" width="250" v-model="popoverVisible">
+          <!-- <el-popover ref="popover1" placement="bottom" width="250" v-model="popoverVisible">
             <p>确定删除全部查询历史记录吗？</p>
             <div style="text-align: right; margin: 0">
               <el-button size="mini" @click="popoverVisible = false">取消</el-button>
               <el-button size="mini" type="primary" @click="deleteAll()">确定</el-button>
             </div>
-          </el-popover>
+          </el-popover> -->
           <!-- <el-input v-model="assetTypeSearch" size="mini" placeholder="输入关键字搜索" width="120"/> -->
+          <!-- v-popover:popover1 -->
           <el-button
-            v-popover:popover1
             size="mini"
             type="danger"
             style="margin: 10px; float: right;"
+            @click="deleteAll()"
           >全部删除</el-button>
         </template>
       </el-table-column>
@@ -69,12 +70,32 @@ export default {
   },
   methods: {
     deleteAll () {
-      this.popoverVisible = false
-      this.$store.commit('d2admin/DELETE_ALL_QUERY_DATA')
-      this.$message({
-        message: '全部删除成功',
-        type: 'success'
+      this.$confirm('此操作将删除全部历史记录, 是否继续?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$store.commit('d2admin/DELETE_ALL_QUERY_DATA')
+        this.$notify({
+          title: '成功',
+          message: '全部删除成功',
+          type: 'success'
+        })
+      }).catch(() => {
+        this.$notify.info({
+          title: '消息',
+          message: '已取消删除'
+        })
       })
+      // console.log('popoverVisible111=' + this.popoverVisible)
+      // this.popoverVisible = false
+      // console.log('popoverVisible=' + this.popoverVisible)
+      // this.$store.commit('d2admin/DELETE_ALL_QUERY_DATA')
+      // this.$notify({
+      //   title: '成功',
+      //   message: '全部删除成功',
+      //   type: 'success'
+      // })
     },
     queryProblem (index, row) {
       this.$router.push({
@@ -86,7 +107,8 @@ export default {
     },
     deleteQuery (index, row) {
       this.$store.commit('d2admin/DELETE_QUERY_DATA', index)
-      this.$message({
+      this.$notify({
+        title: '成功',
         message: '删除' + row.title + '成功',
         type: 'success'
       })
