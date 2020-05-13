@@ -4,7 +4,11 @@
       <el-button @click="inquery">
         <d2-icon name="search" />查询
       </el-button>
+<<<<<<< HEAD
 <el-collapse  @change="handleChange">
+=======
+      <el-collapse @change="handleChange">
+>>>>>>> origin/ss
       <el-collapse-item title="文件内容要求" name="1">
      <span>
        进入坐标形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序随意：<br />
@@ -113,15 +117,27 @@ export default {
           problem.push(obj)
         })
         console.log(problem)
+<<<<<<< HEAD
+=======
+        // eslint-disable-next-line camelcase
+>>>>>>> origin/ss
         let new_nodes = problem.map(obj => {
           return obj.nodes
         })
         // let newproblem_edges = {
         //   edges: "euc2d"
         // };
+<<<<<<< HEAD
         let newproblem_edges = problem.map(obj => {
           return obj.edges
         })
+=======
+        // eslint-disable-next-line camelcase
+        let newproblem_edges = problem.map(obj => {
+          return obj.edges
+        })
+        // eslint-disable-next-line camelcase
+>>>>>>> origin/ss
         let new_vehicles = problem.map(obj => {
           if (obj.vehicles !== undefined) {
             return obj.vehicles
@@ -140,12 +156,20 @@ export default {
           }
         }
         console.log(new_vehicles)
+<<<<<<< HEAD
+=======
+        // eslint-disable-next-line camelcase
+>>>>>>> origin/ss
         let new_test = {
           distancePrior: 5, // 路程加权
           timePrior: 1, // 用时加权
           loadPrior: 4 // 满载率加权
         }
         console.log(new_test)
+<<<<<<< HEAD
+=======
+        // eslint-disable-next-line camelcase
+>>>>>>> origin/ss
         newproblem_edges = {
           routeMode: false,
           nodes: new_nodes,
@@ -155,7 +179,11 @@ export default {
           timePrior: new_test.timePrior,
           loadPrior: new_test.loadPrior
         }
+<<<<<<< HEAD
         // newproblem_edges=newproblem_edges.filter( res=> {return res!=="undefined"});
+=======
+        // newproblem_edges=newproblem_edges.filter( res=> {return res!="undefined"});
+>>>>>>> origin/ss
         // newproblem_edges.filter(Boolean);
         console.log(newproblem_edges)
         this.$router.push({

@@ -4,7 +4,11 @@
       <el-button @click="inquery">
         <d2-icon name="search" />查询
       </el-button>
+<<<<<<< HEAD
       <el-collapse @change="handleChange">
+=======
+      <el-collapse  @change="handleChange">
+>>>>>>> origin/ss
       <el-collapse-item title="文件内容要求" name="1">
       <span>
        进入路线形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序随意：<br />
@@ -18,7 +22,7 @@
            <th>Vehicle_number</th>
            <th>Vehicle_mileage</th>
            <th>remand</th>
-           <th>name a</th>
+           <th>name_a</th>
            <th>1</th>
            <th>2</th>
            <th>3</th>
