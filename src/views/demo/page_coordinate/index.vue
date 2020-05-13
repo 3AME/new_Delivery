@@ -4,38 +4,36 @@
       <el-button @click="inquery">
         <d2-icon name="search" />查询
       </el-button>
-      <el-button @click="handleDownload">
-        下载表头示例
-      </el-button>
-<el-collapse  @change="handleChange">
-      <el-collapse-item title="文件内容要求" name="1">
-     <span>
-       进入坐标形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序随意：<br />
-       <table border="1px" style="border-collapse:collapse">
-         <tr>
-           <th>type</th>
-           <th>name</th>
-           <th>x</th>
-           <th>y</th>
-           <th>remand</th>
-           <th>Vehicle_load</th>
-           <th>Vehicle_number</th>
-           <th>Vehicle_mileage</th>
-           <th>Vehicle_id</th>
-         </tr>
-       </table>
-          type：点的类型，depot——配送中心，customer——配送点，other——其他类型的点<br />
-          name：点的名字或者编号<br />
-          x：点的横坐标（单位默认：km)<br />
-          y:   点的纵坐标（单位默认：km)<br />
-          remand：点的需求量，配送中心也可以写，这不影响路线的计算<br />
-          Vehicle_load：车辆载重量<br />
-          Vehicle_number：该车辆的数量<br />
-          Vehicle_mileage：车辆里程<br />
-          Vehicle_id：车辆所在配送中心的名字或者编号，对应type=depot的name值
-     </span>
-    </el-collapse-item>
-    </el-collapse>
+      <el-button @click="handleDownload">下载表头示例</el-button>
+      <el-collapse @change="handleChange">
+        <el-collapse-item title="文件内容要求" name="1">
+          <span>
+            进入坐标形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序随意：
+            <br />
+            <table border="1px" style="border-collapse:collapse">
+              <tr>
+                <th>type</th>
+                <th>name</th>
+                <th>x</th>
+                <th>y</th>
+                <th>demand</th>
+                <th>Vehicle_load</th>
+                <th>Vehicle_number</th>
+                <th>Vehicle_mileage</th>
+                <th>Vehicle_id</th>
+              </tr>
+            </table>type：点的类型，depot——配送中心，customer——配送点，other——其他类型的点
+            <br />name：点的名字或者编号
+            <br />x：点的横坐标（单位默认：km)
+            <br />y: 点的纵坐标（单位默认：km)
+            <br />demand：点的需求量，配送中心也可以写，这不影响路线的计算
+            <br />Vehicle_load：车辆载重量
+            <br />Vehicle_number：该车辆的数量
+            <br />Vehicle_mileage：车辆里程
+            <br />Vehicle_id：车辆所在配送中心的名字或者编号，对应type=depot的name值
+          </span>
+        </el-collapse-item>
+      </el-collapse>
     </template>
     <div class="d2-mb">
       <el-upload :before-upload="handleUpload" action="default">
@@ -95,15 +93,15 @@ export default {
         console.log(outdata)
         let problem = []
         outdata.map(v => {
-          let obj = {}
-          // obj.nodes={type:v["type"],id:v["name"],x:v["X"],y:v["Y"],demand:v["remand"]};
+          let obj = {};
+          // obj.nodes={type:v["type"],id:v["name"],x:v["X"],y:v["Y"],demand:v["demand"]};
           // obj.edges = "euc2d";
           obj.nodes = {
-            type: v['type'],
-            id: v['name'],
-            demand: v['remand']
-          }
-          obj.edges = { x: v['X'], y: v['Y'] }
+            type: v["type"],
+            id: v["name"],
+            demand: v["demand"]
+          };
+          obj.edges = { x: v["X"], y: v["Y"] };
           obj.vehicles = {
             id: v['name'],
             depot: v['Vehicle_id'],
@@ -123,11 +121,11 @@ export default {
         //   edges: "euc2d"
         // };
         let newproblem_edges = problem.map(obj => {
-          return obj.edges
-        })
+          return obj.edges;
+        });
         let new_vehicles = problem.map(obj => {
           if (obj.vehicles !== undefined) {
-            return obj.vehicles
+            return obj.vehicles;
           } else {
             console.log('value is undefined')
           }
@@ -139,7 +137,7 @@ export default {
             new_vehicles[i].load === undefined ||
             new_vehicles[i].count === undefined
           ) {
-            new_vehicles.splice(i, 2) // 删除excel数据中出现的undefined
+            new_vehicles.splice(i, 2); // 删除excel数据中出现的undefined
           }
         }
         console.log(new_vehicles)
@@ -168,12 +166,11 @@ export default {
           }
         })
       }
-
     },
-   handleChange (val) {
-      console.log(val)
+    handleChange(val) {
+      console.log(val);
     },
-    handleDownload(){
+    handleDownload() {
       alert("下载");
     }
   }

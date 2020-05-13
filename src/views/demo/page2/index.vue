@@ -11,13 +11,13 @@
        <table border="1px" style="border-collapse:collapse">
          <tr>
            <th>type</th>
-           <th>remand</th>
+           <th>demand</th>
            <th>Vehicle_type</th>
            <th>Vehicles_id</th>
            <th>Vehicle_load</th>
            <th>Vehicle_number</th>
            <th>Vehicle_mileage</th>
-           <th>remand</th>
+           <!-- <th>demand</th> -->
            <th>name_a</th>
            <th>1</th>
            <th>2</th>
@@ -31,7 +31,7 @@
          </tr>
        </table>
           type：点的类型，depot——配送中心，customer——配送点，other——其他类型的点<br />
-          remand：点的需求量，配送中心也可以写，这不影响路线的计算<br />
+          demand：点的需求量，配送中心也可以写，这不影响路线的计算<br />
           Vehicle_load：车辆载重量<br />
           Vehicle_number：该车辆的数量<br />
           Vehicle_mileage：车辆里程<br />
