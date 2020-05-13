@@ -78,7 +78,7 @@ export default {
   },
   deactivated () {},
   methods: {
-    goBack() {
+     goBack() {
       this.$router.go(-1);
     },
     solve (
