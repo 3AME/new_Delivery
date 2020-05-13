@@ -73,9 +73,14 @@ export default {
         outdata.map(v => {
           let i = num_node;
           let obj = {};
-          obj.nodes = { type: v["type"], id: v["name_a"], demand: v["remand"] };
-          obj.edge = { u: v["begin"], v: v["end"], w: v["load_length"] };
-          obj.list = { list_num: v["name_a"] };
+          // obj.nodes = { type: v["type"], id: v["name_a"], demand: v["remand"] };
+          // obj.edge = { u: v["begin"], v: v["end"], w: v["load_length"] };
+          // obj.list = { list_num: v["name_a"] };
+          // let i = num_node
+          let obj = {}
+          obj.nodes = { type: v['type'], id: v['name_a'], demand: v['demand'] }
+          obj.edge = { u: v['begin'], v: v['end'], w: v['load_length'] }
+          obj.list = { list_num: v['name_a'] }
           obj.vehicles = {
             id: v["Vehicle_type"],
             depot: v["Vehicles_id"],
