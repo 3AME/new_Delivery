@@ -17,60 +17,13 @@
           <el-button @click="clearTags()" style="float: right; padding: 3px 0" type="text">清空</el-button>
         </div>
       </div>
-      <el-divider></el-divider>
 
       <div v-if="polylinePath.length == 0" class="box-card">
+        <el-divider></el-divider>
         <div style="text-align: center;">空空如也</div>
       </div>
 
-      <!-- <div class="box-card" v-else v-for="(path, index) in polylinePath" :key="path.name">
-          <div class="div-tag" v-if="index == 0">中心节点</div>
-          <div class="div-tag" v-else>子节点</div>
-          <hr />
-          <div class="div-tag" @click="onTagClick(path)">{{path.name}}</div>
-          <div class="div-tag" v-if="index != 0">
-            需求量
-            <el-select
-              v-model="path.need"
-              filterable
-              allow-create
-              default-first-option
-              placeholder="需求量"
-              size="mini"
-            >
-              <el-option v-for="item in need_options" :key="item" :label="item" :value="item"></el-option>
-            </el-select>
-          </div>
-          <div style="text-align: center;">
-            <i @click="handleClose(path)" class="i-tag el-icon-delete" style="font-size: 16px;"></i>
-          </div>
-      </div>-->
-
-      <!-- <div class="div-tag" v-else v-for="(path, index) in polylinePath" :key="path.name">
-        <div class="el-submenu__title" style="padding-left: 20px;">
-          <i class="fa fa-folder-o"></i>
-          <span style="font-size: 12px;">{{path.name}}</span>
-          <i
-            @click="handleClose(path)"
-            class="el-submenu__icon-arrow el-icon-arrow-down i-tag el-icon-delete"
-            style="font-size: 16px;"
-          ></i>
-        </div>
-        <div style="text-align: center;" v-if="index != 0">
-          <el-select
-            v-model="path.need"
-            filterable
-            allow-create
-            default-first-option
-            placeholder="需求量"
-            size="mini"
-          >
-            <el-option v-for="item in need_options" :key="item" :label="item" :value="item"></el-option>
-          </el-select>
-        </div>
-      </div>-->
-
-      <el-collapse v-else v-model="activeName" accordion>
+      <el-collapse id="collapse_nodes" v-else v-model="activeName" accordion>
         <el-collapse-item
           v-for="(path, index) in polylinePath"
           :key="path.name"
@@ -212,6 +165,7 @@ export default {
         //   end: "四川大学(江安校区)"
         // }
       ],
+      tempDrivingPath: [],
       selectMode: false,
       inputVisible: false,
       need_options: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
@@ -250,8 +204,8 @@ export default {
       }
       console.log('drivingPath=' + JSON.stringify(this.drivingPath))
       this.drivingPath.forEach(function (path, i) {
-        var start = names.indexOf(path.start)
-        var end = names.indexOf(path.end)
+        var start = names.indexOf(path.start.name)
+        var end = names.indexOf(path.end.name)
         problem.edges.push({
           u: start,
           v: end,
@@ -387,14 +341,14 @@ export default {
       console.log('onAutoComplete res=' + JSON.stringify(res.item))
       let me = this
       console.log('value=' + JSON.stringify(res.item.value))
-      // var name =
-      //   res.item.value.province +
-      //   res.item.value.city +
-      //   res.item.value.district +
-      //   res.item.value.business +
-      //   res.item.value.street +
-      //   res.item.value.streetNumber;
-      var name = res.item.value.business
+      var name =
+        res.item.value.province +
+        res.item.value.city +
+        res.item.value.district +
+        res.item.value.business +
+        res.item.value.street +
+        res.item.value.streetNumber
+      // var name = res.item.value.business
       console.log('name=' + name)
 
       // 创建地址解析器实例
@@ -406,26 +360,32 @@ export default {
         function (point) {
           if (point) {
             me.polylinePath.forEach(function (item) {
-              me.drivingPath.push({
-                start: name,
-                end: item.name
-              })
-              // var p = {
-              //   start: {
-              //     lng: point.lng,
-              //     lat: point.lat
-              //   },
-              //   end: {
-              //     lng: item.lng,
-              //     lat: item.lat
-              //   }
-              // };
-              // console.log('pppppppppppp=' + JSON.stringify(p));
-              // me.drivingPath.push(p);
+              // me.drivingPath.push({
+              //   start: name,
+              //   end: item.name
+              // })
+              var p = {
+                start: {
+                  name: name,
+                  lng: point.lng,
+                  lat: point.lat
+                },
+                end: {
+                  name: item.name,
+                  lng: item.lng,
+                  lat: item.lat
+                }
+              }
+              console.log('pppppppppppp=' + JSON.stringify(p))
+              // me.drivingPath.push(p)
+              me.tempDrivingPath.push(p)
             })
-            console.log('size=' + me.drivingPath.length)
-            console.log('me.drivingPath=' + JSON.stringify(me.drivingPath))
-            console.log('lng=' + point.lng + ' lat=' + point.lat)
+            if (me.tempDrivingPath.length > 0) {
+              me.drivingPath.push(me.tempDrivingPath[0])
+            }
+            // console.log('size=' + me.drivingPath.length)
+            // console.log('me.drivingPath=' + JSON.stringify(me.drivingPath))
+            // console.log('lng=' + point.lng + ' lat=' + point.lat)
             var path = {
               name: name,
               lng: point.lng,
@@ -444,39 +404,45 @@ export default {
       )
     },
     searchComplete (r) {
-      var moreResultsUrl = r.moreResultsUrl
-      console.log('moreResultsUrl=' + moreResultsUrl)
-      var origin
-      var destination
-      moreResultsUrl.split('&').forEach(function (text) {
-        console.log('text=' + text)
-        if (text.indexOf('origin=') === 0) {
-          origin = text
-            .substring(7)
-            .replace('2$$$$$$', '')
-            .replace('$$0$$$$', '')
-        } else if (text.indexOf('destination=') === 0) {
-          destination = text
-            .substring(12)
-            .replace('2$$$$$$', '')
-            .replace('$$0$$$$', '')
-        }
-      })
-      console.log('origin=' + origin + ' destination=' + destination)
-      console.log(
-        'searchComplete drivingPath=' + JSON.stringify(this.drivingPath)
-      )
-      console.log('r.taxiFare=' + JSON.stringify(r.taxiFare))
-      for (var i = 0; i < this.drivingPath.length; i++) {
-        var path = this.drivingPath[i]
-        console.log('path=' + JSON.stringify(path))
-        if (
-          (path.start === origin && path.end === destination) ||
-          (path.start === destination && path.end === origin)
-        ) {
-          path.len = r.taxiFare.distance
-          break
-        }
+      // var moreResultsUrl = r.moreResultsUrl
+      // console.log('moreResultsUrl=' + moreResultsUrl)
+      // var origin
+      // var destination
+      // moreResultsUrl.split('&').forEach(function (text) {
+      //   console.log('text=' + text)
+      //   if (text.indexOf('origin=') === 0) {
+      //     origin = text
+      //       .substring(7)
+      //       .replace('2$$$$$$', '')
+      //       .replace('$$0$$$$', '')
+      //   } else if (text.indexOf('destination=') === 0) {
+      //     destination = text
+      //       .substring(12)
+      //       .replace('2$$$$$$', '')
+      //       .replace('$$0$$$$', '')
+      //   }
+      // })
+      // console.log('origin=' + origin + ' destination=' + destination)
+      // console.log(
+      //   'searchComplete drivingPath=' + JSON.stringify(this.drivingPath)
+      // )
+      // console.log('r.taxiFare=' + JSON.stringify(r.taxiFare))
+      // for (var i = 0; i < this.drivingPath.length; i++) {
+      //   var path = this.drivingPath[i]
+      //   console.log('path=' + JSON.stringify(path))
+      //   if (
+      //     (path.start === origin && path.end === destination) ||
+      //     (path.start === destination && path.end === origin)
+      //   ) {
+      //     path.len = r.taxiFare.distance
+      //     break
+      //   }
+      // }
+      this.drivingPath[this.drivingPath.length - 1].len = r.taxiFare.distance
+      // this.tempDrivingPath[0].len = r.taxiFare.distance
+      this.tempDrivingPath.splice(0, 1)
+      if (this.tempDrivingPath.length > 0) {
+        this.drivingPath.push(this.tempDrivingPath[0])
       }
     },
     // 移除Tag
@@ -484,7 +450,7 @@ export default {
       this.polylinePath.splice(this.polylinePath.indexOf(tag), 1)
       for (var i = this.drivingPath.length - 1; i >= 0; i--) {
         var item = this.drivingPath[i]
-        if (item.start === tag.name || item.end === tag.name) {
+        if (item.start.name === tag.name || item.end.name === tag.name) {
           this.drivingPath.splice(i, 1)
         }
       }
@@ -513,36 +479,37 @@ export default {
       this.center = path.name
     },
     // 添加Tag
-    addTag (res) {
-      if (res && res.point) {
-        console.log('address=' + res.address)
-        console.log('value=' + res.value)
-        console.log('res=' + Object.keys(res))
-        this.center = res.point
-        let me = this
-        this.polylinePath.forEach(function (item) {
-          me.drivingPath.push({
-            start: res.value,
-            end: item.name
-          })
-        })
-        this.polylinePath.push({
-          name: res.value,
-          lng: res.point.lng,
-          lat: res.point.lat
-        })
-        this.$emit('input', {
-          address: this.searchValue,
-          lat: res.point.lat,
-          lng: res.point.lng
-        })
-        this.inputVisible = false
-        this.searchValue = ''
-      }
-    },
+    // addTag (res) {
+    //   if (res && res.point) {
+    //     console.log('address=' + res.address)
+    //     console.log('value=' + res.value)
+    //     console.log('res=' + Object.keys(res))
+    //     this.center = res.point
+    //     let me = this
+    //     this.polylinePath.forEach(function (item) {
+    //       me.drivingPath.push({
+    //         start: res.value,
+    //         end: item.name
+    //       })
+    //     })
+    //     this.polylinePath.push({
+    //       name: res.value,
+    //       lng: res.point.lng,
+    //       lat: res.point.lat
+    //     })
+    //     this.$emit('input', {
+    //       address: this.searchValue,
+    //       lat: res.point.lat,
+    //       lng: res.point.lng
+    //     })
+    //     this.inputVisible = false
+    //     this.searchValue = ''
+    //   }
+    // },
     clearTags () {
       this.polylinePath.splice(0, this.polylinePath.length)
       this.drivingPath.splice(0, this.drivingPath.length)
+      this.tempDrivingPath.splice(0, this.tempDrivingPath.length)
       this.logisticsCenter = undefined
     },
     // 打印一个对象所有属性的值
@@ -765,7 +732,23 @@ export default {
   box-shadow: #666 0px 0px 10px;
 }
 
-.el-collapse-item__header {
-  padding-left: 8px;
+#collapse_nodes .el-collapse-item__header {
+  padding-left: 12px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    height: 48px;
+    line-height: 14px;
+    background-color: #FFF;
+    color: #303133;
+    cursor: pointer;
+    border-bottom: 1px solid #EBEEF5;
+    font-size: 12px;
+    -webkit-transition: border-bottom-color .3s;
+    transition: border-bottom-color .3s;
+    outline: 0;
 }
 </style>

@@ -93,15 +93,15 @@ export default {
         console.log(outdata)
         let problem = []
         outdata.map(v => {
-          let obj = {};
+          let obj = {}
           // obj.nodes={type:v["type"],id:v["name"],x:v["X"],y:v["Y"],demand:v["demand"]};
           // obj.edges = "euc2d";
           obj.nodes = {
-            type: v["type"],
-            id: v["name"],
-            demand: v["demand"]
-          };
-          obj.edges = { x: v["X"], y: v["Y"] };
+            type: v['type'],
+            id: v['name'],
+            demand: v['demand']
+          }
+          obj.edges = { x: v['X'], y: v['Y'] }
           obj.vehicles = {
             id: v['name'],
             depot: v['Vehicle_id'],
@@ -114,18 +114,21 @@ export default {
           problem.push(obj)
         })
         console.log(problem)
+        // eslint-disable-next-line camelcase
         let new_nodes = problem.map(obj => {
           return obj.nodes
         })
         // let newproblem_edges = {
         //   edges: "euc2d"
         // };
+        // eslint-disable-next-line camelcase
         let newproblem_edges = problem.map(obj => {
-          return obj.edges;
-        });
+          return obj.edges
+        })
+        // eslint-disable-next-line camelcase
         let new_vehicles = problem.map(obj => {
           if (obj.vehicles !== undefined) {
-            return obj.vehicles;
+            return obj.vehicles
           } else {
             console.log('value is undefined')
           }
@@ -137,16 +140,18 @@ export default {
             new_vehicles[i].load === undefined ||
             new_vehicles[i].count === undefined
           ) {
-            new_vehicles.splice(i, 2); // 删除excel数据中出现的undefined
+            new_vehicles.splice(i, 2) // 删除excel数据中出现的undefined
           }
         }
         console.log(new_vehicles)
+        // eslint-disable-next-line camelcase
         let new_test = {
           distancePrior: 5, // 路程加权
           timePrior: 1, // 用时加权
           loadPrior: 4 // 满载率加权
         }
         console.log(new_test)
+        // eslint-disable-next-line camelcase
         newproblem_edges = {
           routeMode: false,
           nodes: new_nodes,
@@ -167,11 +172,11 @@ export default {
         })
       }
     },
-    handleChange(val) {
-      console.log(val);
+    handleChange (val) {
+      console.log(val)
     },
-    handleDownload() {
-      alert("下载");
+    handleDownload () {
+      alert('下载')
     }
   }
 }

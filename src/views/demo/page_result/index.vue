@@ -1,14 +1,6 @@
 <template>
-  <el-container class="container" style="padding: 10px;">
+  <el-container class="container" style="padding: 10px;" v-loading="loading">
     <el-aside width="230px" class="aside">
-      <div style="text-align: center;">
-        <el-switch
-          v-if="problem && problem.routeMode && problem.nodes.length !== 0"
-          v-model="hideRoute"
-          @change="toggleRoute()"
-          active-text="隐藏无关路线"
-        ></el-switch>
-      </div>
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <span>最优结果</span>
@@ -24,15 +16,29 @@
           <span>最优路线</span>
           <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
         </div>
+        <div style="text-align: center; margin-bottom: 20px;">
+          <el-switch
+            v-if="problem && problem.routeMode && problem.nodes.length !== 0"
+            v-model="hideRoute"
+            @change="toggleRoute()"
+            active-text="隐藏无关路线"
+          ></el-switch>
+        </div>
         <div
           v-for="(route, index) in routes"
           :key="index"
-          class="text-item"
-          @click="toggleVisible(route, index)"
+          style="padding-top: 4px; padding-bottom: 4px;"
         >
-        <!-- @change="onCheckedChange(route, index)" -->
-          <el-checkbox  v-model="route.checked" style="margin-right: 5px;"></el-checkbox>
-          车辆{{ route.text }}
+          <!-- @change="onCheckedChange(route, index)" -->
+          <el-checkbox
+            v-model="route.checked"
+            style="margin-right: 4px;"
+            @change="onCheckedChange(route, index)"
+          ></el-checkbox>
+          <span
+            @click="toggleVisible(route, index)"
+            style="font-size: 12px; padding-top: 4px; padding-bottom: 4px;"
+          >车辆{{ route.text }}</span>
         </div>
       </el-card>
       <!-- {{ result }} -->
@@ -57,7 +63,8 @@ export default {
       result: undefined,
       problem: undefined,
       hideRoute: false,
-      routes: []
+      routes: [],
+      loading: true
     }
   },
   mounted () {
@@ -78,13 +85,23 @@ export default {
     }
   },
   activated () {
-    // if (this.problem === this.$route.query.problem) {
-    //   return
-    // }
+    // console.log('problem=' + JSON.stringify(this.problem))
+    // console.log('this.$route.query.problem=' + JSON.stringify(this.$route.query.problem))
+    // console.log('==============' + (this.problem === this.$route.query.problem))
+    let svgChildren = d3.selectAll('svg#graph_svg > *')
+    console.log('d3.selectAll()=' + svgChildren.size())
+    if (
+      svgChildren.size() > 0 &&
+      JSON.stringify(this.problem) === JSON.stringify(this.$route.query.problem)
+    ) {
+      this.loading = false
+      return
+    }
+    this.loading = true
+    svgChildren.remove()
     console.log('activated')
     this.problem = this.$route.query.problem
     this.hideRoute = false
-    d3.selectAll('svg > *').remove()
     this.problem = this.$route.query.problem
     console.log('names=' + this.problem.names)
     this.$store.dispatch('d2admin/addQuery', this.problem)
@@ -254,6 +271,7 @@ export default {
         } else {
           this.showScatterGraph()
         }
+        this.loading = false
       })
 
       solver.on('exit', code => {

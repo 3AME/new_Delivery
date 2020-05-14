@@ -1,4 +1,4 @@
-import screenfull from 'screenfull'
+// import screenfull from 'screenfull'
 
 export default {
   namespaced: true,
@@ -12,11 +12,11 @@ export default {
      * @param {Object} context
      */
     listen ({ commit }) {
-      if (screenfull.isEnabled) {
-        screenfull.on('change', () => {
-          if (!screenfull.isFullscreen) commit('set', false)
-        })
-      }
+      // if (screenfull.isEnabled) {
+      //   screenfull.on('change', () => {
+      //     if (!screenfull.isFullscreen) commit('set', false)
+      //   })
+      // }
     },
     /**
      * @description 切换全屏
@@ -24,13 +24,13 @@ export default {
      */
     toggle ({ commit }) {
       return new Promise(resolve => {
-        if (screenfull.isFullscreen) {
-          screenfull.exit()
-          commit('set', false)
-        } else {
-          screenfull.request()
-          commit('set', true)
-        }
+        // if (screenfull.isFullscreen) {
+        //   screenfull.exit()
+        //   commit('set', false)
+        // } else {
+        //   screenfull.request()
+        //   commit('set', true)
+        // }
         // end
         resolve()
       })
