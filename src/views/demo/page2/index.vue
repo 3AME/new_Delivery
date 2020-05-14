@@ -5,7 +5,7 @@
         <d2-icon name="search" />查询
       </el-button>
       <el-collapse  @change="handleChange">
-      <el-collapse-item title="文件内容要求" name="1">
+      <el-collapse-item title="路线形式文件表头要求" name="1">
       <span>
        进入路线形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序随意：<br />
        <table border="1px" style="border-collapse:collapse">
@@ -45,7 +45,7 @@
     <div class="d2-mb">
       <el-upload :before-upload="handleUpload" action="default">
         <el-button type="success">
-          <d2-icon name="file-o" />选择要导入的 .xlsx 表格
+          <d2-icon name="file-o" />导入.xlsx/.xls
         </el-button>
       </el-upload>
     </div>
@@ -111,8 +111,8 @@ export default {
         let problem = []
         outdata.map(v => {
           // let i = num_node
-          let obj = {}
-          obj.nodes = { type: v['type'], id: v['name_a'], demand: v['remand'] }
+          // let obj = {}
+          obj.nodes = { type: v['type'], id: v['name_a'], demand: v['demand'] }
           obj.edge = { u: v['begin'], v: v['end'], w: v['load_length'] }
           obj.list = { list_num: v['name_a'] }
           obj.vehicles = {

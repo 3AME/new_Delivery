@@ -109,6 +109,9 @@ export default {
   },
   deactivated () {},
   methods: {
+     goBack() {
+      this.$router.go(-1);
+    },
     solve (
       problem, // VRP问题描述
       popsize = 100, // 种群大小

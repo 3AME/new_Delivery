@@ -6,7 +6,7 @@
       </el-button>
       <el-button @click="handleDownload">下载表头示例</el-button>
       <el-collapse @change="handleChange">
-        <el-collapse-item title="文件内容要求" name="1">
+        <el-collapse-item title="坐标形式查询文件表头要求" name="1">
           <span>
             进入坐标形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序随意：
             <br />
@@ -38,7 +38,7 @@
     <div class="d2-mb">
       <el-upload :before-upload="handleUpload" action="default">
         <el-button type="success">
-          <d2-icon name="file-o" />选择要导入的 .xlsx 表格
+          <d2-icon name="file-o" />导入 .xlsx/.xls
         </el-button>
       </el-upload>
     </div>
