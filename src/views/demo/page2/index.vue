@@ -4,46 +4,44 @@
       <el-button @click="inquery">
         <d2-icon name="search" />查询
       </el-button>
-      <el-button @click="handleDownload">
-        下载表头示例
-      </el-button>
-      <el-collapse  @change="handleChange">
-      <el-collapse-item title="路线形式文件表头要求" name="1">
-      <span>
-       进入路线形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序随意：<br />
-       <table border="1px" style="border-collapse:collapse">
-         <tr>
-           <th>type</th>
-           <th>demand</th>
-           <th>Vehicle_type</th>
-           <th>Vehicles_id</th>
-           <th>Vehicle_load</th>
-           <th>Vehicle_number</th>
-           <th>Vehicle_mileage</th>
-           <!-- <th>demand</th> -->
-           <th>name_a</th>
-           <th>1</th>
-           <th>2</th>
-           <th>3</th>
-           <th>4</th>
-           <th>5</th>
-           <th>6</th>
-           <th>7</th>
-           <th>8</th>
-           <th>...</th>
-         </tr>
-       </table>
-          type：点的类型，depot——配送中心，customer——配送点，other——其他类型的点<br />
-          demand：点的需求量，配送中心也可以写，这不影响路线的计算<br />
-          Vehicle_load：车辆载重量<br />
-          Vehicle_number：该车辆的数量<br />
-          Vehicle_mileage：车辆里程<br />
-          Vehicle_id：车辆所在配送中心的名字或者编号，对应type=depot的name值<br />
-          name_a：点的编号，编号必须从0开始编号<br />
-          0、1、2对应的字段为name_a
-     </span>
-    </el-collapse-item>
-    </el-collapse>
+      <el-button @click="handleDownload">下载表头示例</el-button>
+      <el-collapse @change="handleChange">
+        <el-collapse-item title="路线形式文件表头要求" name="1">
+          <span>
+            进入路线形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序随意：
+            <br />
+            <table border="1px" style="border-collapse:collapse">
+              <tr>
+                <th>type</th>
+                <th>demand</th>
+                <th>Vehicle_type</th>
+                <th>Vehicles_id</th>
+                <th>Vehicle_load</th>
+                <th>Vehicle_number</th>
+                <th>Vehicle_mileage</th>
+                <!-- <th>demand</th> -->
+                <th>name_a</th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>6</th>
+                <th>7</th>
+                <th>8</th>
+                <th>...</th>
+              </tr>
+            </table>type：点的类型，depot——配送中心，customer——配送点，other——其他类型的点
+            <br />demand：点的需求量，配送中心也可以写，这不影响路线的计算
+            <br />Vehicle_load：车辆载重量
+            <br />Vehicle_number：该车辆的数量
+            <br />Vehicle_mileage：车辆里程
+            <br />Vehicle_id：车辆所在配送中心的名字或者编号，对应type=depot的name值
+            <br />name_a：点的编号，编号必须从0开始编号
+            <br />0、1、2对应的字段为name_a
+          </span>
+        </el-collapse-item>
+      </el-collapse>
     </template>
     <div class="d2-mb">
       <el-upload :before-upload="handleUpload" action="default">
@@ -53,101 +51,109 @@
       </el-upload>
     </div>
     <div contenteditable="true">
-    <el-table v-bind="table">
-      <el-table-column
-        v-for="(item, index) in table.columns"
-        :key="index"
-        :prop="item.prop"
-        :label="item.label"
-      ></el-table-column>
-    </el-table>
+      <el-table v-bind="table">
+        <el-table-column
+          v-for="(item, index) in table.columns"
+          :key="index"
+          :prop="item.prop"
+          :label="item.label"
+        ></el-table-column>
+      </el-table>
     </div>
   </d2-container>
 </template>
 
 <script>
-import Vue from 'vue'
-import pluginImport from '@d2-projects/vue-table-import'
-import pluginExport from '@d2-projects/vue-table-export'
-Vue.use(pluginExport)
-Vue.use(pluginImport)
-var outdata
+import Vue from "vue";
+import pluginImport from "@d2-projects/vue-table-import";
+import pluginExport from "@d2-projects/vue-table-export";
+Vue.use(pluginExport);
+Vue.use(pluginImport);
+var outdata;
 export default {
-  data () {
+  data() {
     return {
       table: {
         columns: [],
         data: [],
-        size: 'mini',
+        size: "mini",
         stripe: true,
         border: true
       }
-    }
+    };
   },
   methods: {
-    handleUpload (file) {
+    handleUpload(file) {
       this.$import.xlsx(file).then(({ header, results }) => {
         this.table.columns = header.map(e => {
           return {
             label: e,
             prop: e
-          }
-        })
-        this.table.data = results
-        outdata = results
-        console.log('outdata:')
-        console.log(outdata)
-      })
-      return false
+          };
+        });
+        this.table.data = results;
+        outdata = results;
+        console.log("outdata:");
+        console.log(outdata);
+      });
+      return false;
     },
-    inquery () {
+    inquery() {
       // eslint-disable-next-line camelcase
-      var num_node = this.input
-      console.log(num_node)
+      var num_node = this.input;
+      console.log(num_node);
       if (outdata == null) {
-        alert('请先上传文件')
-      // eslint-disable-next-line brace-style
+        alert("请先上传文件");
+        // eslint-disable-next-line brace-style
       }
       // else if (num_node == 0) {
       //   alert("请输入配送点数量，配送点数量应大于0");
       // }
       else {
-        console.log(outdata)
-        let problem = []
+        console.log(outdata);
+        let problem = [];
         outdata.map(v => {
           // let i = num_node
-          let obj = {}
-          obj.nodes = { type: v['type'], id: v['name_a'], demand: v['demand'] }
-          obj.edge = { u: v['begin'], v: v['end'], w: v['load_length'] }
-          obj.list = { list_num: v['name_a'] }
+          let obj = {};
+          obj.nodes = { type: v["type"], id: v["name_a"], demand: v["demand"] };
+          // obj.edge = { u: v['begin'], v: v['end'], w: v['load_length'] }
+          obj.list = { list_num: v["name_a"] };
           obj.vehicles = {
-            id: v['Vehicle_type'],
-            depot: v['Vehicles_id'],
-            load: v['Vehicle_load'],
+            id: v["Vehicle_type"],
+            depot: v["Vehicles_id"],
+            load: v["Vehicle_load"],
             // count: v["Vehicle_number"]
             count: 5
-          }
-          obj.distancePrior = 5
-          obj.timePrior = 1
-          obj.loadPrior = 4
-          problem.push(obj)
-        })
-        console.log(problem)
+          };
+          obj.distancePrior = 5;
+          obj.timePrior = 1;
+          obj.loadPrior = 4;
+          problem.push(obj);
+        });
+        console.log(problem);
         // eslint-disable-next-line camelcase
-        let new_outdata = []
+        let new_outdata = [];
         for (var i = 0; i < outdata.length; i++) {
           outdata.map(v => {
-            let obj = {}
-            obj = { u: v['name_a'], v: i, w: v[i] }
-            new_outdata.push(obj)
-          })
+            let obj = {};
+            obj = { u: v["name_a"], v: i, w: v[i] };
+            new_outdata.push(obj);
+          });
         }
-        console.log(new_outdata)
+        //如果u、v对应的格子为空，即两点之间不可通行，将两点之间的距离设为-1
+        for (let i = new_outdata.length - 1; i >= 0; i--) {
+          if (
+            new_outdata[i].w==undefined
+          ) {
+            new_outdata[i].w = -1;
+          }
+        }
+        console.log(new_outdata);
         // eslint-disable-next-line camelcase
         let new_list = problem.map(obj => {
-          return obj.list
-        })
-        console.log(new_list)
+          return obj.list;
+        });
+        console.log(new_list);
         // let len = new_list.length;
         // let listedges = [];
         // for (var i = 0; i < len; i++) {
@@ -160,49 +166,49 @@ export default {
         // console.log(listedges);
         // eslint-disable-next-line camelcase
         let new_nodes = problem.map(obj => {
-          return obj.nodes
-        })
-        console.log('nodes:')
-        console.log(new_nodes)
+          return obj.nodes;
+        });
+        console.log("nodes:");
+        console.log(new_nodes);
         for (let i = new_nodes.length - 1; i >= 0; i--) {
           if (
             new_nodes[i].type === undefined ||
             new_nodes[i].id === undefined ||
             new_nodes[i].demand === undefined
           ) {
-            new_nodes.splice(i, 2) // 删除excel数据中出现的undefined
+            new_nodes.splice(i, 2); // 删除excel数据中出现的undefined
           }
         }
-        console.log(new_nodes)
+        console.log(new_nodes);
         // let new_edges = problem.map(obj => {
         //   return obj.edge
         // })
         // eslint-disable-next-line camelcase
         let new_vehicles = problem.map(obj => {
           if (obj.vehicles !== undefined) {
-            return obj.vehicles
+            return obj.vehicles;
           } else {
-            console.log('value is undefined')
+            console.log("value is undefined");
           }
-        })
+        });
         // new_vehicles.splice(0);
-        console.log(new_vehicles)
+        console.log(new_vehicles);
         for (let i = new_vehicles.length - 1; i >= 0; i--) {
           if (
             new_vehicles[i].load === undefined ||
             new_vehicles[i].count === undefined
           ) {
-            new_vehicles.splice(i, 2) // 删除excel数据中出现的undefined
+            new_vehicles.splice(i, 2); // 删除excel数据中出现的undefined
           }
         }
-        console.log(new_vehicles)
+        console.log(new_vehicles);
         // eslint-disable-next-line camelcase
         let new_test = {
           distancePrior: 5, // 路程加权
           timePrior: 1, // 用时加权
           loadPrior: 4 // 满载率加权
-        }
-        console.log(new_test)
+        };
+        console.log(new_test);
         // eslint-disable-next-line camelcase
         var new_problem = {
           routeMode: true,
@@ -212,83 +218,82 @@ export default {
           distancePrior: new_test.distancePrior,
           timePrior: new_test.timePrior,
           loadPrior: new_test.loadPrior
-        }
-        console.log(new_problem)
+        };
+        console.log(new_problem);
         this.$router.push({
-          name: 'page_result',
+          name: "page_result",
           query: {
             problem: new_problem
           }
-        })
+        });
       }
     },
-    handleChange (val) {
-      console.log(val)
+    handleChange(val) {
+      console.log(val);
     },
-    handleDownload () {
+    handleDownload() {
       const columns = [
         {
-          label: 'type',
-          prop: 'type'
+          label: "type",
+          prop: "type"
         },
         {
-          label: 'name',
-          prop: 'name'
+          label: "name",
+          prop: "name"
         },
         {
-          label: 'Vehicle_type',
-          prop: 'Vehicle_type'
+          label: "Vehicle_type",
+          prop: "Vehicle_type"
         },
         {
-          label: 'name_a',
-          prop: 'name_a'
+          label: "name_a",
+          prop: "name_a"
         },
         {
-          label: 'demand',
-          prop: 'demand'
+          label: "demand",
+          prop: "demand"
         },
         {
-          label: 'Vehicle_load',
-          prop: 'Vehicle_load'
+          label: "Vehicle_load",
+          prop: "Vehicle_load"
         },
         {
-          label: 'Vehicle_number',
-          prop: 'Vehicle_number'
+          label: "Vehicle_number",
+          prop: "Vehicle_number"
         },
         {
-          label: 'Vehicle_mileage',
-          prop: 'Vehicle_mileage'
+          label: "Vehicle_mileage",
+          prop: "Vehicle_mileage"
         },
         {
-          label: 'Vehicle_id',
-          prop: 'Vehicle_id'
+          label: "Vehicle_id",
+          prop: "Vehicle_id"
         },
         {
-          label: '1',
-          prop: '1'
+          label: "1",
+          prop: "1"
         },
         {
-          label: '2',
-          prop: '2'
+          label: "2",
+          prop: "2"
         },
         {
-          label: '3',
-          prop: '3'
+          label: "3",
+          prop: "3"
         },
         {
-          label: '4',
-          prop: '4'
+          label: "4",
+          prop: "4"
         },
         {
-          label: '...',
-          prop: '...'
+          label: "...",
+          prop: "..."
         }
-
-      ]
+      ];
       this.$export.excel({
         columns
-      })
+      });
     }
   }
-}
+};
 </script>
