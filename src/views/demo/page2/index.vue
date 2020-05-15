@@ -4,6 +4,9 @@
       <el-button @click="inquery">
         <d2-icon name="search" />查询
       </el-button>
+      <el-button @click="handleDownload">
+        下载表头示例
+      </el-button>
       <el-collapse  @change="handleChange">
       <el-collapse-item title="路线形式文件表头要求" name="1">
       <span>
@@ -65,6 +68,8 @@
 <script>
 import Vue from 'vue'
 import pluginImport from '@d2-projects/vue-table-import'
+import pluginExport from '@d2-projects/vue-table-export'
+Vue.use(pluginExport)
 Vue.use(pluginImport)
 var outdata
 export default {
@@ -219,6 +224,71 @@ export default {
     },
     handleChange (val) {
       console.log(val)
+    },
+    handleDownload(){
+        const columns = [
+      {
+        label: 'type',
+        prop: 'type'
+      },
+      {
+        label: 'name',
+        prop: 'name'
+      },
+      {
+        label: 'Vehicle_type',
+        prop: 'Vehicle_type'
+      },
+      {
+        label: 'name_a',
+        prop: 'name_a'
+      },
+      {
+        label: 'demand',
+        prop: 'demand'
+      },
+      {
+        label: 'Vehicle_load',
+        prop: 'Vehicle_load'
+      },
+      {
+        label: 'Vehicle_number',
+        prop: 'Vehicle_number'
+      },
+      {
+        label: 'Vehicle_mileage',
+        prop: 'Vehicle_mileage'
+      },
+      {
+        label: 'Vehicle_id',
+        prop: 'Vehicle_id'
+      },
+      {
+        label: '1',
+        prop: '1'
+      },
+      {
+        label: '2',
+        prop: '2'
+      },
+      {
+        label: '3',
+        prop: '3'
+      },
+      {
+        label: '4',
+        prop: '4'
+      },
+      {
+        label: '...',
+        prop: '...'
+      }
+      
+
+    ]
+    this.$export.excel({
+      columns,
+    })
     }
   }
 }
