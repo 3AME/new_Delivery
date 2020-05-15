@@ -1,8 +1,6 @@
 <template>
   <d2-container class="page">
-    <d2-page-cover>
-      <!-- <img src="src\views\system\img\all.png" /> -->
-    </d2-page-cover>
+     <img src='./image/all.png' />
   </d2-container>
 </template>
 
@@ -21,9 +19,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.page {
   img {
-    width: 120px;
+    width: 400px;
+    height: 400px;
+    margin-top: 15%;
+    margin-left: 30%;
   }
   // .btn-group {
   //   color: $color-text-placehoder;
@@ -41,5 +41,4 @@ export default {
   //     }
   //   }
   // }
-}
 </style>

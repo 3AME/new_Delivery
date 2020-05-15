@@ -56,6 +56,8 @@
 <script>
 import Vue from 'vue'
 import pluginImport from '@d2-projects/vue-table-import'
+import pluginExport from '@d2-projects/vue-table-export'
+Vue.use(pluginExport)
 Vue.use(pluginImport)
 var outdata
 export default {
@@ -170,8 +172,49 @@ export default {
     handleChange(val) {
       console.log(val);
     },
-    handleDownload() {
-      alert("下载");
+    handleDownload(){
+        const columns = [
+      {
+        label: 'type',
+        prop: 'type'
+      },
+      {
+        label: 'name',
+        prop: 'name'
+      },
+      {
+        label: 'x',
+        prop: 'x'
+      },
+      {
+        label: 'y',
+        prop: 'y'
+      },
+      {
+        label: 'demand',
+        prop: 'demand'
+      },
+      {
+        label: 'Vehicle_load',
+        prop: 'Vehicle_load'
+      },
+      {
+        label: 'Vehicle_number',
+        prop: 'Vehicle_number'
+      },
+      {
+        label: 'Vehicle_mileage',
+        prop: 'Vehicle_mileage'
+      },
+      {
+        label: 'Vehicle_id',
+        prop: 'Vehicle_id'
+      }
+
+    ]
+    this.$export.excel({
+      columns,
+    })
     }
   }
 }
