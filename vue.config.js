@@ -170,6 +170,15 @@ module.exports = {
       fallbackLocale: 'en',
       localeDir: 'locales',
       enableInSFC: true
+    },
+    electronBuilder: {
+      builderOptions: {
+        'extraResources': {
+          'from': './resources',
+          'to': './',
+          'filter': ['VehicleRouting.exe']
+        }
+      }
     }
   }
 }

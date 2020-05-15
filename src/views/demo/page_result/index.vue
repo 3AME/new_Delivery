@@ -6,9 +6,9 @@
           <span>最优结果</span>
           <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
         </div>
-        <div class="text-item" v-if="result">"distance": {{ result.distance }}</div>
-        <div class="text-item" v-if="result">"time": {{ result.time }}</div>
-        <div class="text-item" v-if="result">"loadfactor": {{ result.loadfactor }}</div>
+        <div class="text-item" v-if="result">总路程: {{ result.distance.toFixed(2) }} 公里</div>
+        <div class="text-item" v-if="result">总时间: {{ result.time.toFixed(2) }} 小时</div>
+        <div class="text-item" v-if="result">平均满载率: {{ (result.loadfactor * 100).toFixed(2) }} %</div>
       </el-card>
 
       <el-card class="box-card">
@@ -30,14 +30,32 @@
           style="padding-top: 4px; padding-bottom: 4px;"
         >
           <!-- @change="onCheckedChange(route, index)" -->
-          <el-checkbox
+          <!-- <el-checkbox
             v-model="route.checked"
-            style="margin-right: 4px;"
+            :style="'margin-right: 4px;color:' + route.color"
             @change="onCheckedChange(route, index)"
-          ></el-checkbox>
+          ></el-checkbox>-->
+          <label class="el-checkbox is-checked" style="margin-right: 4px;">
+            <span class="el-checkbox__input is-checked">
+              <span
+                class="el-checkbox__inner"
+                :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
+              ></span>
+              <input
+                @click="toggleVisible(route, index)"
+                type="checkbox"
+                aria-hidden="false"
+                class="el-checkbox__original"
+                :value="route.checked"
+                :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
+              />
+            </span>
+            <!---->
+          </label>
           <span
             @click="toggleVisible(route, index)"
-            style="font-size: 12px; padding-top: 4px; padding-bottom: 4px;"
+            :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+            :fill="route.color"
           >车辆{{ route.text }}</span>
         </div>
       </el-card>
@@ -109,8 +127,8 @@ export default {
   },
   deactivated () {},
   methods: {
-     goBack() {
-      this.$router.go(-1);
+    goBack () {
+      this.$router.go(-1)
     },
     solve (
       problem, // VRP问题描述
@@ -150,7 +168,7 @@ export default {
 
       console.log('function solve run')
 
-      var solver = spawn('VehicleRouting.exe')
+      var solver = spawn('resources/VehicleRouting.exe')
       var pipe = (...msg) => {
         solver.stdin.write(msg.join(' ') + '\n')
         // console.log(msg.join(' '));
@@ -314,8 +332,8 @@ export default {
       var legendTexts = []
       // let vid = 0
       plan.plan.forEach(function (item) {
-        item.trips.forEach(function (trip) {
-          let text = item.vid + ' : '
+        item.trips.forEach(function (trip, index) {
+          let text = item.vid + '_' + index + ' : '
           var tempRoute = 0
           trip.route.forEach(function (route, i) {
             if (i !== 0) {
@@ -337,19 +355,26 @@ export default {
             tempRoute = route
           })
           legendTexts.push({
+            id: item.vid + '_' + index,
             text: text,
-            checked: true
+            checked: true,
+            distance: trip.distance,
+            time: trip.time
           })
           // this.routes.push(text);
           // vid++
         })
       })
-      this.routes = legendTexts
 
       var legendColors = d3
         .scaleOrdinal()
         .domain(d3.range(legendTexts.length))
         .range(d3.schemeCategory10)
+      legendTexts.forEach((legend, index) => {
+        legend.color = legendColors(index)
+      })
+
+      this.routes = legendTexts
 
       edges.forEach(function (link) {
         // find other edges with same target+source or source+target
@@ -607,7 +632,16 @@ export default {
           .enter()
           .append('text')
           .text(function (d) {
-            return d.text
+            return (
+              '车辆' +
+              d.id +
+              '：路程：' +
+              d.distance.toFixed(2) +
+              '公里 | 时间：' +
+              d.time.toFixed(2) +
+              '小时'
+            )
+            // return d.text
           })
           .attr('class', 'legend')
           .attr('y', function (d, i) {
@@ -682,8 +716,8 @@ export default {
 
       var legendTexts = []
       plan.plan.forEach(function (item) {
-        item.trips.forEach(function (trip) {
-          let text = item.vid + ' : '
+        item.trips.forEach(function (trip, index) {
+          let text = item.vid + '_' + index + ' : '
           var tempRoute = 0
 
           trip.route.forEach(function (route, i) {
@@ -711,12 +745,15 @@ export default {
             tempRoute = route
           })
           legendTexts.push({
+            id: item.vid + '_' + index,
             text: text,
-            checked: true
+            checked: true,
+            distance: trip.distance,
+            time: trip.time
           })
         })
       })
-      this.routes = legendTexts
+      // this.routes = legendTexts
 
       problem.edges.forEach(function (edge) {
         var has = false
@@ -739,10 +776,19 @@ export default {
         }
       })
 
+      // var legendColors = d3
+      //   .scaleOrdinal()
+      //   .domain(d3.range(legendTexts.length))
+      //   .range(d3.schemeCategory10)
       var legendColors = d3
         .scaleOrdinal()
         .domain(d3.range(legendTexts.length))
         .range(d3.schemeCategory10)
+      legendTexts.forEach((legend, index) => {
+        legend.color = legendColors(index)
+      })
+
+      this.routes = legendTexts
 
       edges.forEach(function (link) {
         var sameAll = []
@@ -1058,7 +1104,16 @@ export default {
           .enter()
           .append('text')
           .text(function (d) {
-            return d.text
+            return (
+              '车辆' +
+              d.id +
+              '：路程：' +
+              d.distance.toFixed(2) +
+              '公里 | 时间：' +
+              d.time.toFixed(2) +
+              '小时'
+            )
+            // return d.text
           })
           .attr('class', 'legend')
           .attr('y', function (d, i) {
@@ -1102,5 +1157,19 @@ export default {
 
 .box-card {
   margin: 10px;
+}
+
+.container {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  display: flex;
+  flex: 1;
+  flex-shrink: 0;
+  background-color: #fff;
+  border-radius: 5px;
 }
 </style>

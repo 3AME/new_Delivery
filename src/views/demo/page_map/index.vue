@@ -11,7 +11,40 @@
         <el-button size="mini" @click="testCoordMode()">测试坐标形式</el-button>
       </div>
       <el-divider></el-divider>
-      <div class="box-card">
+
+       <el-collapse id="collapse_nodes" accordion>
+        <el-collapse-item
+          title="车辆列表"
+          name="0"
+        >
+
+        <div v-if="vehicles.length == 0" class="box-card">
+        <el-divider></el-divider>
+        <div style="text-align: center;">空空如也</div>
+      </div>
+
+<!-- { id: 1, depot: 0, load: 2, mileage: 35, count: 1 }, -->
+      <el-collapse id="collapse_nodes" v-else accordion>
+        <el-collapse-item
+          v-for="(vehicle, index) in vehicles"
+          :key="vehicle.id"
+          :title="'车辆' + vehicle.id"
+          :name="index"
+        >
+          <div style="text-align: center;">
+            <i @click="removeVehicle(vehicle)" class="i-tag el-icon-delete" style="font-size: 16px;"></i>
+          </div>
+        </el-collapse-item>
+      </el-collapse>
+
+        </el-collapse-item>
+
+        <el-collapse-item
+          title="地点列表"
+          name="1"
+        >
+
+        <div class="box-card">
         <div class="clearfix">
           <span>节点列表</span>
           <el-button @click="clearTags()" style="float: right; padding: 3px 0" type="text">清空</el-button>
@@ -48,6 +81,9 @@
           <div style="text-align: center;">
             <i @click="handleClose(path)" class="i-tag el-icon-delete" style="font-size: 16px;"></i>
           </div>
+        </el-collapse-item>
+      </el-collapse>
+
         </el-collapse-item>
       </el-collapse>
     </el-aside>
@@ -159,6 +195,13 @@ export default {
       placeholder: '添加地址',
       value: '成都市',
       polylinePath: [],
+      vehicles: [
+        { id: 1, depot: 0, load: 2, mileage: 35, count: 1 },
+        { id: 2, depot: 0, load: 2, mileage: 35, count: 1 },
+        { id: 3, depot: 0, load: 2, mileage: 35, count: 1 },
+        { id: 4, depot: 0, load: 5, mileage: 35, count: 1 },
+        { id: 5, depot: 0, load: 5, mileage: 35, count: 1 }
+      ],
       drivingPath: [
         // {
         //   start: "锦江区望江宾馆",
@@ -454,6 +497,9 @@ export default {
           this.drivingPath.splice(i, 1)
         }
       }
+    },
+    removeVehicle (vehicle) {
+      this.vehicles.splice(this.vehicles.indexOf(vehicle), 1)
     },
     // 显示输入框
     showInput () {
