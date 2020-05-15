@@ -20,6 +20,7 @@
   },
   "main": "background.js",
   "dependencies": {
+    "@d2-projects/vue-table-export": "^1.0.1",
     "@d2-projects/vue-table-import": "^1.0.0",
     "axios": "^0.19.0",
     "better-scroll": "^1.15.2",

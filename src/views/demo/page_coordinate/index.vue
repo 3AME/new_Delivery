@@ -17,7 +17,7 @@
            <th>name</th>
            <th>x</th>
            <th>y</th>
-           <th>remand</th>
+           <th>demand</th>
            <th>Vehicle_load</th>
            <th>Vehicle_number</th>
            <th>Vehicle_mileage</th>
@@ -28,7 +28,7 @@
           name：点的名字或者编号<br />
           x：点的横坐标（单位默认：km)<br />
           y:   点的纵坐标（单位默认：km)<br />
-          remand：点的需求量，配送中心也可以写，这不影响路线的计算<br />
+          demand：点的需求量，配送中心也可以写，这不影响路线的计算<br />
           Vehicle_load：车辆载重量<br />
           Vehicle_number：该车辆的数量<br />
           Vehicle_mileage：车辆里程<br />
@@ -58,6 +58,8 @@
 <script>
 import Vue from 'vue'
 import pluginImport from '@d2-projects/vue-table-import'
+import pluginExport from '@d2-projects/vue-table-export'
+Vue.use(pluginExport)
 Vue.use(pluginImport)
 var outdata
 export default {
@@ -174,7 +176,48 @@ export default {
       console.log(val)
     },
     handleDownload(){
-      alert("下载");
+        const columns = [
+      {
+        label: 'type',
+        prop: 'type'
+      },
+      {
+        label: 'name',
+        prop: 'name'
+      },
+      {
+        label: 'x',
+        prop: 'x'
+      },
+      {
+        label: 'y',
+        prop: 'y'
+      },
+      {
+        label: 'demand',
+        prop: 'demand'
+      },
+      {
+        label: 'Vehicle_load',
+        prop: 'Vehicle_load'
+      },
+      {
+        label: 'Vehicle_number',
+        prop: 'Vehicle_number'
+      },
+      {
+        label: 'Vehicle_mileage',
+        prop: 'Vehicle_mileage'
+      },
+      {
+        label: 'Vehicle_id',
+        prop: 'Vehicle_id'
+      }
+
+    ]
+    this.$export.excel({
+      columns,
+    })
     }
   }
 }

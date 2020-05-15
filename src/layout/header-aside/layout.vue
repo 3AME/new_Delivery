@@ -103,7 +103,7 @@ export default {
     // d2HeaderLocales,
     d2HeaderSearch,
     // d2HeaderSize,
-    d2HeaderTheme,
+    d2HeaderTheme
     // d2HeaderUser,
     // d2HeaderLog,
     // d2HeaderColor
