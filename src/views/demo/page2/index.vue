@@ -225,70 +225,69 @@ export default {
     handleChange (val) {
       console.log(val)
     },
-    handleDownload(){
-        const columns = [
-      {
-        label: 'type',
-        prop: 'type'
-      },
-      {
-        label: 'name',
-        prop: 'name'
-      },
-      {
-        label: 'Vehicle_type',
-        prop: 'Vehicle_type'
-      },
-      {
-        label: 'name_a',
-        prop: 'name_a'
-      },
-      {
-        label: 'demand',
-        prop: 'demand'
-      },
-      {
-        label: 'Vehicle_load',
-        prop: 'Vehicle_load'
-      },
-      {
-        label: 'Vehicle_number',
-        prop: 'Vehicle_number'
-      },
-      {
-        label: 'Vehicle_mileage',
-        prop: 'Vehicle_mileage'
-      },
-      {
-        label: 'Vehicle_id',
-        prop: 'Vehicle_id'
-      },
-      {
-        label: '1',
-        prop: '1'
-      },
-      {
-        label: '2',
-        prop: '2'
-      },
-      {
-        label: '3',
-        prop: '3'
-      },
-      {
-        label: '4',
-        prop: '4'
-      },
-      {
-        label: '...',
-        prop: '...'
-      }
-      
+    handleDownload () {
+      const columns = [
+        {
+          label: 'type',
+          prop: 'type'
+        },
+        {
+          label: 'name',
+          prop: 'name'
+        },
+        {
+          label: 'Vehicle_type',
+          prop: 'Vehicle_type'
+        },
+        {
+          label: 'name_a',
+          prop: 'name_a'
+        },
+        {
+          label: 'demand',
+          prop: 'demand'
+        },
+        {
+          label: 'Vehicle_load',
+          prop: 'Vehicle_load'
+        },
+        {
+          label: 'Vehicle_number',
+          prop: 'Vehicle_number'
+        },
+        {
+          label: 'Vehicle_mileage',
+          prop: 'Vehicle_mileage'
+        },
+        {
+          label: 'Vehicle_id',
+          prop: 'Vehicle_id'
+        },
+        {
+          label: '1',
+          prop: '1'
+        },
+        {
+          label: '2',
+          prop: '2'
+        },
+        {
+          label: '3',
+          prop: '3'
+        },
+        {
+          label: '4',
+          prop: '4'
+        },
+        {
+          label: '...',
+          prop: '...'
+        }
 
-    ]
-    this.$export.excel({
-      columns,
-    })
+      ]
+      this.$export.excel({
+        columns
+      })
     }
   }
 }

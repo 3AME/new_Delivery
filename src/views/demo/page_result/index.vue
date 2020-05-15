@@ -1169,7 +1169,6 @@ export default {
   display: flex;
   flex: 1;
   flex-shrink: 0;
-  background-color: #fff;
   border-radius: 5px;
 }
 </style>

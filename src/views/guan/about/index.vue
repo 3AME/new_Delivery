@@ -3,7 +3,6 @@
     <template slot="header">微逻辑配送</template>
            <li><h3 style="color:blue">团队名称</h3></li>
                 <h1>微逻辑</h1>
-            
             <li><h3 style="color:blue">关于我们</h3></li>
             <p>
                团队由5名成员构成，分别是刘安芳、江良伟、王凯槟、张彭俊、舒广辰。江良伟、王凯槟负责后端算法处理，刘安芳、张彭俊、舒广辰负责前端界面设计、前后端交互工作。
@@ -28,6 +27,6 @@
 
 <style scoped>
 h1 {
-     font-family:fantasy; 
+  font-family:fantasy;
 }
 </style>

@@ -52,7 +52,7 @@ export default {
         name: 'line',
         backgroundImage: 'image/theme/line/bg.jpg',
         preview: 'image/theme/line/preview@2x.png'
-      },
+      }
       // {
       //   title: '流星',
       //   name: 'star',

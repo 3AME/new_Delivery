@@ -19,7 +19,7 @@
     "start": "npm run serve"
   },
   "main": "background.js",
-  "extraResources":  {
+  "extraResources": {
     "from": "VehicleRouting.exe",
     "to": "VehicleRouting.exe"
   },
