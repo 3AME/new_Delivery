@@ -91,42 +91,37 @@ export default {
       if (outdata == null) {
         alert('请先上传文件')
       } else {
-        console.log('未处理的outdata:')
+        // console.log('未处理的outdata:')
         console.log(outdata)
         let problem = []
         outdata.map(v => {
           let obj = {}
-          // obj.nodes={type:v["type"],id:v["name"],x:v["X"],y:v["Y"],demand:v["demand"]};
-          // obj.edges = "euc2d";
           obj.nodes = {
             type: v['type'],
             id: v['name'],
-            demand: v['demand']
+            demand: v['demand'],
+            service_time: v['serviceTime'],
+            tw_beg: v['beginTime'],
+            tw_end: v['endTime'],
           }
           obj.edges = { x: v['X'], y: v['Y'] }
           obj.vehicles = {
-            id: v['name'],
-            depot: v['Vehicle_id'],
+            id: v['Vehicle_type'],
+            depot: v['Center_name'],
             load: v['Vehicle_load'],
-            count: v['Vehicle_number']
+            count: v['Vehicle_number'],
+            mileage: v['Vehicle_mileage']
           }
-          obj.distancePrior = 5
-          obj.timePrior = 1
-          obj.loadPrior = 4
           problem.push(obj)
         })
-        console.log(problem)
         // eslint-disable-next-line camelcase
         let new_nodes = problem.map(obj => {
           return obj.nodes
         })
-        // let newproblem_edges = {
-        //   edges: "euc2d"
-        // };
-        // eslint-disable-next-line camelcase
-        let newproblem_edges = problem.map(obj => {
-          return obj.edges
-        })
+        let newproblem_edges = {
+          edges: "euc2d"
+        };
+
         // eslint-disable-next-line camelcase
         let new_vehicles = problem.map(obj => {
           if (obj.vehicles !== undefined) {
@@ -135,24 +130,12 @@ export default {
             console.log('value is undefined')
           }
         })
-        // new_vehicles.splice(0);
-        console.log(new_vehicles)
-        for (var i = new_vehicles.length - 1; i >= 0; i--) {
-          if (
-            new_vehicles[i].load === undefined ||
-            new_vehicles[i].count === undefined
-          ) {
-            new_vehicles.splice(i, 2) // 删除excel数据中出现的undefined
-          }
-        }
-        console.log(new_vehicles)
         // eslint-disable-next-line camelcase
         let new_test = {
           distancePrior: 5, // 路程加权
           timePrior: 1, // 用时加权
           loadPrior: 4 // 满载率加权
         }
-        console.log(new_test)
         // eslint-disable-next-line camelcase
         newproblem_edges = {
           routeMode: false,
@@ -165,7 +148,7 @@ export default {
         }
         // newproblem_edges=newproblem_edges.filter( res=> {return res!=="undefined"});
         // newproblem_edges.filter(Boolean);
-        console.log(newproblem_edges)
+        // console.log("problem:"+newproblem_edges)
         this.$router.push({
           name: 'page_result',
           query: {
@@ -200,6 +183,18 @@ export default {
           prop: 'demand'
         },
         {
+          label: 'serviceTime',
+          prop: 'serviceTime'
+        },
+        {
+          label: 'beginTime',
+          prop: 'beginTime'
+        },
+        {
+          label: 'endTime',
+          prop: 'endTime'
+        },
+        {
           label: 'Vehicle_load',
           prop: 'Vehicle_load'
         },
@@ -212,8 +207,8 @@ export default {
           prop: 'Vehicle_mileage'
         },
         {
-          label: 'Vehicle_id',
-          prop: 'Vehicle_id'
+          label: 'Center_name',
+          prop: 'Center_name'
         }
 
       ]

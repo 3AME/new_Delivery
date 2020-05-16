@@ -122,6 +122,7 @@ export default {
     this.hideRoute = false
     this.problem = this.$route.query.problem
     console.log('names=' + this.problem.names)
+    console.log('problem=' + this.problem)
     this.$store.dispatch('d2admin/addQuery', this.problem)
     this.solve(this.problem)
   },
@@ -131,40 +132,12 @@ export default {
       this.$router.go(-1)
     },
     solve (
-      problem, // VRP问题描述
-      popsize = 100, // 种群大小
-      childsize = 100, // 子代数量
-      maxiter = 40, // 迭代次数
-      mutationProb = 0.25 // 变异率
+      problem,			// VRP问题描述
+	    npop=2,
+	    popsize=100,		// 种群大小
+	    maxiter=100,			// 迭代次数
     ) {
       var isRouteMode = this.problem.routeMode
-      if (!isRouteMode) {
-        var problem1 = problem
-        problem = {
-          // num_node: problem1.edges.length,
-          nodes: problem1.nodes,
-          edges: [],
-          // customers: problem1.customers,
-          vehicles: problem1.vehicles,
-          distancePrior: problem1.distancePrior,
-          timePrior: problem1.timePrior,
-          loadPrior: problem1.loadPrior
-        }
-        for (var i = 0; i < problem1.edges.length; i++) {
-          var start = problem1.edges[i]
-          for (var j = i + 1; j < problem1.edges.length; j++) {
-            var end = problem1.edges[j]
-            var deltaX = start.x - end.x
-            var deltaY = start.y - end.y
-            var len = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
-            problem.edges.push({
-              u: i,
-              v: j,
-              w: len
-            })
-          }
-        }
-      }
 
       console.log('function solve run')
 
@@ -175,6 +148,7 @@ export default {
       }
 
       // eslint-disable-next-line camelcase
+
       var n_customer = 0
       for (let i in problem.nodes) {
         var node = problem.nodes[i]
@@ -183,11 +157,15 @@ export default {
           n_customer++
         }
       }
-      pipe(n_customer)
+      pipe(n_customer);
       for (let i in problem.nodes) {
-        let node = problem.nodes[i]
-        if (node.type === 'customer') {
-          pipe(node.id, node.demand)
+        var node = problem.nodes[i];
+        if (node.type == 'customer') {
+          var demand = node.demand;
+          var service_time = node.service_time || 0;
+          var tw_beg = node.tw_beg || -1;
+          var tw_end = node.tw_end || -1;
+          pipe(node.id, demand, service_time, tw_beg, tw_end);
         }
       }
 
@@ -261,23 +239,22 @@ export default {
           pipe(edge.u, edge.v, edge.w)
         }
       }
-
-      pipe(problem.vehicles.length)
-      for (let i in problem.vehicles) {
-        var veh = problem.vehicles[i]
-        // eslint-disable-next-line camelcase
-        var depot = veh.depot || first_depot
-        var load = veh.load || -1
-        var mileage = veh.mileage || 35
-        var worktime = veh.worktime || -1
-        var count = veh.count || 1
-        // pipe(veh.id, depot, load, mileage, worktime, count);
-        pipe(veh.id, depot, load, mileage, worktime, count)
+      pipe(problem.vehicles.length);
+      var speed = problem.speed || 1;
+      var work_time = problem.work_time || -1;
+      pipe(speed, work_time);
+      for (var i in problem.vehicles) {
+        var veh = problem.vehicles[i];
+        var depot = veh.depot || first_depot;
+        var load = veh.load;
+        var mileage = veh.mileage || -1;
+        var count = veh.count || -1;
+        pipe(veh.id, depot, load, mileage, count);
       }
 
-      pipe(problem.distancePrior, problem.timePrior, problem.loadPrior)
-      pipe(popsize, childsize, maxiter, mutationProb)
 
+      pipe(problem.distancePrior, problem.timePrior, problem.loadPrior);
+	    pipe(npop, popsize, maxiter);
       solver.stdout.on('data', buffer => {
         console.log('dddddddddddddddddd=' + buffer.toString())
         // eslint-disable-next-line no-eval
