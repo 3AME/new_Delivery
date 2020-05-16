@@ -1,14 +1,26 @@
 <template>
   <d2-container type="card">
     <template slot="header">
-      <el-button @click="inquery">
-        <d2-icon name="search" />查询
-      </el-button>
-      <el-button @click="handleDownload">
-        下载表头示例
-      </el-button>
-      <el-collapse  @change="handleChange">
-      <el-collapse-item title="文件内容要求" name="1">
+      <el-row>
+        <el-button @click="inquery"  style="margin-left:10% ">
+          <d2-icon name="search" />查询
+        </el-button>
+        <el-button  style="margin-left:10%">
+          <el-upload :before-upload="handleUpload" action="default">
+              上传<i class="el-icon-upload el-icon--right"></i>
+          </el-upload>
+        </el-button>
+         <el-button @click="handleDownload" type="success" style="margin-left:40%">
+          下载表头<i class="el-icon-download el-icon--right"></i>
+        </el-button>
+    </el-row>
+      <el-collapse  @change="handleChange" class="yaoqiu">
+      <el-collapse-item  name="1" >
+      <template slot="title">
+      <div class="s">
+       文件内容要求
+      </div>
+       </template>
       <span>
        进入路线形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序随意：<br />
        <table border="1px" style="border-collapse:collapse">
@@ -45,13 +57,13 @@
     </el-collapse-item>
     </el-collapse>
     </template>
-    <div class="d2-mb">
-      <el-upload :before-upload="handleUpload" action="default">
+    <!-- <div class="d2-mb"> -->
+      <!-- <el-upload :before-upload="handleUpload" action="default">
         <el-button type="success">
           <d2-icon name="file-o" />选择要导入的 .xlsx 表格
         </el-button>
-      </el-upload>
-    </div>
+      </el-upload> -->
+    <!-- </div> -->
     <div contenteditable="true">
     <el-table v-bind="table">
       <el-table-column
@@ -293,3 +305,11 @@ export default {
   }
 }
 </script>
+<style scoped>
+.yaoqiu {
+  margin-top: 5%;
+}
+.s {
+  color: red;
+}
+</style>
