@@ -1,55 +1,69 @@
 <template>
   <d2-container type="card">
     <template slot="header">
-      <el-button @click="inquery">
-        <d2-icon name="search" />查询
-      </el-button>
-      <el-button @click="handleDownload">下载表头示例</el-button>
-      <el-collapse @change="handleChange">
-        <el-collapse-item title="路线形式文件表头要求" name="1">
-          <span>
-            进入路线形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序随意：
-            <br />
-            <table border="1px" style="border-collapse:collapse">
-              <tr>
-                <th>type</th>
-                <th>demand</th>
-                <th>Vehicle_type</th>
-                <th>Vehicles_id</th>
-                <th>Vehicle_load</th>
-                <th>Vehicle_number</th>
-                <th>Vehicle_mileage</th>
-                <!-- <th>demand</th> -->
-                <th>name_a</th>
-                <th>1</th>
-                <th>2</th>
-                <th>3</th>
-                <th>4</th>
-                <th>5</th>
-                <th>6</th>
-                <th>7</th>
-                <th>8</th>
-                <th>...</th>
-              </tr>
-            </table>type：点的类型，depot——配送中心，customer——配送点，other——其他类型的点
-            <br />demand：点的需求量，配送中心也可以写，这不影响路线的计算
-            <br />Vehicle_load：车辆载重量
-            <br />Vehicle_number：该车辆的数量
-            <br />Vehicle_mileage：车辆里程
-            <br />Vehicle_id：车辆所在配送中心的名字或者编号，对应type=depot的name值
-            <br />name_a：点的编号，编号必须从0开始编号
-            <br />0、1、2对应的字段为name_a
-          </span>
-        </el-collapse-item>
-      </el-collapse>
+      <el-row>
+        <el-button @click="inquery"  style="margin-left:10% ">
+          <d2-icon name="search" />查询
+        </el-button>
+        <el-button  style="margin-left:10%">
+          <el-upload :before-upload="handleUpload" action="default">
+              上传<i class="el-icon-upload el-icon--right"></i>
+          </el-upload>
+        </el-button>
+         <el-button @click="handleDownload" type="success" style="margin-left:40%">
+          下载表头<i class="el-icon-download el-icon--right"></i>
+        </el-button>
+    </el-row>
+      <el-collapse  @change="handleChange" class="yaoqiu">
+      <el-collapse-item  name="1" >
+      <template slot="title">
+      <div class="s">
+       文件内容要求
+      </div>
+       </template>
+      <span>
+       进入路线形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序随意：<br />
+       <table border="1px" style="border-collapse:collapse">
+         <tr>
+           <th>type</th>
+           <th>remand</th>
+           <th>Vehicle_type</th>
+           <th>Vehicles_id</th>
+           <th>Vehicle_load</th>
+           <th>Vehicle_number</th>
+           <th>Vehicle_mileage</th>
+           <th>demand</th>
+           <th>name_a</th>
+           <th>1</th>
+           <th>2</th>
+           <th>3</th>
+           <th>4</th>
+           <th>5</th>
+           <th>6</th>
+           <th>7</th>
+           <th>8</th>
+           <th>...</th>
+         </tr>
+       </table>
+          type：点的类型，depot——配送中心，customer——配送点，other——其他类型的点<br />
+          demand：点的需求量，配送中心也可以写，这不影响路线的计算<br />
+          Vehicle_load：车辆载重量<br />
+          Vehicle_number：该车辆的数量<br />
+          Vehicle_mileage：车辆里程<br />
+          Vehicle_id：车辆所在配送中心的名字或者编号，对应type=depot的name值<br />
+          name_a：点的编号，编号必须从0开始编号<br />
+          0、1、2对应的字段为name_a
+     </span>
+    </el-collapse-item>
+    </el-collapse>
     </template>
-    <div class="d2-mb">
-      <el-upload :before-upload="handleUpload" action="default">
+    <!-- <div class="d2-mb"> -->
+      <!-- <el-upload :before-upload="handleUpload" action="default">
         <el-button type="success">
           <d2-icon name="file-o" />导入.xlsx/.xls
         </el-button>
-      </el-upload>
-    </div>
+      </el-upload> -->
+    <!-- </div> -->
     <div contenteditable="true">
       <el-table v-bind="table">
         <el-table-column
@@ -293,3 +307,11 @@ export default {
   }
 };
 </script>
+<style scoped>
+.yaoqiu {
+  margin-top: 5%;
+}
+.s {
+  color: red;
+}
+</style>
