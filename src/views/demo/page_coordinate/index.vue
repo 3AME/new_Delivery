@@ -92,7 +92,7 @@ export default {
         alert('请先上传文件')
       } else {
         // console.log('未处理的outdata:')
-        console.log(outdata)
+        // console.log(outdata)
         let problem = []
         outdata.map(v => {
           let obj = {}
@@ -103,8 +103,10 @@ export default {
             service_time: v['serviceTime'],
             tw_beg: v['beginTime'],
             tw_end: v['endTime'],
+            x: v['X'], 
+            y: v['Y']
           }
-          obj.edges = { x: v['X'], y: v['Y'] }
+          // obj.edges = { x: v['X'], y: v['Y'] }
           obj.vehicles = {
             id: v['Vehicle_type'],
             depot: v['Center_name'],
@@ -118,9 +120,7 @@ export default {
         let new_nodes = problem.map(obj => {
           return obj.nodes
         })
-        let newproblem_edges = {
-          edges: "euc2d"
-        };
+        let newproblem_edges="euc2d"
 
         // eslint-disable-next-line camelcase
         let new_vehicles = problem.map(obj => {
@@ -130,6 +130,14 @@ export default {
             console.log('value is undefined')
           }
         })
+        for (let i = new_vehicles.length - 1; i >= 0; i--) {
+          if (
+            new_vehicles[i].load === undefined ||
+            new_vehicles[i].id === undefined
+          ) {
+            new_vehicles.splice(i, 2); // 删除excel数据中出现的undefined
+          }
+        }
         // eslint-disable-next-line camelcase
         let new_test = {
           distancePrior: 5, // 路程加权
@@ -146,9 +154,7 @@ export default {
           timePrior: new_test.timePrior,
           loadPrior: new_test.loadPrior
         }
-        // newproblem_edges=newproblem_edges.filter( res=> {return res!=="undefined"});
-        // newproblem_edges.filter(Boolean);
-        // console.log("problem:"+newproblem_edges)
+        console.log("problem:"+JSON.stringify(newproblem_edges))
         this.$router.push({
           name: 'page_result',
           query: {

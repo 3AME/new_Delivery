@@ -121,8 +121,6 @@ export default {
     this.problem = this.$route.query.problem
     this.hideRoute = false
     this.problem = this.$route.query.problem
-    console.log('names=' + this.problem.names)
-    console.log('problem=' + this.problem)
     this.$store.dispatch('d2admin/addQuery', this.problem)
     this.solve(this.problem)
   },
@@ -140,7 +138,7 @@ export default {
       var isRouteMode = this.problem.routeMode
 
       console.log('function solve run')
-
+      console.log("problem=",problem)
       var solver = spawn('resources/VehicleRouting.exe')
       var pipe = (...msg) => {
         solver.stdin.write(msg.join(' ') + '\n')
@@ -157,6 +155,7 @@ export default {
           n_customer++
         }
       }
+      console.log("n_customer=",n_customer)
       pipe(n_customer);
       for (let i in problem.nodes) {
         var node = problem.nodes[i];
@@ -190,10 +189,12 @@ export default {
         // eslint-disable-next-line no-throw-literal
         throw 'no depot was found in nodes'
       }
+      // console.log("n_depot=",n_depot)
       pipe(n_depot)
       for (let i in problem.nodes) {
         let node = problem.nodes[i]
         if (node.type === 'depot') {
+          // console.log("depot=",node.id)
           pipe(node.id)
         }
       }
@@ -214,8 +215,7 @@ export default {
           pipe(node.id)
         }
       }
-
-      if (typeof problem.edges === 'string') {
+      if (!isRouteMode) {
         if (problem.edges === 'euc2d') {
           var n = problem.nodes.length
           pipe(Math.round((n * (n - 1)) / 2))
@@ -239,6 +239,7 @@ export default {
           pipe(edge.u, edge.v, edge.w)
         }
       }
+      console.log("vehicles",problem.vehicles)
       pipe(problem.vehicles.length);
       var speed = problem.speed || 1;
       var work_time = problem.work_time || -1;
@@ -258,8 +259,8 @@ export default {
       solver.stdout.on('data', buffer => {
         console.log('dddddddddddddddddd=' + buffer.toString())
         // eslint-disable-next-line no-eval
-        var solution = eval('(' + buffer.toString() + ')')
-        console.log(solution)
+        // var solution = eval('(' + buffer.toString() + ')')
+        // console.log(solution)
 
         // eslint-disable-next-line no-eval
         this.result = eval('(' + buffer.toString() + ')')
@@ -294,11 +295,11 @@ export default {
     showScatterGraph () {
       var problem = this.problem
       var data = []
-      problem.edges.forEach(function (edge, index) {
+      problem.nodes.forEach(function (node, index) {
         data.push({
-          name: '节点' + index + ':(' + edge.x + ', ' + edge.y + ')',
-          x: edge.x,
-          y: edge.y
+          name: '节点' + index + ':(' + node.x + ', ' + node.y + ')',
+          x: node.x,
+          y: node.y
         })
       })
 

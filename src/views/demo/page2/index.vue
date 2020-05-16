@@ -115,15 +115,23 @@ export default {
         outdata.map(v => {
           // let i = num_node
           let obj = {};
-          obj.nodes = { type: v["type"], id: v["name_a"], demand: v["demand"] };
+          obj.nodes = { 
+            type: v["type"], 
+            id: v["name_a"], 
+            demand: v["demand"],
+            service_time: v['serviceTime'],
+            tw_beg: v['beginTime'],
+            tw_end: v['endTime'],
+          };
           // obj.edge = { u: v['begin'], v: v['end'], w: v['load_length'] }
           obj.list = { list_num: v["name_a"] };
           obj.vehicles = {
-            id: v["Vehicle_type"],
-            depot: v["Vehicles_id"],
-            load: v["Vehicle_load"],
-            // count: v["Vehicle_number"]
-            count: 5
+            id: v['Vehicle_type'],
+            depot: v['Center_name'],
+            load: v['Vehicle_load'],
+            count: v['Vehicle_number'],
+            mileage: v['Vehicle_mileage']
+            // count: 5
           };
           obj.distancePrior = 5;
           obj.timePrior = 1;
@@ -154,17 +162,6 @@ export default {
           return obj.list;
         });
         console.log(new_list);
-        // let len = new_list.length;
-        // let listedges = [];
-        // for (var i = 0; i < len; i++) {
-        //   outdata.map(v => {
-        //     let obj = {};
-        //     obj.edge_list = { u: v["name_a"], v: i, w: v["i"] };
-        //   });
-        // }
-        // console.log("LISTEDGES:");
-        // console.log(listedges);
-        // eslint-disable-next-line camelcase
         let new_nodes = problem.map(obj => {
           return obj.nodes;
         });
@@ -173,8 +170,7 @@ export default {
         for (let i = new_nodes.length - 1; i >= 0; i--) {
           if (
             new_nodes[i].type === undefined ||
-            new_nodes[i].id === undefined ||
-            new_nodes[i].demand === undefined
+            new_nodes[i].id === undefined 
           ) {
             new_nodes.splice(i, 2); // 删除excel数据中出现的undefined
           }
@@ -195,8 +191,8 @@ export default {
         console.log(new_vehicles);
         for (let i = new_vehicles.length - 1; i >= 0; i--) {
           if (
-            new_vehicles[i].load === undefined ||
-            new_vehicles[i].count === undefined
+            new_vehicles[i].load === undefined 
+            // ||new_vehicles[i].count === undefined
           ) {
             new_vehicles.splice(i, 2); // 删除excel数据中出现的undefined
           }
