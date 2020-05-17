@@ -12,8 +12,8 @@
       </span>
     </el-dialog>
     <el-row>
-      <el-button  class="btn">
-          <el-upload :before-upload="handleUpload" action="default">
+      <el-button :before-upload="handleUpload" class="btn1">
+          <el-upload  action="default">
               上传<i class="el-icon-upload el-icon--right"></i>
           </el-upload>
         </el-button>
@@ -256,5 +256,8 @@ export default {
 .btn {
   margin-left: 5%;
   background-color: rgb(146, 171, 196);
+}
+.btn1 {
+  background-color: rgba(92, 120, 161, 0.466);
 }
 </style>
