@@ -1,24 +1,34 @@
 <template>
   <d2-container type="card">
     <template slot="header">
+    <el-dialog
+      title="温馨提示"
+      :visible.sync="dialogVisible"
+      width="30%">
+      <span>请先上传坐标查询的文件哦！</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
     <el-row>
-        <el-button @click="inquery"  style="margin-left:10% ">
-          <d2-icon name="search" />查询
-        </el-button>
-        <el-button  style="margin-left:10%">
+      <el-button  class="btn">
           <el-upload :before-upload="handleUpload" action="default">
               上传<i class="el-icon-upload el-icon--right"></i>
           </el-upload>
         </el-button>
-         <el-button @click="handleDownload" type="success" style="margin-left:40%">
-          下载表头<i class="el-icon-download el-icon--right"></i>
+        <el-button @click="inquery"  class="btn">
+          <d2-icon name="search" />查询
+        </el-button>
+         <el-button @click="handleDownload" type="success" style="margin-left:30%">
+          下载坐标查询表头<i class="el-icon-download el-icon--right"></i>
         </el-button>
     </el-row>
      <el-collapse  @change="handleChange" class="yaoqiu">
       <el-collapse-item  name="1" >
       <template slot="title">
       <div class="s">
-       文件内容要求
+       坐标查询文件内容要求
       </div>
        </template>
      <span>
@@ -76,7 +86,8 @@ export default {
         size: 'mini',
         stripe: true,
         border: true
-      }
+      },
+      dialogVisible: false
     }
   },
   methods: {
@@ -96,7 +107,7 @@ export default {
     },
     inquery () {
       if (outdata == null) {
-        alert('请先上传文件')
+       this.dialogVisible=true;
       } else {
         // console.log('未处理的outdata:')
         // console.log(outdata)
@@ -224,19 +235,26 @@ export default {
           prop: 'Center_name'
         }
 
-      ]
-      this.$export.excel({
-        columns
-      })
+    ]
+    this.$export.excel({
+      title: "坐标查询文件",
+      columns,
+    })
     }
   }
 }
 </script>
 <style scoped>
 .yaoqiu {
-  margin-top: 5%;
+  margin-top: 2%;
 }
 .s {
-  color: red;
+  /* color: red; */
+  width: 100%;
+  background-color: rgba(173, 175, 68, 0.274);
+}
+.btn {
+  margin-left: 5%;
+  background-color: rgb(146, 171, 196);
 }
 </style>
