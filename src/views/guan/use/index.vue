@@ -1,5 +1,5 @@
 <template>
-  <d2-container style="opacity: 0.4">
+  <d2-container >
     <template slot="header">软件使用手册</template>
             <h3 style="color:blue">系统功能简介</h3>
             <p>
@@ -74,6 +74,6 @@
             <p>
                操作简介。
             </p>
-    <template slot="footer">footer</template>
+    <template slot="footer">温馨提示：如果使用过程中出现任何问题，您可以联系我们帮你解决！</template>
   </d2-container>
 </template>

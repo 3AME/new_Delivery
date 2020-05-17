@@ -22,7 +22,7 @@ export default {
   img {
     width: 400px;
     height: 400px;
-    margin-top: 15%;
+    margin-top: 10%;
     margin-left: 30%;
   }
   // .btn-group {

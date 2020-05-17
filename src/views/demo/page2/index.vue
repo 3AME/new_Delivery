@@ -1,24 +1,34 @@
 <template>
   <d2-container type="card">
     <template slot="header">
-      <el-row>
-        <el-button @click="inquery"  style="margin-left:10% ">
-          <d2-icon name="search" />查询
-        </el-button>
-        <el-button  style="margin-left:10%">
+    <el-dialog
+      title="温馨提示"
+      :visible.sync="dialogVisible"
+      width="30%">
+      <span>请先上传路线查询的文件哦！</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-row>
+        <el-button  class="btn">
           <el-upload :before-upload="handleUpload" action="default">
               上传<i class="el-icon-upload el-icon--right"></i>
           </el-upload>
         </el-button>
-         <el-button @click="handleDownload" type="success" style="margin-left:40%">
-          下载表头<i class="el-icon-download el-icon--right"></i>
+        <el-button @click="inquery" class="btn">
+          <d2-icon name="search" />查询
+        </el-button>
+         <el-button @click="handleDownload" type="success" style="margin-left:30%">
+          下载路线查询表头<i class="el-icon-download el-icon--right"></i>
         </el-button>
     </el-row>
-      <el-collapse  @change="handleChange" class="yaoqiu">
-      <el-collapse-item  name="1" >
+    <el-collapse  @change="handleChange" class="yaoqiu">
+    <el-collapse-item  name="1" >
       <template slot="title">
       <div class="s">
-       文件内容要求
+       路线查询文件内容要求
       </div>
        </template>
       <span>
@@ -93,7 +103,8 @@ export default {
         size: 'mini',
         stripe: true,
         border: true
-      }
+      },
+      dialogVisible: false
     }
   },
   methods: {
@@ -117,7 +128,7 @@ export default {
       var num_node = this.input
       console.log(num_node)
       if (outdata == null) {
-        alert('请先上传文件')
+       this.dialogVisible=true;
       // eslint-disable-next-line brace-style
       }
       // else if (num_node == 0) {
@@ -299,6 +310,7 @@ export default {
 
     ]
     this.$export.excel({
+      title:"路线查询文件",
       columns,
     })
     }
@@ -307,9 +319,14 @@ export default {
 </script>
 <style scoped>
 .yaoqiu {
-  margin-top: 5%;
+  margin-top: 2%;
 }
 .s {
-  color: red;
+  width: 100%;
+  background-color: rgba(173, 175, 68, 0.274);
+}
+.btn {
+  margin-left: 5%;
+  background-color: rgb(146, 171, 196);
 }
 </style>
