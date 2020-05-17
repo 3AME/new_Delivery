@@ -1,5 +1,5 @@
 <template>
-  <el-container class="container" style="padding: 10px;" v-loading="loading">
+  <el-container class="container" style="margin: 10px;" v-loading="loading">
     <el-aside width="230px" class="aside">
       <el-card class="box-card">
         <div slot="header" class="clearfix">
@@ -727,14 +727,15 @@ export default {
                 value = map.get(route + '' + tempRoute)
               }
               console.log('value=' + value)
-
-              edges.push({
-                source: tempRoute,
-                target: route,
-                value: value,
-                // vid: item.vid
-                vid: legendTexts.length
-              })
+              if (value > 0) {
+                edges.push({
+                  source: tempRoute,
+                  target: route,
+                  value: value,
+                  // vid: item.vid
+                  vid: legendTexts.length
+                })
+              }
               text += ' → '
             }
             if (problem.names !== undefined) {

@@ -177,6 +177,19 @@ module.exports = {
           'from': './resources',
           'to': './',
           'filter': ['VehicleRouting.exe']
+        },
+        productName: 'TestApp',
+        nsis: {
+          'oneClick': false, // 不使用一键安装，允许用户自定义
+          'allowToChangeInstallationDirectory': true, // 允许用户修改安装路径
+          'installerIcon': './resources/icon.ico', // 安装的图标，默认 build/installerIcon.ico或者应用的图标
+          'installerHeader': './resources/icon.ico', // 安装的头部，默认build/installerHeader.bmp
+          'installerHeaderIcon': './resources/icon.ico' // 安装包头部的涂票，默认build/installerHeaderIcon.ico
+          // 'installerSidebar': './public/icon.ico', // 安装包安装侧边图片，默认build/installerSidebar.bmp，要求164 × 314 像素
+          // 'uninstallerSidebar': './public/icon.ico'// 安装包卸载侧边图片，默认build/installerSidebar.bmp，要求164 × 314 像素
+        },
+        win: {
+          icon: './resources/icon.ico'
         }
       }
     }

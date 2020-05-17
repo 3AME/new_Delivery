@@ -83,6 +83,7 @@ export default {
       await dispatch('d2admin/size/load', null, { root: true })
       // 持久化数据加载颜色设置
       await dispatch('d2admin/color/load', null, { root: true })
+      await dispatch('d2admin/historyLoad', null, { root: true })
     }
   }
 }

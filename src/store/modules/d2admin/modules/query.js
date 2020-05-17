@@ -1,3 +1,4 @@
+// import { set, get } from 'lodash'
 export default {
   state: {
     querys: []
@@ -18,7 +19,7 @@ export default {
     }
   },
   actions: {
-    addQuery ({ commit, state }, problem) {
+    addQuery ({ commit, state, dispatch }, problem) {
       console.log('addQuery')
 
       let fmt = 'yyyy-MM-dd HH-mm-ss'
@@ -47,13 +48,23 @@ export default {
         time: time
       }
       commit('ADD_QUERY_DATA', query)
+      dispatch('d2admin/db/set', {
+        dbName: 'sys',
+        path: 'query.history',
+        value: state.querys,
+        user: true
+      }, { root: true })
+    },
+    async historyLoad ({ state, commit, dispatch }) {
+      // store 赋值
+      const value = await dispatch('d2admin/db/get', {
+        dbName: 'sys',
+        path: 'query.history',
+        defaultValue: [],
+        user: true
+      }, { root: true })
+      state.querys = value
+      console.log('historyLoad value=' + JSON.stringify(value))
     }
-    // deleteQuery({ commit, state }, index) {
-    //     commit('DELETE_QUERY_DATA', index)
-    // },
-    // deleteAllQuery({ commit, state }) {
-    //     // state.querys.splice(0, state.querys.length)
-    //     commit('DELETE_ALL_QUERY_DATA')
-    // }
   }
 }

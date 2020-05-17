@@ -10,7 +10,7 @@
       <div class="div-row">
         <el-button size="mini" @click="testCoordMode()">测试坐标形式</el-button>
       </div>
-      <el-divider></el-divider>
+      <!-- <el-divider></el-divider> -->
 
        <el-collapse id="collapse_nodes" accordion>
         <el-collapse-item
@@ -25,12 +25,27 @@
 
 <!-- { id: 1, depot: 0, load: 2, mileage: 35, count: 1 }, -->
       <el-collapse id="collapse_nodes" v-else accordion>
+        <div style="text-align: center;">
+          <el-button @click="addVehicle()" style="margin: 4px;" type="text">添加车辆</el-button>
+        </div>
         <el-collapse-item
           v-for="(vehicle, index) in vehicles"
           :key="vehicle.id"
           :title="'车辆' + vehicle.id"
           :name="index"
         >
+        <div style="text-align: center;">
+          车辆载重
+        <el-input-number v-model="vehicle.load" :min="1" :max="5" label="车辆载重" size="mini"></el-input-number>
+        </div>
+        <div style="text-align: center;">
+          车辆里程
+        <el-input-number v-model="vehicle.mileage" :step="5" :min="20" :max="50" label="车辆里程" size="mini"></el-input-number>
+        </div>
+        <div style="text-align: center;">
+          车辆数量
+        <el-input-number v-model="vehicle.count" :min="1" :max="5" label="车辆里程" size="mini"></el-input-number>
+        </div>
           <div style="text-align: center;">
             <i @click="removeVehicle(vehicle)" class="i-tag el-icon-delete" style="font-size: 16px;"></i>
           </div>
@@ -44,15 +59,11 @@
           name="1"
         >
 
-        <div class="box-card">
-        <div class="clearfix">
-          <span>节点列表</span>
-          <el-button @click="clearTags()" style="float: right; padding: 3px 0" type="text">清空</el-button>
+      <div v-if="polylinePath.length > 0" style="text-align: center;">
+          <el-button @click="clearTags()" style="margin: 4px;" type="text">清空</el-button>
         </div>
-      </div>
-
       <div v-if="polylinePath.length == 0" class="box-card">
-        <el-divider></el-divider>
+        <!-- <el-divider></el-divider> -->
         <div style="text-align: center;">空空如也</div>
       </div>
 
@@ -212,6 +223,9 @@ export default {
       selectMode: false,
       inputVisible: false,
       need_options: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+      loadOptions: [1, 2, 3, 4, 5],
+      mileageOptions: [20, 25, 30, 35, 40, 45, 50],
+      countOptions: [1, 2, 3],
       activeName: '0'
     }
   },
@@ -225,6 +239,14 @@ export default {
         })
         return
       }
+      if (this.vehicles.length < 3) {
+        this.$notify({
+          title: '警告',
+          message: '车辆过少，请添加车辆！',
+          type: 'warning'
+        })
+        return
+      }
       var names = this.polylinePath.map(x => {
         return x.name
       })
@@ -234,13 +256,14 @@ export default {
         // num_node: names.length, // 节点个数
         nodes: [],
         edges: [],
-        vehicles: [
-          { id: 1, depot: 0, load: 2, mileage: 35, count: 1 },
-          { id: 2, depot: 0, load: 2, mileage: 35, count: 1 },
-          { id: 3, depot: 0, load: 2, mileage: 35, count: 1 },
-          { id: 4, depot: 0, load: 5, mileage: 35, count: 1 },
-          { id: 5, depot: 0, load: 5, mileage: 35, count: 1 }
-        ],
+        // vehicles: [
+        //   { id: 1, depot: 0, load: 2, mileage: 35, count: 1 },
+        //   { id: 2, depot: 0, load: 2, mileage: 35, count: 1 },
+        //   { id: 3, depot: 0, load: 2, mileage: 35, count: 1 },
+        //   { id: 4, depot: 0, load: 5, mileage: 35, count: 1 },
+        //   { id: 5, depot: 0, load: 5, mileage: 35, count: 1 }
+        // ],
+        vehicles: this.vehicles,
         distancePrior: 5, // 路程加权
         timePrior: 1, // 用时加权
         loadPrior: 4 // 满载率加权
@@ -402,6 +425,7 @@ export default {
         name,
         function (point) {
           if (point) {
+            me.activeName = '1'
             me.polylinePath.forEach(function (item) {
               // me.drivingPath.push({
               //   start: name,
@@ -500,6 +524,9 @@ export default {
     },
     removeVehicle (vehicle) {
       this.vehicles.splice(this.vehicles.indexOf(vehicle), 1)
+      this.vehicles.forEach((vehicle, i) => {
+        vehicle.id = i + 1
+      })
     },
     // 显示输入框
     showInput () {
@@ -557,6 +584,15 @@ export default {
       this.drivingPath.splice(0, this.drivingPath.length)
       this.tempDrivingPath.splice(0, this.tempDrivingPath.length)
       this.logisticsCenter = undefined
+    },
+    addVehicle () {
+      this.vehicles.push({
+        id: this.vehicles.length + 1,
+        depot: 0,
+        load: 5,
+        mileage: 35,
+        count: 1
+      })
     },
     // 打印一个对象所有属性的值
     printObj (obj) {

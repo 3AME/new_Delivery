@@ -68,6 +68,18 @@ export default {
       return this.$store.state.d2admin.query.querys
     }
   },
+  activated () {
+    // ipcRenderer.send('open-save-dialog', {
+    //   method: 'get',
+    //   querys: this.querys
+    // })
+    // ipcRenderer.once('selectedItem', function (e, path) {
+    //   if (e.returnValue) {
+    //     this.$store.state.d2admin.query.querys = e.returnValue.queryHistory
+    //   }
+    // })
+    // this.$store.dispatch('d2admin/historyLoad', null)
+  },
   methods: {
     deleteAll () {
       this.$confirm('此操作将删除全部历史记录, 是否继续?', '警告', {
