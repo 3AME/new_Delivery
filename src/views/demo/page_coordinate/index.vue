@@ -1,47 +1,64 @@
 <template>
   <d2-container type="card">
     <template slot="header">
-      <el-button @click="inquery">
-        <d2-icon name="search" />查询
-      </el-button>
-      <el-button @click="handleDownload">下载表头示例</el-button>
-      <el-collapse @change="handleChange">
-        <el-collapse-item title="坐标形式查询文件表头要求" name="1">
-          <span>
-            进入坐标形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序随意：
-            <br />
-            <table border="1px" style="border-collapse:collapse">
-              <tr>
-                <th>type</th>
-                <th>name</th>
-                <th>x</th>
-                <th>y</th>
-                <th>demand</th>
-                <th>Vehicle_load</th>
-                <th>Vehicle_number</th>
-                <th>Vehicle_mileage</th>
-                <th>Vehicle_id</th>
-              </tr>
-            </table>type：点的类型，depot——配送中心，customer——配送点，other——其他类型的点
-            <br />name：点的名字或者编号
-            <br />x：点的横坐标（单位默认：km)
-            <br />y: 点的纵坐标（单位默认：km)
-            <br />demand：点的需求量，配送中心也可以写，这不影响路线的计算
-            <br />Vehicle_load：车辆载重量
-            <br />Vehicle_number：该车辆的数量
-            <br />Vehicle_mileage：车辆里程
-            <br />Vehicle_id：车辆所在配送中心的名字或者编号，对应type=depot的name值
-          </span>
-        </el-collapse-item>
-      </el-collapse>
-    </template>
-    <div class="d2-mb">
-      <el-upload :before-upload="handleUpload" action="default">
-        <el-button type="success">
-          <d2-icon name="file-o" />导入 .xlsx/.xls
+    <el-dialog
+      title="温馨提示"
+      :visible.sync="dialogVisible"
+      width="30%">
+      <span>请先上传坐标查询的文件哦！</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-row>
+      <el-button  class="btn">
+          <el-upload :before-upload="handleUpload" action="default">
+              上传<i class="el-icon-upload el-icon--right"></i>
+          </el-upload>
         </el-button>
-      </el-upload>
-    </div>
+        <el-button @click="inquery"  class="btn">
+          <d2-icon name="search" />查询
+        </el-button>
+         <el-button @click="handleDownload" type="success" style="margin-left:30%">
+          下载坐标查询表头<i class="el-icon-download el-icon--right"></i>
+        </el-button>
+    </el-row>
+     <el-collapse  @change="handleChange" class="yaoqiu">
+      <el-collapse-item  name="1" >
+      <template slot="title">
+      <div class="s">
+       坐标查询文件内容要求
+      </div>
+       </template>
+     <span>
+       进入坐标形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序随意：<br />
+       <table border="1px" style="border-collapse:collapse">
+         <tr>
+           <th>type</th>
+           <th>name</th>
+           <th>x</th>
+           <th>y</th>
+           <th>demand</th>
+           <th>Vehicle_load</th>
+           <th>Vehicle_number</th>
+           <th>Vehicle_mileage</th>
+           <th>Vehicle_id</th>
+         </tr>
+       </table>
+          type：点的类型，depot——配送中心，customer——配送点，other——其他类型的点<br />
+          name：点的名字或者编号<br />
+          x：点的横坐标（单位默认：km)<br />
+          y:   点的纵坐标（单位默认：km)<br />
+          demand：点的需求量，配送中心也可以写，这不影响路线的计算<br />
+          Vehicle_load：车辆载重量<br />
+          Vehicle_number：该车辆的数量<br />
+          Vehicle_mileage：车辆里程<br />
+          Vehicle_id：车辆所在配送中心的名字或者编号，对应type=depot的name值
+     </span>
+    </el-collapse-item>
+    </el-collapse>
+    </template>
     <el-table v-bind="table">
       <el-table-column
         v-for="(item, index) in table.columns"
@@ -69,7 +86,8 @@ export default {
         size: 'mini',
         stripe: true,
         border: true
-      }
+      },
+      dialogVisible: false
     }
   },
   methods: {
@@ -89,44 +107,39 @@ export default {
     },
     inquery () {
       if (outdata == null) {
-        alert('请先上传文件')
+       this.dialogVisible=true;
       } else {
-        console.log('未处理的outdata:')
-        console.log(outdata)
+        // console.log('未处理的outdata:')
+        // console.log(outdata)
         let problem = []
         outdata.map(v => {
           let obj = {}
-          // obj.nodes={type:v["type"],id:v["name"],x:v["X"],y:v["Y"],demand:v["demand"]};
-          // obj.edges = "euc2d";
           obj.nodes = {
             type: v['type'],
             id: v['name'],
-            demand: v['demand']
+            demand: v['demand'],
+            service_time: v['serviceTime'],
+            tw_beg: v['beginTime'],
+            tw_end: v['endTime'],
+            x: v['X'], 
+            y: v['Y']
           }
-          obj.edges = { x: v['X'], y: v['Y'] }
+          // obj.edges = { x: v['X'], y: v['Y'] }
           obj.vehicles = {
-            id: v['name'],
-            depot: v['Vehicle_id'],
+            id: v['Vehicle_type'],
+            depot: v['Center_name'],
             load: v['Vehicle_load'],
-            count: v['Vehicle_number']
+            count: v['Vehicle_number'],
+            mileage: v['Vehicle_mileage']
           }
-          obj.distancePrior = 5
-          obj.timePrior = 1
-          obj.loadPrior = 4
           problem.push(obj)
         })
-        console.log(problem)
         // eslint-disable-next-line camelcase
         let new_nodes = problem.map(obj => {
           return obj.nodes
         })
-        // let newproblem_edges = {
-        //   edges: "euc2d"
-        // };
-        // eslint-disable-next-line camelcase
-        let newproblem_edges = problem.map(obj => {
-          return obj.edges
-        })
+        let newproblem_edges="euc2d"
+
         // eslint-disable-next-line camelcase
         let new_vehicles = problem.map(obj => {
           if (obj.vehicles !== undefined) {
@@ -135,24 +148,20 @@ export default {
             console.log('value is undefined')
           }
         })
-        // new_vehicles.splice(0);
-        console.log(new_vehicles)
-        for (var i = new_vehicles.length - 1; i >= 0; i--) {
+        for (let i = new_vehicles.length - 1; i >= 0; i--) {
           if (
             new_vehicles[i].load === undefined ||
-            new_vehicles[i].count === undefined
+            new_vehicles[i].id === undefined
           ) {
-            new_vehicles.splice(i, 2) // 删除excel数据中出现的undefined
+            new_vehicles.splice(i, 2); // 删除excel数据中出现的undefined
           }
         }
-        console.log(new_vehicles)
         // eslint-disable-next-line camelcase
         let new_test = {
           distancePrior: 5, // 路程加权
           timePrior: 1, // 用时加权
           loadPrior: 4 // 满载率加权
         }
-        console.log(new_test)
         // eslint-disable-next-line camelcase
         newproblem_edges = {
           routeMode: false,
@@ -163,9 +172,7 @@ export default {
           timePrior: new_test.timePrior,
           loadPrior: new_test.loadPrior
         }
-        // newproblem_edges=newproblem_edges.filter( res=> {return res!=="undefined"});
-        // newproblem_edges.filter(Boolean);
-        console.log(newproblem_edges)
+        console.log("problem:"+JSON.stringify(newproblem_edges))
         this.$router.push({
           name: 'page_result',
           query: {
@@ -200,6 +207,18 @@ export default {
           prop: 'demand'
         },
         {
+          label: 'serviceTime',
+          prop: 'serviceTime'
+        },
+        {
+          label: 'beginTime',
+          prop: 'beginTime'
+        },
+        {
+          label: 'endTime',
+          prop: 'endTime'
+        },
+        {
           label: 'Vehicle_load',
           prop: 'Vehicle_load'
         },
@@ -212,15 +231,30 @@ export default {
           prop: 'Vehicle_mileage'
         },
         {
-          label: 'Vehicle_id',
-          prop: 'Vehicle_id'
+          label: 'Center_name',
+          prop: 'Center_name'
         }
 
-      ]
-      this.$export.excel({
-        columns
-      })
+    ]
+    this.$export.excel({
+      title: "坐标查询文件",
+      columns,
+    })
     }
   }
 }
 </script>
+<style scoped>
+.yaoqiu {
+  margin-top: 2%;
+}
+.s {
+  /* color: red; */
+  width: 100%;
+  background-color: rgba(173, 175, 68, 0.274);
+}
+.btn {
+  margin-left: 5%;
+  background-color: rgb(146, 171, 196);
+}
+</style>
