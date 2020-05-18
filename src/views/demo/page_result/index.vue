@@ -61,7 +61,7 @@
       </el-card>
       <!-- {{ result }} -->
     </el-aside>
-    <el-container>
+    <el-container style="background-color:white">
       <div style="height:100%; width: 100%">
         <svg id="graph_svg" style="height:100%; width: 100%" ref="svg" />
       </div>

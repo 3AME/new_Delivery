@@ -2,13 +2,16 @@
   <d2-container type="card">
     <template slot="header">
     <el-row>
-        <el-button  class="btn">
+        <el-button  class="btn1">
           <el-upload :before-upload="handleUpload" action="default">
               上传<i class="el-icon-upload el-icon--right"></i>
           </el-upload>
         </el-button>
         <el-button @click="inquery" class="btn">
           <d2-icon name="search" />查询
+        </el-button>
+        <el-button type="info" @click="clear">
+          清除数据
         </el-button>
          <el-button @click="handleDownload" type="success" style="margin-left:30%">
           下载路线查询表头<i class="el-icon-download el-icon--right"></i>
@@ -306,6 +309,10 @@ export default {
 .s {
   width: 100%;
   background-color: rgba(173, 175, 68, 0.274);
+}
+.btn1 {
+  margin-left: 5%;
+  background-color: rgba(76, 167, 228, 0.466);
 }
 .btn {
   margin-left: 5%;
