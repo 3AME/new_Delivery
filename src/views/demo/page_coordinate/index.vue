@@ -1,7 +1,7 @@
 <template>
   <d2-container type="card">
     <template slot="header">
-    <el-dialog
+    <!-- <el-dialog
       title="温馨提示"
       :visible.sync="dialogVisible"
       width="30%">
@@ -10,15 +10,18 @@
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
       </span>
-    </el-dialog>
+    </el-dialog> -->
     <el-row>
-      <el-button :before-upload="handleUpload" class="btn1">
-          <el-upload  action="default">
+       <el-button  class="btn1">
+          <el-upload :before-upload="handleUpload" action="default">
               上传<i class="el-icon-upload el-icon--right"></i>
           </el-upload>
         </el-button>
         <el-button @click="inquery"  class="btn">
           <d2-icon name="search" />查询
+        </el-button>
+        <el-button type="info" @click="clear">
+          清除数据
         </el-button>
          <el-button @click="handleDownload" type="success" style="margin-left:30%">
           下载坐标查询表头<i class="el-icon-download el-icon--right"></i>
@@ -86,8 +89,7 @@ export default {
         size: 'mini',
         stripe: true,
         border: true
-      },
-      dialogVisible: false
+      }
     }
   },
   methods: {
@@ -107,7 +109,10 @@ export default {
     },
     inquery () {
       if (outdata == null) {
-       this.dialogVisible=true;
+       this.$message({
+          message: '请先上传坐标查询文件哦！',
+          type: 'warning'
+        });
       } else {
         // console.log('未处理的outdata:')
         // console.log(outdata)
@@ -240,6 +245,9 @@ export default {
       title: "坐标查询文件",
       columns,
     })
+    },
+    clear (){
+      this.table="";
     }
   }
 }
@@ -258,6 +266,7 @@ export default {
   background-color: rgb(146, 171, 196);
 }
 .btn1 {
-  background-color: rgba(92, 120, 161, 0.466);
+  background-color: rgba(76, 167, 228, 0.466);
+   margin-left: 5%;
 }
 </style>
