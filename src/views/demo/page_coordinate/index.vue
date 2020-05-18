@@ -1,16 +1,6 @@
 <template>
   <d2-container type="card">
     <template slot="header">
-    <el-dialog
-      title="温馨提示"
-      :visible.sync="dialogVisible"
-      width="30%">
-      <span>请先上传坐标查询的文件哦！</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      </span>
-    </el-dialog>
     <el-row>
       <el-button  class="btn">
           <el-upload :before-upload="handleUpload" action="default">
@@ -32,29 +22,37 @@
       </div>
        </template>
      <span>
-       进入坐标形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序随意：<br />
+       坐标形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序可任意：<br />
        <table border="1px" style="border-collapse:collapse">
          <tr>
            <th>type</th>
            <th>name</th>
-           <th>x</th>
-           <th>y</th>
+           <th>X</th>
+           <th>Y</th>
            <th>demand</th>
+           <th>serviceTime</th>
+           <th>beginTime</th>
+           <th>endTime</th>
+           <th>Vehicle_type</th>
            <th>Vehicle_load</th>
            <th>Vehicle_number</th>
            <th>Vehicle_mileage</th>
-           <th>Vehicle_id</th>
+           <th>Center_name</th>
          </tr>
        </table>
-          type：点的类型，depot——配送中心，customer——配送点，other——其他类型的点<br />
+          type：点的类型，depot——配送中心，customer——客户点，other——其他类型的点<br />
           name：点的名字或者编号<br />
-          x：点的横坐标（单位默认：km)<br />
-          y:   点的纵坐标（单位默认：km)<br />
+          X：点的横坐标（单位默认：km)<br />
+          Y：点的纵坐标（单位默认：km)<br />
           demand：点的需求量，配送中心也可以写，这不影响路线的计算<br />
-          Vehicle_load：车辆载重量<br />
-          Vehicle_number：该车辆的数量<br />
+          serviceTime：自定义该点的服务时间（默认：5min)<br />
+          beginTime：客户点接受配送到达的最早时间（单位默认：min)<br />
+          endTime：客户点接受配送到达的最迟时间（单位默认：min)<br />
+          Vehicle_type：车辆类型<br />
+          Vehicle_load：车辆载重<br />
+          Vehicle_number：该车辆类型的数量<br />
           Vehicle_mileage：车辆里程<br />
-          Vehicle_id：车辆所在配送中心的名字或者编号，对应type=depot的name值
+          Center_name：车辆所在配送中心的名字，对应type=depot的name值
      </span>
     </el-collapse-item>
     </el-collapse>
@@ -87,8 +85,27 @@ export default {
         stripe: true,
         border: true
       },
-      dialogVisible: false
+      stdcolumns:[],
     }
+  },
+  mounted () {
+    console.log('mounted')
+    this.stdcolumns = 
+    [
+        {label: 'type', prop: 'type'},
+        {label: 'name',prop: 'name'},
+        {label: 'X',prop: 'X'},
+        {label: 'Y',prop: 'Y'},
+        {label: 'demand',prop: 'demand'},
+        {label: 'serviceTime',prop: 'serviceTime'},
+        {label: 'beginTime',prop: 'beginTime'},
+        {label: 'endTime',prop: 'endTime'},
+        {label: 'Vehicle_type',prop: 'Vehicle_type'},
+        {label: 'Vehicle_load',prop: 'Vehicle_load'},
+        {label: 'Vehicle_number',prop: 'Vehicle_number'},
+        {label: 'Vehicle_mileage',prop: 'Vehicle_mileage'},
+        {label: 'Center_name',prop: 'Center_name'}
+    ]
   },
   methods: {
     handleUpload (file) {
@@ -101,16 +118,34 @@ export default {
         })
         this.table.data = results
         outdata = results
-        console.log(outdata)
+        for(var i in this.stdcolumns){
+            console.log(this.stdcolumns[i].label)
+            if(!header.includes(this.stdcolumns[i].label)){
+              var me=this
+              this.$confirm('表头缺少字段'+me.stdcolumns[i].label+',请检查格式', '格式错误', {
+                confirmButtonText: '确定',
+                type: 'error'
+              })
+              return false
+            }
+        }
       })
       return false
     },
     inquery () {
       if (outdata == null) {
-       this.dialogVisible=true;
+        this.$confirm('还未选择文件上传哦', '温馨提示', {
+          confirmButtonText: '确定',
+          showCancelButton:false,
+          type: 'warning'
+        }).catch(() => {
+          this.$notify.info({
+            title: '消息',
+            message: '文件未上传'
+          })
+        })
+        return false
       } else {
-        // console.log('未处理的outdata:')
-        // console.log(outdata)
         let problem = []
         outdata.map(v => {
           let obj = {}
@@ -185,62 +220,19 @@ export default {
       console.log(val)
     },
     handleDownload () {
-      const columns = [
-        {
-          label: 'type',
-          prop: 'type'
-        },
-        {
-          label: 'name',
-          prop: 'name'
-        },
-        {
-          label: 'x',
-          prop: 'x'
-        },
-        {
-          label: 'y',
-          prop: 'y'
-        },
-        {
-          label: 'demand',
-          prop: 'demand'
-        },
-        {
-          label: 'serviceTime',
-          prop: 'serviceTime'
-        },
-        {
-          label: 'beginTime',
-          prop: 'beginTime'
-        },
-        {
-          label: 'endTime',
-          prop: 'endTime'
-        },
-        {
-          label: 'Vehicle_load',
-          prop: 'Vehicle_load'
-        },
-        {
-          label: 'Vehicle_number',
-          prop: 'Vehicle_number'
-        },
-        {
-          label: 'Vehicle_mileage',
-          prop: 'Vehicle_mileage'
-        },
-        {
-          label: 'Center_name',
-          prop: 'Center_name'
-        }
-
-    ]
-    this.$export.excel({
-      title: "坐标查询文件",
-      columns,
-    })
-    }
+      var columns=[]
+      for(var i in this.stdcolumns){
+          columns.push({
+            label:this.stdcolumns[i].label,
+            prop:this.stdcolumns[i].prop
+          })
+      }
+  
+      this.$export.excel({
+        title: "坐标查询文件",
+        columns,
+      })
+    },
   }
 }
 </script>

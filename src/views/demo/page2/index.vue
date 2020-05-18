@@ -1,16 +1,6 @@
 <template>
   <d2-container type="card">
     <template slot="header">
-    <el-dialog
-      title="温馨提示"
-      :visible.sync="dialogVisible"
-      width="30%">
-      <span>请先上传路线查询的文件哦！</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      </span>
-    </el-dialog>
     <el-row>
         <el-button  class="btn">
           <el-upload :before-upload="handleUpload" action="default">
@@ -32,18 +22,22 @@
       </div>
        </template>
       <span>
-       进入路线形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序随意：<br />
+       进入路线形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序可任意：<br />
        <table border="1px" style="border-collapse:collapse">
          <tr>
            <th>type</th>
-           <th>remand</th>
+           <th>name_a</th>
+           <th>demand</th>
+           <th>serviceTime</th>
+           <th>beginTime</th>
+           <th>endTime</th>
            <th>Vehicle_type</th>
            <th>Vehicles_id</th>
            <th>Vehicle_load</th>
            <th>Vehicle_number</th>
            <th>Vehicle_mileage</th>
-           <th>demand</th>
-           <th>name_a</th>
+           <th>Center_name</th>
+           <th>0</th>
            <th>1</th>
            <th>2</th>
            <th>3</th>
@@ -51,17 +45,19 @@
            <th>5</th>
            <th>6</th>
            <th>7</th>
-           <th>8</th>
            <th>...</th>
          </tr>
        </table>
-          type：点的类型，depot——配送中心，customer——配送点，other——其他类型的点<br />
-          demand：点的需求量，配送中心也可以写，这不影响路线的计算<br />
-          Vehicle_load：车辆载重量<br />
-          Vehicle_number：该车辆的数量<br />
-          Vehicle_mileage：车辆里程<br />
-          Vehicle_id：车辆所在配送中心的名字或者编号，对应type=depot的name值<br />
-          name_a：点的编号，编号必须从0开始编号<br />
+          type：点的类型，depot——配送中心，customer——客户点，other——其他类型的点<br />
+          name_a：点的数字编号<br />
+          demand：客户的需求量，配送中心也可以写，这不影响路线的计算<br />
+          serviceTime：自定义该点的服务时间（默认：5min)<br />
+          beginTime：客户点接受配送到达的最早时间（单位默认：min)<br />
+          endTime：客户点接受配送到达的最迟时间（单位默认：min)<br />
+          Vehicle_load：车辆载重（单位默认：t)<br />
+          Vehicle_number：该车辆类型的数量，可不做配置<br />
+          Vehicle_mileage：车辆里程，（默认：35km)<br />
+          Center_name：Center_name：车辆所在配送中心的名字，对应type="depot"类型点的的编号<br />
           0、1、2对应的字段为name_a
      </span>
     </el-collapse-item>
@@ -104,8 +100,25 @@ export default {
         stripe: true,
         border: true
       },
-      dialogVisible: false
+      stdcolumns:[],
     }
+  },
+  mounted () {
+    console.log('mounted')
+    this.stdcolumns = 
+    [
+        {label: 'type', prop: 'type'},
+        {label: 'name_a',prop: 'name_a'},
+        {label: 'demand',prop: 'demand'},
+        {label: 'serviceTime',prop: 'serviceTime'},
+        {label: 'beginTime',prop: 'beginTime'},
+        {label: 'endTime',prop: 'endTime'},
+        {label: 'Vehicle_type',prop: 'Vehicle_type'},
+        {label: 'Vehicle_load',prop: 'Vehicle_load'},
+        {label: 'Vehicle_number',prop: 'Vehicle_number'},
+        {label: 'Vehicle_mileage',prop: 'Vehicle_mileage'},
+        {label: 'Center_name',prop: 'Center_name'}
+    ]
   },
   methods: {
     handleUpload(file) {
@@ -118,22 +131,40 @@ export default {
         });
         this.table.data = results;
         outdata = results;
-        console.log("outdata:");
-        console.log(outdata);
+        for(var i in this.stdcolumns){
+            // console.log(this.stdcolumns[i].label)
+            if(!header.includes(this.stdcolumns[i].label)){
+              var me=this
+              this.$confirm('表头缺少字段'+me.stdcolumns[i].label+',请检查格式', '格式错误', {
+                confirmButtonText: '确定',
+                type: 'error'
+              })
+              return false
+            }
+        }
+        console.log("outdata:",outdata);
       });
       return false;
     },
+   
     inquery() {
       // eslint-disable-next-line camelcase
       var num_node = this.input;
       console.log(num_node);
       if (outdata == null) {
-       this.dialogVisible=true;
-      // eslint-disable-next-line brace-style
+        this.$confirm('还未选择文件上传哦', '温馨提示', {
+          confirmButtonText: '确定',
+          showCancelButton:false,
+          type: 'warning'
+        }).catch(() => {
+          this.$notify.info({
+            title: '消息',
+            message: '文件未上传',
+            type: 'warning'
+          })
+        })
+        return false
       }
-      // else if (num_node == 0) {
-      //   alert("请输入配送点数量，配送点数量应大于0");
-      // }
       else {
         console.log(outdata);
         let problem = [];
@@ -170,16 +201,12 @@ export default {
           outdata.map(v => {
             let obj = {};
             obj = { u: v["name_a"], v: i, w: v[i] };
-            new_outdata.push(obj);
+            if(obj.w==undefined||obj.w<0||obj.u==obj.v){
+            
+            }else{
+              new_outdata.push(obj);
+            }
           });
-        }
-        //如果u、v对应的格子为空，即两点之间不可通行，将两点之间的距离设为-1
-        for (let i = new_outdata.length - 1; i >= 0; i--) {
-          if (
-            new_outdata[i].w==undefined
-          ) {
-            new_outdata[i].w = -1;
-          }
         }
         console.log(new_outdata);
         // eslint-disable-next-line camelcase
@@ -253,70 +280,21 @@ export default {
       console.log(val);
     },
     handleDownload(){
-        const columns = [
-      {
-        label: 'type',
-        prop: 'type'
-      },
-      {
-        label: 'name',
-        prop: 'name'
-      },
-      {
-        label: 'Vehicle_type',
-        prop: 'Vehicle_type'
-      },
-      {
-        label: 'name_a',
-        prop: 'name_a'
-      },
-      {
-        label: 'demand',
-        prop: 'demand'
-      },
-      {
-        label: 'Vehicle_load',
-        prop: 'Vehicle_load'
-      },
-      {
-        label: 'Vehicle_number',
-        prop: 'Vehicle_number'
-      },
-      {
-        label: 'Vehicle_mileage',
-        prop: 'Vehicle_mileage'
-      },
-      {
-        label: 'Vehicle_id',
-        prop: 'Vehicle_id'
-      },
-      {
-        label: '1',
-        prop: '1'
-      },
-      {
-        label: '2',
-        prop: '2'
-      },
-      {
-        label: '3',
-        prop: '3'
-      },
-      {
-        label: '4',
-        prop: '4'
-      },
-      {
-        label: '...',
-        prop: '...'
+      var columns=[]
+      for(var i in this.stdcolumns){
+          columns.push({
+            label:this.stdcolumns[i].label,
+            prop:this.stdcolumns[i].prop
+          })
       }
-      
-
-    ]
-    this.$export.excel({
-      title:"路线查询文件",
-      columns,
-    })
+      columns.push({label:"0",prop:"0"})
+      columns.push({label:"1",prop:"1"})
+      columns.push({label:"...",prop:"..."})
+      console.log("columns:",columns)
+      this.$export.excel({
+        title:"路线查询文件",
+        columns,
+      })
     }
   }
 };
