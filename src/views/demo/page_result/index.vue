@@ -1,5 +1,5 @@
 <template>
-  <el-container class="container" style="margin: 10px;" v-loading="loading">
+  <el-container class="container" style="margin: 10px;background: #fff;" v-loading="loading">
     <el-aside width="230px" class="aside">
       <el-card class="box-card">
         <div slot="header" class="clearfix">
@@ -8,7 +8,7 @@
         </div>
         <div class="text-item" v-if="result">总路程: {{ result.distance.toFixed(2) }} 公里</div>
         <div class="text-item" v-if="result">总时间: {{ result.time.toFixed(2) }} 小时</div>
-        <div class="text-item" v-if="result">平均满载率: {{ (result.loadfactor * 100).toFixed(2) }} %</div>
+        <div class="text-item" v-if="result">平均满载率: {{ (result.loadFactor * 100).toFixed(2) }} %</div>
       </el-card>
 
       <el-card class="box-card">
@@ -103,7 +103,7 @@ export default {
     }
   },
   activated () {
-    // console.log('problem=' + JSON.stringify(this.problem))
+    console.log('activated problem=' + JSON.stringify(this.problem))
     // console.log('this.$route.query.problem=' + JSON.stringify(this.$route.query.problem))
     // console.log('==============' + (this.problem === this.$route.query.problem))
     let svgChildren = d3.selectAll('svg#graph_svg > *')
@@ -623,7 +623,7 @@ export default {
           })
           .attr('class', 'legend')
           .attr('y', function (d, i) {
-            return i * 20 + 12
+            return i * 20 + 20
           })
           .attr('x', 70)
           .attr('fill', function (d, i) {
@@ -640,7 +640,7 @@ export default {
           .enter()
           .append('rect')
           .attr('y', function (d, i) {
-            return i * 20
+            return i * 20 + 8
           })
           .attr('x', 50)
           .attr('width', 12)
@@ -1096,7 +1096,7 @@ export default {
           })
           .attr('class', 'legend')
           .attr('y', function (d, i) {
-            return i * 20 + 12
+            return i * 20 + 20
           })
           .attr('x', 30)
           .attr('fill', function (d, i) {
@@ -1113,7 +1113,7 @@ export default {
           .enter()
           .append('rect')
           .attr('y', function (d, i) {
-            return i * 20
+            return i * 20 + 8
           })
           .attr('x', 10)
           .attr('width', 12)

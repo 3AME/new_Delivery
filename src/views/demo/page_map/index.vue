@@ -12,89 +12,95 @@
       </div>
       <!-- <el-divider></el-divider> -->
 
-       <el-collapse id="collapse_nodes" accordion>
-        <el-collapse-item
-          title="车辆列表"
-          name="0"
-        >
+      <el-collapse id="collapse_nodes" accordion>
+        <el-collapse-item title="车辆列表" name="0">
+          <!-- <div v-if="vehicles.length == 0" class="box-card">
+            <div style="text-align: center;">
+              <el-button @click="addVehicle()" style="margin: 4px;" type="text">添加车辆</el-button>
+            </div>
+            <div style="text-align: center;">空空如也</div>
+          </div> -->
 
-        <div v-if="vehicles.length == 0" class="box-card">
-        <el-divider></el-divider>
-        <div style="text-align: center;">空空如也</div>
-      </div>
-
-<!-- { id: 1, depot: 0, load: 2, mileage: 35, count: 1 }, -->
-      <el-collapse id="collapse_nodes" v-else accordion>
-        <div style="text-align: center;">
-          <el-button @click="addVehicle()" style="margin: 4px;" type="text">添加车辆</el-button>
-        </div>
-        <el-collapse-item
-          v-for="(vehicle, index) in vehicles"
-          :key="vehicle.id"
-          :title="'车辆' + vehicle.id"
-          :name="index"
-        >
-        <div style="text-align: center;">
-          车辆载重
-        <el-input-number v-model="vehicle.load" :min="1" :max="5" label="车辆载重" size="mini"></el-input-number>
-        </div>
-        <div style="text-align: center;">
-          车辆里程
-        <el-input-number v-model="vehicle.mileage" :step="5" :min="20" :max="50" label="车辆里程" size="mini"></el-input-number>
-        </div>
-        <div style="text-align: center;">
-          车辆数量
-        <el-input-number v-model="vehicle.count" :min="1" :max="5" label="车辆里程" size="mini"></el-input-number>
-        </div>
-          <div style="text-align: center;">
-            <i @click="removeVehicle(vehicle)" class="i-tag el-icon-delete" style="font-size: 16px;"></i>
+          <!-- { id: 1, depot: 0, load: 2, mileage: 35, count: 1 }, -->
+          <el-collapse id="collapse_nodes" accordion>
+            <div style="text-align: center;">
+              <el-button @click="addVehicle()" style="margin: 4px;" type="text">添加车辆</el-button>
+            </div>
+            <div v-if="vehicles.length == 0" class="box-card">
+            <div style="text-align: center;">空空如也</div>
           </div>
-        </el-collapse-item>
-      </el-collapse>
-
-        </el-collapse-item>
-
-        <el-collapse-item
-          title="地点列表"
-          name="1"
-        >
-
-      <div v-if="polylinePath.length > 0" style="text-align: center;">
-          <el-button @click="clearTags()" style="margin: 4px;" type="text">清空</el-button>
-        </div>
-      <div v-if="polylinePath.length == 0" class="box-card">
-        <!-- <el-divider></el-divider> -->
-        <div style="text-align: center;">空空如也</div>
-      </div>
-
-      <el-collapse id="collapse_nodes" v-else v-model="activeName" accordion>
-        <el-collapse-item
-          v-for="(path, index) in polylinePath"
-          :key="path.name"
-          :title="path.name"
-          :name="index"
-        >
-          <div class="div-tag" style="text-align: center;" v-if="index == 0">中心节点</div>
-          <div class="div-tag" style="text-align: center;" v-else>子节点</div>
-          <div style="text-align: center;" v-if="index != 0">
-            <!-- 需求量 -->
-            <el-select
-              v-model="path.need"
-              filterable
-              allow-create
-              default-first-option
-              placeholder="需求量"
-              size="mini"
+            <el-collapse-item
+              v-for="(vehicle, index) in vehicles"
+              :key="vehicle.id"
+              :title="'车辆' + vehicle.id"
+              :name="index"
             >
-              <el-option v-for="item in need_options" :key="item" :label="item" :value="item"></el-option>
-            </el-select>
-          </div>
-          <div style="text-align: center;">
-            <i @click="handleClose(path)" class="i-tag el-icon-delete" style="font-size: 16px;"></i>
-          </div>
+              <div style="text-align: center;">
+                车辆载重
+                <el-input-number v-model="vehicle.load" :min="1" :max="5" label="车辆载重" size="mini"></el-input-number>
+              </div>
+              <div style="text-align: center;">
+                车辆里程
+                <el-input-number
+                  v-model="vehicle.mileage"
+                  :step="5"
+                  :min="20"
+                  :max="50"
+                  label="车辆里程"
+                  size="mini"
+                ></el-input-number>
+              </div>
+              <div style="text-align: center;">
+                车辆数量
+                <el-input-number v-model="vehicle.count" :min="1" :max="5" label="车辆里程" size="mini"></el-input-number>
+              </div>
+              <div style="text-align: center;">
+                <i
+                  @click="removeVehicle(vehicle)"
+                  class="i-tag el-icon-delete"
+                  style="font-size: 16px;"
+                ></i>
+              </div>
+            </el-collapse-item>
+          </el-collapse>
         </el-collapse-item>
-      </el-collapse>
 
+        <el-collapse-item title="地点列表" name="1">
+          <div v-if="polylinePath.length > 0" style="text-align: center;">
+            <el-button @click="clearTags()" style="margin: 4px;" type="text">清空</el-button>
+          </div>
+          <div v-if="polylinePath.length == 0" class="box-card">
+            <!-- <el-divider></el-divider> -->
+            <div style="text-align: center;">空空如也</div>
+          </div>
+
+          <el-collapse id="collapse_nodes" v-else v-model="activeName" accordion>
+            <el-collapse-item
+              v-for="(path, index) in polylinePath"
+              :key="path.name"
+              :title="path.name"
+              :name="index"
+            >
+              <div class="div-tag" style="text-align: center;" v-if="index == 0">中心节点</div>
+              <div class="div-tag" style="text-align: center;" v-else>子节点</div>
+              <div style="text-align: center;" v-if="index != 0">
+                <!-- 需求量 -->
+                <el-select
+                  v-model="path.need"
+                  filterable
+                  allow-create
+                  default-first-option
+                  placeholder="需求量"
+                  size="mini"
+                >
+                  <el-option v-for="item in need_options" :key="item" :label="item" :value="item"></el-option>
+                </el-select>
+              </div>
+              <div style="text-align: center;">
+                <i @click="handleClose(path)" class="i-tag el-icon-delete" style="font-size: 16px;"></i>
+              </div>
+            </el-collapse-item>
+          </el-collapse>
         </el-collapse-item>
       </el-collapse>
     </el-aside>
@@ -174,14 +180,14 @@
 </template>
 
 <script>
-import BaiduMap from 'vue-baidu-map/components/map/Map.vue'
-import BmView from 'vue-baidu-map/components/map/MapView'
-import BmLocalSearch from 'vue-baidu-map/components/search/LocalSearch'
-import BmNavigation from 'vue-baidu-map/components/controls/Navigation'
-import BmGeolocation from 'vue-baidu-map/components/controls/Geolocation'
-import BmMarker from 'vue-baidu-map/components/overlays/Marker'
+import BaiduMap from "vue-baidu-map/components/map/Map.vue";
+import BmView from "vue-baidu-map/components/map/MapView";
+import BmLocalSearch from "vue-baidu-map/components/search/LocalSearch";
+import BmNavigation from "vue-baidu-map/components/controls/Navigation";
+import BmGeolocation from "vue-baidu-map/components/controls/Geolocation";
+import BmMarker from "vue-baidu-map/components/overlays/Marker";
 export default {
-  name: 'ele-form-bmap',
+  name: "ele-form-bmap",
   components: {
     BaiduMap,
     BmView,
@@ -190,21 +196,21 @@ export default {
     BmGeolocation,
     BmMarker
   },
-  data () {
+  data() {
     return {
       dialogVisible: true,
-      center: '成都市',
+      center: "成都市",
       logisticsCenter: undefined,
       isSearching: true,
       searchList: [],
-      searchValue: '',
-      ak: 'Fmr6cw34yLG1GZZKEyGSZcsE5c72Upwo',
+      searchValue: "",
+      ak: "Fmr6cw34yLG1GZZKEyGSZcsE5c72Upwo",
       mapHeight: 500,
       isScrollWheelZoom: true,
       isShowNavigation: true,
       isShowGeolocation: true,
-      placeholder: '添加地址',
-      value: '成都市',
+      placeholder: "添加地址",
+      value: "成都市",
       polylinePath: [],
       vehicles: [
         { id: 1, depot: 0, load: 2, mileage: 35, count: 1 },
@@ -226,30 +232,30 @@ export default {
       loadOptions: [1, 2, 3, 4, 5],
       mileageOptions: [20, 25, 30, 35, 40, 45, 50],
       countOptions: [1, 2, 3],
-      activeName: '0'
-    }
+      activeName: "0"
+    };
   },
   methods: {
-    test () {
+    test() {
       if (this.polylinePath.length < 3) {
         this.$notify({
-          title: '警告',
-          message: '节点过少，请在地图上添加节点！',
-          type: 'warning'
-        })
-        return
+          title: "警告",
+          message: "节点过少，请在地图上添加节点！",
+          type: "warning"
+        });
+        return;
       }
-      if (this.vehicles.length < 3) {
+      if (this.vehicles.length < 1) {
         this.$notify({
-          title: '警告',
-          message: '车辆过少，请添加车辆！',
-          type: 'warning'
-        })
-        return
+          title: "警告",
+          message: "车辆过少，请添加车辆！",
+          type: "warning"
+        });
+        return;
       }
       var names = this.polylinePath.map(x => {
-        return x.name
-      })
+        return x.name;
+      });
       var problem = {
         routeMode: true,
         names: names,
@@ -267,166 +273,166 @@ export default {
         distancePrior: 5, // 路程加权
         timePrior: 1, // 用时加权
         loadPrior: 4 // 满载率加权
-      }
-      console.log('drivingPath=' + JSON.stringify(this.drivingPath))
-      this.drivingPath.forEach(function (path, i) {
-        var start = names.indexOf(path.start.name)
-        var end = names.indexOf(path.end.name)
+      };
+      console.log("drivingPath=" + JSON.stringify(this.drivingPath));
+      this.drivingPath.forEach(function(path, i) {
+        var start = names.indexOf(path.start.name);
+        var end = names.indexOf(path.end.name);
         problem.edges.push({
           u: start,
           v: end,
           w: path.len / 1000
-        })
-      })
+        });
+      });
 
-      problem.nodes.push({ type: 'depot', id: 0, demand: '任意' })
+      problem.nodes.push({ type: "depot", id: 0, demand: 0 });
       for (var i = 1; i < this.polylinePath.length; i++) {
         // problem.customers.push(this.polylinePath[i].need);
         problem.nodes.push({
-          type: 'customer',
+          type: "customer",
           id: i,
           demand: this.polylinePath[i].need
-        })
+        });
       }
 
-      console.log('test problem=' + JSON.stringify(problem))
+      console.log("test problem=" + JSON.stringify(problem));
 
       this.$router.push({
-        name: 'page_result',
+        name: "page_result",
         query: {
           problem: problem
         }
-      })
+      });
     },
     // 地图加载成功
-    handleMapLoaded () {
+    handleMapLoaded() {
       if (this.value) {
-        this.center = this.value
-        if (typeof this.value === 'string') {
-          this.searchValue = this.value
-        } else if (typeof this.value === 'object' && this.value.address) {
-          this.searchValue = this.value.address
+        this.center = this.value;
+        if (typeof this.value === "string") {
+          this.searchValue = this.value;
+        } else if (typeof this.value === "object" && this.value.address) {
+          this.searchValue = this.value.address;
         }
       }
     },
     // 发起请求
-    querySearch (queryString, cb) {
-      console.log('querySearch queryString=' + queryString)
+    querySearch(queryString, cb) {
+      console.log("querySearch queryString=" + queryString);
       if (queryString) {
-        this.cb = cb
-        this.isSearching = true
+        this.cb = cb;
+        this.isSearching = true;
       }
     },
     // 搜索结束
-    handleSearchEnd (res) {
+    handleSearchEnd(res) {
       if (res && res.Ir && this.cb) {
         const list = res.Ir.map(pos => {
           return {
             address: pos.address,
             point: pos.point,
             value: pos.title
-          }
-        })
-        this.cb(list)
-        this.cb = null
+          };
+        });
+        this.cb(list);
+        this.cb = null;
       }
     },
     // 位置改变
-    handleChange (res) {
-      console.log('handleChange')
+    handleChange(res) {
+      console.log("handleChange");
       if (res && res.point) {
         if (this.selectMode) {
-          this.printObj(res)
+          this.printObj(res);
           // console.log('res=' + Object.keys(res))
           // console.log('point=' + Object.keys(res.point))
-          console.log('pixel=' + this.printObj(res.pixel))
-          console.log('jb=' + this.printObj(res.jb))
+          console.log("pixel=" + this.printObj(res.pixel));
+          console.log("jb=" + this.printObj(res.jb));
           this.polylinePath.push({
-            name: '地点(' + res.point.lng + ', ' + res.point.lat + ')',
+            name: "地点(" + res.point.lng + ", " + res.point.lat + ")",
             lng: res.point.lng,
             lat: res.point.lat
-          })
+          });
           // eslint-disable-next-line no-undef
-          let geocoder = new BMap.Geocoder() // 创建地址解析器的实例
+          let geocoder = new BMap.Geocoder(); // 创建地址解析器的实例
           geocoder.getLocation(res.point, rs => {
             // this.add.site = rs.address;
             // 地址描述(string)=
-            console.log(rs.address) // 这里打印可以看到里面的详细地址信息，可以根据需求选择想要的
-            console.log(rs.addressComponents) // 结构化的地址描述(object)
-            console.log(rs.addressComponents.province) // 省
-            console.log(rs.addressComponents.city) // 城市
-            console.log(rs.addressComponents.district) // 区县
-            console.log(rs.addressComponents.street) // 街道
-            console.log(rs.addressComponents.streetNumber) // 门牌号
-            console.log(rs.surroundingPois) // 附近的POI点(array)
-            console.log(rs.business) // 商圈字段，代表此点所属的商圈(string)
-          })
+            console.log(rs.address); // 这里打印可以看到里面的详细地址信息，可以根据需求选择想要的
+            console.log(rs.addressComponents); // 结构化的地址描述(object)
+            console.log(rs.addressComponents.province); // 省
+            console.log(rs.addressComponents.city); // 城市
+            console.log(rs.addressComponents.district); // 区县
+            console.log(rs.addressComponents.street); // 街道
+            console.log(rs.addressComponents.streetNumber); // 门牌号
+            console.log(rs.surroundingPois); // 附近的POI点(array)
+            console.log(rs.business); // 商圈字段，代表此点所属的商圈(string)
+          });
         } else {
-          this.center = res.point
-          this.$emit('input', {
+          this.center = res.point;
+          this.$emit("input", {
             address: this.searchValue,
             lat: res.point.lat,
             lng: res.point.lng
-          })
+          });
         }
       }
     },
     // 更新路线
-    updatePolylinePath (e) {
+    updatePolylinePath(e) {
       // this.polylinePath = e.target.getPath();
-      console.log('e=' + Object.keys(e))
-      console.log('returnValue=' + e.returnValue)
-      console.log('e.target=' + Object.keys(e.target))
-      console.log('e.target.getPath()=' + e.target.getPath())
+      console.log("e=" + Object.keys(e));
+      console.log("returnValue=" + e.returnValue);
+      console.log("e.target=" + Object.keys(e.target));
+      console.log("e.target.getPath()=" + e.target.getPath());
     },
     // 添加路线
-    addPolylinePoint () {
-      var last = this.polylinePath[this.polylinePath.length - 1]
+    addPolylinePoint() {
+      var last = this.polylinePath[this.polylinePath.length - 1];
       var newOne = {
-        name: '随机地点' + this.polylinePath.length,
+        name: "随机地点" + this.polylinePath.length,
         lng: last.lng,
         lat: last.lat
-      }
-      newOne.lng += (Math.random() - 0.5) / 10
-      newOne.lat += (Math.random() - 0.5) / 10
-      this.polylinePath.push(newOne)
+      };
+      newOne.lng += (Math.random() - 0.5) / 10;
+      newOne.lat += (Math.random() - 0.5) / 10;
+      this.polylinePath.push(newOne);
       this.$notify({
-        title: '成功',
-        message: '添加' + newOne.name + '成功',
-        type: 'success'
-      })
+        title: "成功",
+        message: "添加" + newOne.name + "成功",
+        type: "success"
+      });
     },
-    onPolylinesSet (a, b) {
+    onPolylinesSet(a, b) {
       // console.log("a=" + a + " b=" + b);
     },
-    resultsHtmlSet (r) {
+    resultsHtmlSet(r) {
       // console.log("r=" + Object.keys(r));
     },
-    onAutoComplete (res) {
-      this.printObj(res)
-      console.log('onAutoComplete res=' + JSON.stringify(res.item))
-      let me = this
-      console.log('value=' + JSON.stringify(res.item.value))
+    onAutoComplete(res) {
+      this.printObj(res);
+      console.log("onAutoComplete res=" + JSON.stringify(res.item));
+      let me = this;
+      console.log("value=" + JSON.stringify(res.item.value));
       var name =
         res.item.value.province +
         res.item.value.city +
         res.item.value.district +
         res.item.value.business +
         res.item.value.street +
-        res.item.value.streetNumber
+        res.item.value.streetNumber;
       // var name = res.item.value.business
-      console.log('name=' + name)
+      console.log("name=" + name);
 
       // 创建地址解析器实例
       // eslint-disable-next-line no-undef
-      var myGeo = new BMap.Geocoder()
+      var myGeo = new BMap.Geocoder();
       // 将地址解析结果显示在地图上，并调整地图视野
       myGeo.getPoint(
         name,
-        function (point) {
+        function(point) {
           if (point) {
-            me.activeName = '1'
-            me.polylinePath.forEach(function (item) {
+            me.activeName = "1";
+            me.polylinePath.forEach(function(item) {
               // me.drivingPath.push({
               //   start: name,
               //   end: item.name
@@ -442,13 +448,13 @@ export default {
                   lng: item.lng,
                   lat: item.lat
                 }
-              }
-              console.log('pppppppppppp=' + JSON.stringify(p))
+              };
+              console.log("pppppppppppp=" + JSON.stringify(p));
               // me.drivingPath.push(p)
-              me.tempDrivingPath.push(p)
-            })
+              me.tempDrivingPath.push(p);
+            });
             if (me.tempDrivingPath.length > 0) {
-              me.drivingPath.push(me.tempDrivingPath[0])
+              me.drivingPath.push(me.tempDrivingPath[0]);
             }
             // console.log('size=' + me.drivingPath.length)
             // console.log('me.drivingPath=' + JSON.stringify(me.drivingPath))
@@ -457,20 +463,20 @@ export default {
               name: name,
               lng: point.lng,
               lat: point.lat
-            }
+            };
             if (me.logisticsCenter === undefined) {
-              me.logisticsCenter = path
+              me.logisticsCenter = path;
             } else {
               // path.need = 0.1 * (me.polylinePath.length + 1);
-              path.need = 0.1
+              path.need = 0.1;
             }
-            me.polylinePath.push(path)
+            me.polylinePath.push(path);
           }
         },
         res.item.city
-      )
+      );
     },
-    searchComplete (r) {
+    searchComplete(r) {
       // var moreResultsUrl = r.moreResultsUrl
       // console.log('moreResultsUrl=' + moreResultsUrl)
       // var origin
@@ -505,51 +511,51 @@ export default {
       //     break
       //   }
       // }
-      this.drivingPath[this.drivingPath.length - 1].len = r.taxiFare.distance
+      this.drivingPath[this.drivingPath.length - 1].len = r.taxiFare.distance;
       // this.tempDrivingPath[0].len = r.taxiFare.distance
-      this.tempDrivingPath.splice(0, 1)
+      this.tempDrivingPath.splice(0, 1);
       if (this.tempDrivingPath.length > 0) {
-        this.drivingPath.push(this.tempDrivingPath[0])
+        this.drivingPath.push(this.tempDrivingPath[0]);
       }
     },
     // 移除Tag
-    handleClose (tag) {
-      this.polylinePath.splice(this.polylinePath.indexOf(tag), 1)
+    handleClose(tag) {
+      this.polylinePath.splice(this.polylinePath.indexOf(tag), 1);
       for (var i = this.drivingPath.length - 1; i >= 0; i--) {
-        var item = this.drivingPath[i]
+        var item = this.drivingPath[i];
         if (item.start.name === tag.name || item.end.name === tag.name) {
-          this.drivingPath.splice(i, 1)
+          this.drivingPath.splice(i, 1);
         }
       }
     },
-    removeVehicle (vehicle) {
-      this.vehicles.splice(this.vehicles.indexOf(vehicle), 1)
+    removeVehicle(vehicle) {
+      this.vehicles.splice(this.vehicles.indexOf(vehicle), 1);
       this.vehicles.forEach((vehicle, i) => {
-        vehicle.id = i + 1
-      })
+        vehicle.id = i + 1;
+      });
     },
     // 显示输入框
-    showInput () {
-      this.inputVisible = true
-      this.searchValue = ''
+    showInput() {
+      this.inputVisible = true;
+      this.searchValue = "";
       this.$nextTick(_ => {
-        this.$refs.saveTagInput.$refs.input.focus()
-      })
+        this.$refs.saveTagInput.$refs.input.focus();
+      });
     },
     // 选择物流中心
-    selectLogisticsCenter (res) {
+    selectLogisticsCenter(res) {
       if (res && res.point) {
-        this.center = res.point
+        this.center = res.point;
         this.logisticsCenter = {
           name: res.value,
           lng: res.point.lng,
           lat: res.point.lat
-        }
-        this.inputVisible = false
+        };
+        this.inputVisible = false;
       }
     },
-    onTagClick (path) {
-      this.center = path.name
+    onTagClick(path) {
+      this.center = path.name;
     },
     // 添加Tag
     // addTag (res) {
@@ -579,45 +585,45 @@ export default {
     //     this.searchValue = ''
     //   }
     // },
-    clearTags () {
-      this.polylinePath.splice(0, this.polylinePath.length)
-      this.drivingPath.splice(0, this.drivingPath.length)
-      this.tempDrivingPath.splice(0, this.tempDrivingPath.length)
-      this.logisticsCenter = undefined
+    clearTags() {
+      this.polylinePath.splice(0, this.polylinePath.length);
+      this.drivingPath.splice(0, this.drivingPath.length);
+      this.tempDrivingPath.splice(0, this.tempDrivingPath.length);
+      this.logisticsCenter = undefined;
     },
-    addVehicle () {
+    addVehicle() {
       this.vehicles.push({
         id: this.vehicles.length + 1,
         depot: 0,
         load: 5,
         mileage: 35,
         count: 1
-      })
+      });
     },
     // 打印一个对象所有属性的值
-    printObj (obj) {
-      var str = obj + ' : '
+    printObj(obj) {
+      var str = obj + " : ";
       for (var i in obj) {
-        str += i + ' = ' + obj[i] + '\n'
+        str += i + " = " + obj[i] + "\n";
       }
-      console.log(str)
+      console.log(str);
     },
     // 测试路线模式
-    testRouteMode () {
+    testRouteMode() {
       var problem = {
         routeMode: true,
         nodes: [
-          { type: 'depot', id: 0, demand: '任意' },
-          { type: 'customer', id: 1, demand: 1.7 },
-          { type: 'customer', id: 2, demand: 0.8 },
-          { type: 'customer', id: 3, demand: 1.3 },
-          { type: 'customer', id: 4, demand: 2.8 },
-          { type: 'customer', id: 5, demand: 1.9 },
-          { type: 'customer', id: 6, demand: 3.5 },
-          { type: 'customer', id: 7, demand: 0.9 },
-          { type: 'customer', id: 8, demand: 0.3 },
-          { type: 'customer', id: 9, demand: 1.2 },
-          { type: 'other', id: 10, demand: '任意' }
+          { type: "depot", id: 0, demand: 0 },
+          { type: "customer", id: 1, demand: 1.7 },
+          { type: "customer", id: 2, demand: 0.8 },
+          { type: "customer", id: 3, demand: 1.3 },
+          { type: "customer", id: 4, demand: 2.8 },
+          { type: "customer", id: 5, demand: 1.9 },
+          { type: "customer", id: 6, demand: 3.5 },
+          { type: "customer", id: 7, demand: 0.9 },
+          { type: "customer", id: 8, demand: 0.3 },
+          { type: "customer", id: 9, demand: 1.2 },
+          { type: "other", id: 10, demand: 0 }
         ],
         edges: [
           // 无向道路 连接节点u, v，长度为w
@@ -654,67 +660,54 @@ export default {
         distancePrior: 5, // 路程加权
         timePrior: 0, // 用时加权
         loadPrior: 0 // 满载率加权
-      }
-      console.log(problem)
+      };
+      console.log(problem);
       this.$router.push({
-        name: 'page_result',
+        name: "page_result",
         query: {
           problem: problem
         }
-      })
+      });
     },
     // 测试坐标模式
-    testCoordMode () {
+    testCoordMode() {
       var problem = {
         routeMode: false,
         nodes: [
-          { type: 'depot', id: 0, demand: '任意' },
-          { type: 'customer', id: 1, demand: 1.7 },
-          { type: 'customer', id: 2, demand: 0.8 },
-          { type: 'customer', id: 3, demand: 1.3 },
-          { type: 'customer', id: 4, demand: 2.8 },
-          { type: 'customer', id: 5, demand: 1.9 },
-          { type: 'customer', id: 6, demand: 3.5 },
-          { type: 'customer', id: 7, demand: 0.9 },
-          { type: 'customer', id: 8, demand: 0.3 },
-          { type: 'customer', id: 9, demand: 1.2 },
-          { type: 'other', id: 10, demand: '任意' }
+          { x: 14.2, y: 13.1, type: 'depot', id: 0, demand: '任意' },
+          { x: 12.8, y: 8.5, type: 'customer', id: 1, demand: 1.7 },
+          { x: 18.4, y: 3.4, type: 'customer', id: 2, demand: 0.8 },
+          { x: 15.4, y: 16.6, type: 'customer', id: 3, demand: 1.3 },
+          { x: 18.9, y: 15.2, type: 'customer', id: 4, demand: 2.8 },
+          { x: 15.5, y: 11.6, type: 'customer', id: 5, demand: 1.9 },
+          { x: 3.9, y: 10.6, type: 'customer', id: 6, demand: 3.5 },
+          { x: 10.6, y: 7.6, type: 'customer', id: 7, demand: 0.9 },
+          { x: 8.6, y: 8.4, type: 'customer', id: 8, demand: 0.3 },
+          { x: 12.5, y: 2.1, type: 'customer', id: 9, demand: 1.2 },
+          { x: 13.8, y: 5.2, type: 'other', id: 10, demand: '任意' }
         ],
-        edges: [
-          { x: 14.2, y: 13.1 },
-          { x: 12.8, y: 8.5 },
-          { x: 18.4, y: 3.4 },
-          { x: 15.4, y: 16.6 },
-          { x: 18.9, y: 15.2 },
-          { x: 15.5, y: 11.6 },
-          { x: 3.9, y: 10.6 },
-          { x: 10.6, y: 7.6 },
-          { x: 8.6, y: 8.4 },
-          { x: 12.5, y: 2.1 },
-          { x: 13.8, y: 5.2 }
-        ],
+        edges: "euc2d",
         vehicles: [
-          { id: 1, depot: 0, load: 2, mileage: 35, count: 1 },
-          { id: 2, depot: 0, load: 2, mileage: 35, count: 1 },
-          { id: 3, depot: 0, load: 2, mileage: 35, count: 1 },
-          { id: 4, depot: 0, load: 5, mileage: 35, count: 1 },
-          { id: 5, depot: 0, load: 5, mileage: 35, count: 1 }
+          { id: "1", depot: 0, load: 2, mileage: 35, count: 1 },
+          { id: "2", depot: 0, load: 2, mileage: 35, count: 1 },
+          { id: "3", depot: 0, load: 2, mileage: 35, count: 1 },
+          { id: "4", depot: 0, load: 5, mileage: 35, count: 1 },
+          { id: "5", depot: 0, load: 5, mileage: 35, count: 1 }
         ],
-        // vehicles: [2, 2, 2, 5, 5], // 车辆最大载重
         distancePrior: 5, // 路程加权
         timePrior: 1, // 用时加权
         loadPrior: 4 // 满载率加权
       }
-      console.log(problem)
+      console.log(problem);
       this.$router.push({
-        name: 'page_result',
+        name: "page_result",
         query: {
           problem: problem
         }
-      })
+      });
     }
   }
-}
+};
 </script>
 
 <style>
@@ -815,21 +808,21 @@ export default {
 
 #collapse_nodes .el-collapse-item__header {
   padding-left: 12px;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    height: 48px;
-    line-height: 14px;
-    background-color: #FFF;
-    color: #303133;
-    cursor: pointer;
-    border-bottom: 1px solid #EBEEF5;
-    font-size: 12px;
-    -webkit-transition: border-bottom-color .3s;
-    transition: border-bottom-color .3s;
-    outline: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  height: 48px;
+  line-height: 14px;
+  background-color: #fff;
+  color: #303133;
+  cursor: pointer;
+  border-bottom: 1px solid #ebeef5;
+  font-size: 12px;
+  -webkit-transition: border-bottom-color 0.3s;
+  transition: border-bottom-color 0.3s;
+  outline: 0;
 }
 </style>
