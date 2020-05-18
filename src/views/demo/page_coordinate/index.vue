@@ -2,20 +2,28 @@
   <d2-container type="card">
     <template slot="header">
     <el-row>
-       <el-button  class="btn1">
+      <el-col :span="3">
           <el-upload :before-upload="handleUpload" action="default">
+            <el-button  class="btn">
               上传<i class="el-icon-upload el-icon--right"></i>
+            </el-button>
           </el-upload>
-        </el-button>
+      </el-col>
+      <el-col :span="3">
         <el-button @click="inquery"  class="btn">
           <d2-icon name="search" />查询
         </el-button>
+      </el-col>
+      <el-col :span="3">
         <el-button type="info" @click="clear">
           清除数据
         </el-button>
-         <el-button @click="handleDownload" type="success" style="margin-left:30%">
+      </el-col>
+      <el-col :span="3">
+        <el-button @click="handleDownload" type="success">
           下载坐标查询表头<i class="el-icon-download el-icon--right"></i>
         </el-button>
+      </el-col>
     </el-row>
      <el-collapse  @change="handleChange" class="yaoqiu">
       <el-collapse-item  name="1" >
@@ -111,6 +119,15 @@ export default {
     ]
   },
   methods: {
+    clear (){
+      this.table={
+        columns: [],
+        data: [],
+        size: 'mini',
+        stripe: true,
+        border: true
+      }
+    },
     handleUpload (file) {
       this.$import.xlsx(file).then(({ header, results }) => {
         this.table.columns = header.map(e => {
