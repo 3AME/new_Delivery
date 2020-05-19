@@ -2,14 +2,14 @@
   <d2-container >
     <el-table :data="querys" style="width: 100%">
       <!-- <el-table-column type="selection" width="55"></el-table-column> -->
-      <el-table-column prop="title" label="标题" width="250px">
+      <el-table-column prop="title" label="标题" width="350px">
         <template slot-scope="scope">
-          <span style="width: 140px;" class="line-1 hover">{{scope.row.title}}</span>
+          <span style="width: 240px;" class="line-1 hover">{{scope.row.title}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="time" label="时间" width="250px">
+      <el-table-column prop="time" label="时间" width="350px">
         <template slot-scope="scope">
-          <span style="width: 190px;" class="line-1 hover">{{scope.row.time}}</span>
+          <span style="width: 290px;" class="line-1 hover">{{scope.row.time}}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作">
