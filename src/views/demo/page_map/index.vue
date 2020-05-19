@@ -1,6 +1,6 @@
 <template>
-  <el-container class="container">
-    <el-aside width="230px" class="aside">
+  <el-container class="container" style="background: #fff;">
+    <el-aside width="230px" class="aside" style="overflow:scroll;overflow-x: hidden !important;">
       <div class="div-row">
         <el-button size="mini" type="success" style="margin-top: 10px;" @click="test()">地图查询</el-button>
       </div>
@@ -10,30 +10,24 @@
       <div class="div-row">
         <el-button size="mini" @click="testCoordMode()">测试坐标形式</el-button>
       </div>
-      <!-- <el-divider></el-divider> -->
 
-      <el-collapse id="collapse_nodes" accordion>
+      <el-card style="margin: 10px;">
+        <el-collapse id="collapse_nodes" accordion>
         <el-collapse-item title="车辆列表" name="0">
-          <!-- <div v-if="vehicles.length == 0" class="box-card">
-            <div style="text-align: center;">
-              <el-button @click="addVehicle()" style="margin: 4px;" type="text">添加车辆</el-button>
-            </div>
-            <div style="text-align: center;">空空如也</div>
-          </div> -->
-
-          <!-- { id: 1, depot: 0, load: 2, mileage: 35, count: 1 }, -->
-          <el-collapse id="collapse_nodes" accordion>
-            <div style="text-align: center;">
-              <el-button @click="addVehicle()" style="margin: 4px;" type="text">添加车辆</el-button>
+          <div style="text-align: center;">
+              <el-button @click="addVehicle()" size="mini" style="margin: 8px;"  type="primary">添加车辆</el-button>
             </div>
             <div v-if="vehicles.length == 0" class="box-card">
             <div style="text-align: center;">空空如也</div>
           </div>
+          <el-collapse id="collapse_nodes" accordion>
+
             <el-collapse-item
               v-for="(vehicle, index) in vehicles"
               :key="vehicle.id"
               :title="'车辆' + vehicle.id"
               :name="index"
+              style="margin-left: 8px;margin-right: 8px;"
             >
               <div style="text-align: center;">
                 车辆载重
@@ -67,7 +61,12 @@
 
         <el-collapse-item title="地点列表" name="1">
           <div v-if="polylinePath.length > 0" style="text-align: center;">
-            <el-button @click="clearTags()" style="margin: 4px;" type="text">清空</el-button>
+            <el-button
+            size="mini"
+            type="danger"
+            style="margin: 8px;"
+            @click="clearTags()"
+          >清空</el-button>
           </div>
           <div v-if="polylinePath.length == 0" class="box-card">
             <!-- <el-divider></el-divider> -->
@@ -80,6 +79,7 @@
               :key="path.name"
               :title="path.name"
               :name="index"
+              style="margin-left: 8px;margin-right: 8px;"
             >
               <div class="div-tag" style="text-align: center;" v-if="index == 0">中心节点</div>
               <div class="div-tag" style="text-align: center;" v-else>子节点</div>
@@ -103,6 +103,8 @@
           </el-collapse>
         </el-collapse-item>
       </el-collapse>
+      </el-card>
+
     </el-aside>
     <el-container>
       <div style="height:100%; width: 100%">

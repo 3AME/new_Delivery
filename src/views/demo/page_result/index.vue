@@ -59,13 +59,59 @@
           >车辆{{ route.text }}</span>
         </div>
       </el-card>
-      <!-- {{ result }} -->
+      <el-card class="box-card">
+        <div
+          v-for="(route, index) in routes"
+          :key="index"
+          style="padding-top: 4px; padding-bottom: 4px;"
+        >
+          <span
+            :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+            :fill="route.color"
+          >车辆{{ route.id }}：路程：{{ route.distance.toFixed(2) }}公里 | 时间：{{ route.time.toFixed(2) }}小时</span>
+
+        </div>
+      </el-card>
     </el-aside>
     <el-container>
-      <div style="height:100%; width: 100%">
+
+      <el-main>
+        <div style="height:100%; width: 100%">
         <svg id="graph_svg" style="height:100%; width: 100%" ref="svg" />
       </div>
+      </el-main>
+      <el-footer height="170px">
+          <el-card>
+            <div
+          v-for="(route, index) in routes"
+          :key="index"
+          style="padding-top: 4px; padding-bottom: 4px;"
+        >
+          <span
+            :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+            :fill="route.color"
+          >车辆{{ route.id }}：路程：{{ route.distance.toFixed(2) }}公里 | 时间：{{ route.time.toFixed(2) }}小时</span>
+
+        </div>
+          </el-card>
+      </el-footer>
     </el-container>
+    <el-aside width="230px" class="aside">
+
+      <el-card class="box-card">
+        <div
+          v-for="(route, index) in routes"
+          :key="index"
+          style="padding-top: 4px; padding-bottom: 4px;"
+        >
+          <span
+            :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+            :fill="route.color"
+          >车辆{{ route.id }}：路程：{{ route.distance.toFixed(2) }}公里 | 时间：{{ route.time.toFixed(2) }}小时</span>
+
+        </div>
+      </el-card>
+    </el-aside>
   </el-container>
 </template>
 
