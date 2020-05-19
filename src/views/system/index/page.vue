@@ -1,6 +1,7 @@
 <template>
-  <d2-container class="page">
-     <img src='./image/all.png' />
+  <d2-container>
+    <h3>微逻辑智能物流系统</h3>
+     <img  class="page" src='./image/all.png' />
   </d2-container>
 </template>
 

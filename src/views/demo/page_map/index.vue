@@ -2,14 +2,16 @@
   <el-container class="container" style="background: #fff;">
     <el-aside width="230px" class="aside" style="overflow:scroll;overflow-x: hidden !important;">
       <div class="div-row">
-        <el-button size="mini" type="success" style="margin-top: 10px;" @click="test()">地图查询</el-button>
+        <!-- <el-button size="mini" type="success" style="margin-top: 10px;" @click="test()">地图查询</el-button> -->
+        <el-button type="success" @click="test()">地图查询</el-button>
       </div>
-      <div class="div-row">
+      <!-- <div class="div-row">
         <el-button size="mini" @click="testRouteMode()">测试路线形式</el-button>
       </div>
       <div class="div-row">
         <el-button size="mini" @click="testCoordMode()">测试坐标形式</el-button>
-      </div>
+      </div> -->
+      <!-- <el-divider></el-divider> -->
 
       <el-card style="margin: 10px;">
         <el-collapse id="collapse_nodes" accordion>

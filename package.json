@@ -28,6 +28,7 @@
     "@d2-projects/vue-table-import": "^1.0.0",
     "axios": "^0.19.0",
     "better-scroll": "^1.15.2",
+    "clone": "^2.1.2",
     "core-js": "^3.4.3",
     "d3": "^5.16.0",
     "dayjs": "^1.8.17",

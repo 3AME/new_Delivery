@@ -1,5 +1,6 @@
 <template>
   <el-container class="container" style="margin: 10px;background: #fff;" v-loading="loading">
+
     <el-aside width="230px" class="aside">
       <el-card class="box-card">
         <div slot="header" class="clearfix">
