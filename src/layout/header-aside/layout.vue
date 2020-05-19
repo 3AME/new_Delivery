@@ -1,5 +1,5 @@
 <template>
-  <div class="d2-layout-header-aside-group" :style="styleLayoutMainGroup" :class="{grayMode: grayActive}">
+  <div class="d2-layout-header-aside-group"  :class="{grayMode: grayActive}">
     <!-- 半透明遮罩 -->
     <div class="d2-layout-header-aside-mask"></div>
     <!-- 主体内容 -->

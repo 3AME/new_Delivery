@@ -14,9 +14,9 @@
       <div class="d2-panel-search-item__info-fullTitle" flex-box="0">
         <span>{{item.fullTitle}}</span>
       </div>
-      <div class="d2-panel-search-item__info-path" flex-box="0">
+      <!-- <div class="d2-panel-search-item__info-path" flex-box="0">
         <span>{{item.path}}</span>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>

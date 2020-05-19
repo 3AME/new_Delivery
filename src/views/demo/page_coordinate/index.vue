@@ -1,40 +1,38 @@
 <template>
   <d2-container type="card">
     <template slot="header">
-    <el-row>
-      <el-col :span="3">
+    <el-button-group>
+      <el-col :span="4">
           <el-upload :before-upload="handleUpload" action="default">
-            <el-button  class="btn">
-              上传<i class="el-icon-upload el-icon--right"></i>
+            <el-button type="primary">
+              上传
+              <!-- <i class="el-icon-upload el-icon--right"></i> -->
             </el-button>
           </el-upload>
       </el-col>
-      <el-col :span="3">
-        <el-button @click="inquery"  class="btn">
-          <d2-icon name="search" />查询
+      <el-button @click="inquery" type="success">
+          查询
+          <!-- <i class="fa fa-search" aria-hidden="true"></i> -->
         </el-button>
-      </el-col>
-      <el-col :span="3">
-        <el-button type="info" @click="clear">
+       <el-button type="danger" @click="clear">
           清除数据
-        </el-button>
-      </el-col>
-      <el-col :span="3">
-        <el-button @click="handleDownload" type="success">
-          下载坐标查询表头<i class="el-icon-download el-icon--right"></i>
-        </el-button>
-      </el-col>
-    </el-row>
-     <el-collapse  @change="handleChange" class="yaoqiu">
+          <!-- <i class="fa fa-close" aria-hidden="true"></i> -->
+      </el-button>
+      <el-button @click="handleDownload" type="warning">
+        下载坐标查询表头
+        <!-- <i class="el-icon-download el-icon--right"></i> -->
+      </el-button>
+    </el-button-group>
+    <el-collapse  @change="handleChange" class="yaoqiu">
       <el-collapse-item  name="1" >
-      <template slot="title">
+      <template slot="title" >
       <div class="s">
        坐标查询文件内容要求
       </div>
        </template>
-     <span>
+     <span class="s">
        坐标形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序可任意：<br />
-       <table border="1px" style="border-collapse:collapse">
+       <table border="1px" style="border-collapse:collapse;margin-left:1%">
          <tr>
            <th>type</th>
            <th>name</th>
@@ -51,6 +49,7 @@
            <th>Center_name</th>
          </tr>
        </table>
+        <div class="s">
           type：点的类型，depot——配送中心，customer——客户点，other——其他类型的点<br />
           name：点的名字或者编号<br />
           X：点的横坐标（单位默认：km)<br />
@@ -64,6 +63,7 @@
           Vehicle_number：该车辆类型的数量<br />
           Vehicle_mileage：车辆里程<br />
           Center_name：车辆所在配送中心的名字，对应type=depot的name值
+        </div>
      </span>
     </el-collapse-item>
     </el-collapse>
@@ -258,12 +258,13 @@ export default {
 </script>
 <style scoped>
 .yaoqiu {
-  margin-top: 2%;
+  margin-top: 1%;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
 }
 .s {
   /* color: red; */
   width: 100%;
-  background-color: rgba(173, 175, 68, 0.274);
+  margin-left: 1%;
 }
 .btn {
   margin-left: 5%;
