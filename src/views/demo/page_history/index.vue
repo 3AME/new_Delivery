@@ -1,5 +1,5 @@
 <template>
-  <d2-container>
+  <d2-container >
     <el-table :data="querys" style="width: 100%">
       <!-- <el-table-column type="selection" width="55"></el-table-column> -->
       <el-table-column prop="title" label="标题" width="250px">

@@ -1,5 +1,8 @@
 <template>
   <div class="d2-multiple-page-control-group" flex>
+    <el-button @click="handleToggleAside" class="toggle">
+        <d2-icon name="bars"/>
+    </el-button>
     <div class="d2-multiple-page-control-content" flex-box="1">
       <div class="d2-multiple-page-control-content-inner">
         <d2-contextmenu
@@ -27,7 +30,11 @@
         </el-tabs>
       </div>
     </div>
-    <div class="d2-multiple-page-control-btn" flex-box="0">
+    <d2-header-search @click="handleSearchClick"/>
+    <el-button @click="closeAll">
+        <d2-icon name="times-circle"/>
+    </el-button>
+    <!-- <div class="d2-multiple-page-control-btn" flex-box="0">
       <el-dropdown
         size="default"
         split-button
@@ -53,18 +60,23 @@
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex'
 import Sortable from 'sortablejs'
-
+import d2HeaderSearch from '../header-search'
+import mixinSearch from '../../mixins/search'
 export default {
+  mixins: [
+    mixinSearch
+  ],
   components: {
     D2Contextmenu: () => import('../contextmenu'),
-    D2ContextmenuList: () => import('../contextmenu/components/contentmenuList')
+    D2ContextmenuList: () => import('../contextmenu/components/contentmenuList'),
+    d2HeaderSearch,
   },
   data () {
     return {
@@ -98,6 +110,15 @@ export default {
       'closeAll',
       'openedSort'
     ]),
+    ...mapActions('d2admin/menu', [
+      'asideCollapseToggle'
+    ]),
+    /**
+     * 接收点击切换侧边栏的按钮
+     */
+    handleToggleAside () {
+      this.asideCollapseToggle()
+    },
     /**
      * @description 计算某个标签页是否可关闭
      * @param {Object} page 其中一个标签页
@@ -188,3 +209,11 @@ export default {
   }
 }
 </script>
+<style>
+.toggle {
+  /* margin-bottom:90%; */
+  border-radius: 0px;
+  /* background:transparent;	 */
+	border-width:0px;	
+}
+</style>

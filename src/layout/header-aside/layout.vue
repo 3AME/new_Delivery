@@ -1,36 +1,10 @@
 <template>
-  <div class="d2-layout-header-aside-group"  :class="{grayMode: grayActive}">
+  <div class="d2-layout-header-aside-group" :class="{grayMode: grayActive}">
     <!-- 半透明遮罩 -->
     <div class="d2-layout-header-aside-mask"></div>
     <!-- 主体内容 -->
-    <div class="d2-layout-header-aside-content" flex="dir:top">
-      <!-- 顶栏 -->
-      <div class="d2-theme-header" :style="{ opacity: this.searchActive ? 0.5 : 1 }" flex-box="0" flex>
-        <router-link
-          to="/index"
-          :class="{'logo-group': true, 'logo-transition': asideTransition}"
-          :style="{width: asideCollapse ? asideWidthCollapse : asideWidth}"
-          flex-box="0">
-          <img v-if="asideCollapse" :src="`${$baseUrl}image/theme/${themeActiveSetting.name}/logo/icon-only.png`">
-          <img v-else :src="`${$baseUrl}image/theme/${themeActiveSetting.name}/logo/all.png`">
-        </router-link>
-        <div class="toggle-aside-btn" @click="handleToggleAside" flex-box="0">
-          <d2-icon name="bars"/>
-        </div>
-        <d2-menu-header flex-box="1"/>
-        <!-- 顶栏右侧 -->
-        <div class="d2-header-right" flex-box="0">
-          <!-- 如果你只想在开发环境显示这个按钮请添加 v-if="$env === 'development'" -->
-          <d2-header-search @click="handleSearchClick"/>
-          <!-- <d2-header-log/> -->
-          <!-- <d2-header-fullscreen/> -->
-          <d2-header-theme/>
-          <!-- <d2-header-size/> -->
-          <!-- <d2-header-locales/> -->
-          <!-- <d2-header-color/> -->
-          <!-- <d2-header-user/> -->
-        </div>
-      </div>
+    <div class="d2-layout-header-aside-content" flex="dir:left">
+      
       <!-- 下面 主体 -->
       <div class="d2-theme-container" flex-box="1" flex>
         <!-- 主体 侧边栏 -->
@@ -82,7 +56,7 @@ import d2MenuHeader from './components/menu-header'
 import d2Tabs from './components/tabs'
 // import d2HeaderFullscreen from './components/header-fullscreen'
 // import d2HeaderLocales from './components/header-locales'
-import d2HeaderSearch from './components/header-search'
+
 // import d2HeaderSize from './components/header-size'
 import d2HeaderTheme from './components/header-theme'
 // import d2HeaderUser from './components/header-user'
@@ -97,13 +71,13 @@ export default {
   ],
   components: {
     d2MenuSide,
-    d2MenuHeader,
+    // d2MenuHeader,
     d2Tabs,
     // d2HeaderFullscreen,
     // d2HeaderLocales,
-    d2HeaderSearch,
+    // d2HeaderSearch,
     // d2HeaderSize,
-    d2HeaderTheme
+    // d2HeaderTheme
     // d2HeaderUser,
     // d2HeaderLog,
     // d2HeaderColor
