@@ -33,15 +33,6 @@
       </el-table-column>
       <el-table-column align="right">
         <template slot="header">
-          <!-- <el-popover ref="popover1" placement="bottom" width="250" v-model="popoverVisible">
-            <p>确定删除全部查询历史记录吗？</p>
-            <div style="text-align: right; margin: 0">
-              <el-button size="mini" @click="popoverVisible = false">取消</el-button>
-              <el-button size="mini" type="primary" @click="deleteAll()">确定</el-button>
-            </div>
-          </el-popover> -->
-          <!-- <el-input v-model="assetTypeSearch" size="mini" placeholder="输入关键字搜索" width="120"/> -->
-          <!-- v-popover:popover1 -->
           <el-button
             size="mini"
             type="danger"

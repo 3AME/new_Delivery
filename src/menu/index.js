@@ -23,7 +23,7 @@ export const menuHeader = supplementPath([
     children: [
       { path: '/page_coordinate', icon: 'folder-o', title: '坐标查询' },
       { path: '/page2', icon: 'folder-o',title:  '路线查询' },
-      { path: '/page_map',icon: 'folder-o',  title: '选择地图' },
+      { path: '/page_map',icon: 'folder-o',  title: '地图选择' },
       { path: '/page_history', icon: 'folder-o', title: '查询历史' }
     ]
   },
@@ -46,7 +46,7 @@ export const menuAside = supplementPath([
     children: [
       { path: '/page_coordinate', title: '坐标查询' },
       { path: '/page2', title: '路线查询' },
-      { path: '/page_map', title: '选择地图' },
+      { path: '/page_map', title: '地图选择' },
       { path: '/page_history', title: '查询历史' }
     ]
   },
