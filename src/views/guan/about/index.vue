@@ -67,10 +67,16 @@
         </div>
       </div>
     </div>
-    <template slot="footer">温馨提示：为了更好更快的帮您解决问题，请在邮件中留下联系方式、详细问题描述、相关截图等信息。</template>
+    <template slot="footer">
+         <div class="alert alert-primary  alert-dismissible fade show" role="alert">
+                如果你对此项目感兴趣
+                请加入我们的爱好者团队群
+                <strong>822843622</strong>
+        </div>
+    </template>
   </d2-container>
 </template>
-
+<style src="../../../assets/style/bootstrap/css/bootstrap.min.css" scoped></style>
 
 <style scoped>
 /* @import url("http://cdn.bootstrapmb.com/bootstrap/4.3.1/css/bootstrap.min.css"); */

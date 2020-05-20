@@ -19,9 +19,9 @@ export const menuHeader = supplementPath([
   { path: '/index', title: '首页', icon: 'home' },
   {
     title: '配送查询',
-    icon: 'fa fa-star',
+    icon: 'search',
     children: [
-      { path: '/page_coordinate', icon: 'folder-o', title: '坐标查询' },
+      { path: '/page_coordinate', icon: 'crosshairs', title: '坐标查询' },
       { path: '/page2', icon: 'folder-o',title:  '路线查询' },
       { path: '/page_map',icon: 'folder-o',  title: '选择地图' },
       { path: '/page_history', icon: 'folder-o', title: '查询历史' }
@@ -29,7 +29,7 @@ export const menuHeader = supplementPath([
   },
   {
     title: '关于',
-    icon: 'folder-o',
+    icon: 'archive',
     children: [
       { path: '/about', icon: 'folder-o', title: '关于我们' },
       { path: '/faq',icon: 'folder-o',  title: '常见问题' },

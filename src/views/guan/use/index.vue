@@ -1,6 +1,6 @@
 <template>
   <d2-container>
-    <template slot="header">软件使用手册</template>
+    <!-- <template slot="header">软件使用手册</template> -->
     <div class="row">
       <div class="col-12">
         <div class="card m-b-30">
@@ -163,7 +163,6 @@
     <!-- end row -->
 
     <!-- end row -->
-    <template slot="footer">温馨提示：如果使用过程中出现任何问题，您可以联系我们帮你解决！</template>
   </d2-container>
 </template>
 <style src="../../../assets/style/bootstrap/css/metismenu.min.css" scoped></style>
