@@ -1,5 +1,5 @@
 <template>
-  <d2-container >
+  <!-- <d2-container >
     <template slot="header">常见的一些问题</template>
     <h3 style="color:blue">点击查询结果不显示？</h3>
             <p>
@@ -14,5 +14,118 @@
                 解决方案：可能是因为运行环境的问题导致响应时间的差异，请耐心等待。也可能是因为数据量大，查询需要一定时间。
             </p>
     <template slot="footer">如果你遇到了上述没有提到的问题，并且暂无法解决的话，请将遇到的问题发送到邮箱lafhhh@outlook.com，我们将及时为你解决。</template>
+  </d2-container> -->
+
+  <d2-container >
+    <template slot="header">常见的一些问题</template>
+    <link href="http://cdn.bootstrapmb.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" type="text/css">                  
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="text-center">
+                    <h5>Frequently asked Questions</h5>
+                    <p class="text-muted">If several languages coalesce, the grammar of the resulting language is more simple and regular than that of the individual languages will be more simple and regular.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row m-t-30">
+            <div class="col-lg-4">
+                <div class="card faq-box border-success">
+                    <div class="card-body">
+                        <div class="faq-icon float-right">
+                            <i class="fas fa-question-circle font-24 mt-2 text-success"></i>
+                        </div>
+                        <h5 class="text-success">01.</h5>
+                        <h5 class="font-16 mb-3 mt-4">What is Lorem Ipsum?</h5>
+                        <p class="text-muted mb-0">Phasellus eros odio Curabitur hendrerit neque at vestibulum consequat Cras nibh ipsum tempor ac ex eget euismod auctor mi Ut condimentum eu elit eget cursus Fusce eu consequat nisl Praesent vel dictum enim ac convallis dolor Proin in velit vel enim laoreet cursus.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card faq-box border-primary">
+                    <div class="card-body">
+                        <div class="faq-icon float-right">
+                            <i class="fas fa-question-circle font-24 mt-2 text-primary"></i>
+                        </div>
+                        <h5 class="text-primary">02.</h5>
+                        <h5 class="font-16 mb-3 mt-4">Where can I get some?</h5>
+                        <p class="text-muted mb-0">Aliquam sed efficitur urna Integer mattis metus risus egestas hendrerit condimentum dolor auctor quis In vitae dictum eros 
+                            Vestibulum aliquet tortor sapien 
+                            ut sodales massa faucibus nec cras tristique condintum rsum a tincidunt Ut lacinia ornare tempor.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card faq-box border-warning">
+                    <div class="card-body">
+                        <div class="faq-icon float-right">
+                            <i class="fas fa-question-circle font-24 mt-2 text-warning"></i>
+                        </div>
+                        <h5 class="text-warning">03.</h5>
+                        <h5 class="font-16 mb-3 mt-4">Where does it come from?</h5>
+                        <p class="text-muted mb-0">Quisque aliquet egestas vel tincidunt sem pretium mattis suspendisse euismod at elit eu tempor Nunc ac vehicula dolor Maecenas
+                              at tincidunt accumsan nibh Sed dapibus
+                              augue quis dignissim ultrices turpis mauris porta lectus sed ullamcorper leo risus in metus.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="card faq-box border-danger">
+                                    <div class="card-body">
+                                        <div class="faq-icon float-right">
+                                            <i class="fas fa-question-circle font-24 mt-2 text-danger"></i>
+                                        </div>
+                                        <h5 class="text-danger">04.</h5>
+                                        <h5 class="font-16 mb-3 mt-4">Why do we use it?</h5>
+                                        <p class="text-muted mb-0">Nullam odio justo ullamcorper aliquet ex sit amet efficitur facilisis ligula Aenean euismod vel tellus ac feugiat Morbi finibus nisl 
+                                            in dui facilisis
+                                             ut iaculis urna facilisis Suspendisse potenti Proin interdum nulla nulla sed faucibus Integer sapien pretium vestibulum.</p>
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="col-lg-4">
+                                <div class="card faq-box border-info">
+                                    <div class="card-body">
+                                        <div class="faq-icon float-right">
+                                            <i class="fas fa-question-circle font-24 mt-2 text-info"></i>
+                                        </div>
+                                        <h5 class="text-info">05.</h5>
+                                        <h5 class="font-16 mb-3 mt-4">Why do we use it?</h5>
+                                        <p class="text-muted mb-0">Fermentum molestie leo at dignissim mi Donec at ex placerat pretium ex vitae porta orci Pellentesque augue lacus
+                                             dignissim tristique aliquam in
+                                             placerat feugiat sapien Fusce a enim faucibus lacinia felis a vulputate eros Aenean malesuada et ex et laoreet.</p>
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="col-lg-4">
+                                <div class="card faq-box border-dark">
+                                    <div class="card-body">
+                                        <div class="faq-icon float-right">
+                                            <i class="fas fa-question-circle font-24 mt-2 text-dark"></i>
+                                        </div>
+                                        <h5 class="text-dark">06.</h5>
+                                        <h5 class="font-16 mb-3 mt-4">Where does it come from?</h5>
+                                        <p class="text-muted mb-0">Suspendisse sapien urna ullamcorper vel erat at suscipit dapibus dolor Proin sodales dictum ante Vivamus non dictum metus
+                                             Sed quis leo non massa viverra rutrum in a elit Praesent sit amet rhoncus justo Mauris pharetra mollis
+                                              enim non efficitur ipsum porttitor vitae.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                <!-- container-fluid -->
+
+    <template slot="footer">如果你遇到了上述没有提到的问题，并且暂无法解决的话，请将遇到的问题发送到邮箱lafhhh@outlook.com，我们将及时为你解决。</template>
   </d2-container>
 </template>
+
+<style lang="css">
+@import "~@/assets/style/bootstrap/css/metismenu.min.css";
+@import "~@/assets/style/bootstrap/css/icons.css" ;
+@import "~@/assets/style/bootstrap/css/style.css" ;
+</style>
