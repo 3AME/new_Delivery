@@ -54,7 +54,6 @@
 import * as xlsx from "xlsx";
 import { ipcRenderer } from "electron";
 export default {
-  inject: ["reload"], //注入依赖
   data() {
     return {
       popoverVisible: false
@@ -78,9 +77,6 @@ export default {
     // this.$store.dispatch('d2admin/historyLoad', null)
   },
   methods: {
-    refresh() {
-      this.reload();
-    },
     deleteAll() {
       this.$confirm("此操作将删除全部历史记录, 是否继续?", "警告", {
         confirmButtonText: "确定",
