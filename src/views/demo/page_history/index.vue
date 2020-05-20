@@ -1,5 +1,5 @@
 <template>
-  <d2-container >
+  <d2-container>
     <el-table :data="querys" style="width: 100%">
       <!-- <el-table-column type="selection" width="55"></el-table-column> -->
       <el-table-column prop="title" label="标题" width="350px">
@@ -39,15 +39,11 @@
               <el-button size="mini" @click="popoverVisible = false">取消</el-button>
               <el-button size="mini" type="primary" @click="deleteAll()">确定</el-button>
             </div>
-          </el-popover> -->
+          </el-popover>-->
           <!-- <el-input v-model="assetTypeSearch" size="mini" placeholder="输入关键字搜索" width="120"/> -->
           <!-- v-popover:popover1 -->
-          <el-button
-            size="mini"
-            type="danger"
-            style="margin: 10px;"
-            @click="deleteAll()"
-          >全部删除</el-button>
+          <el-button @click="refresh">刷新当前界面</el-button>
+          <el-button size="mini" type="danger" style="margin: 10px;" @click="deleteAll()">全部删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -55,20 +51,21 @@
 </template>
 
 <script>
-import * as xlsx from 'xlsx'
-import { ipcRenderer } from 'electron'
+import * as xlsx from "xlsx";
+import { ipcRenderer } from "electron";
 export default {
-  data () {
+  inject: ["reload"], //注入依赖
+  data() {
     return {
       popoverVisible: false
-    }
+    };
   },
   computed: {
-    querys () {
-      return this.$store.state.d2admin.query.querys
+    querys() {
+      return this.$store.state.d2admin.query.querys;
     }
   },
-  activated () {
+  activated() {
     // ipcRenderer.send('open-save-dialog', {
     //   method: 'get',
     //   querys: this.querys
@@ -81,24 +78,29 @@ export default {
     // this.$store.dispatch('d2admin/historyLoad', null)
   },
   methods: {
-    deleteAll () {
-      this.$confirm('此操作将删除全部历史记录, 是否继续?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$store.commit('d2admin/DELETE_ALL_QUERY_DATA')
-        this.$notify({
-          title: '成功',
-          message: '全部删除成功',
-          type: 'success'
-        })
-      }).catch(() => {
-        this.$notify.info({
-          title: '消息',
-          message: '已取消删除'
-        })
+    refresh() {
+      this.reload();
+    },
+    deleteAll() {
+      this.$confirm("此操作将删除全部历史记录, 是否继续?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
+        .then(() => {
+          this.$store.commit("d2admin/DELETE_ALL_QUERY_DATA");
+          this.$notify({
+            title: "成功",
+            message: "全部删除成功",
+            type: "success"
+          });
+        })
+        .catch(() => {
+          this.$notify.info({
+            title: "消息",
+            message: "已取消删除"
+          });
+        });
       // console.log('popoverVisible111=' + this.popoverVisible)
       // this.popoverVisible = false
       // console.log('popoverVisible=' + this.popoverVisible)
@@ -109,87 +111,87 @@ export default {
       //   type: 'success'
       // })
     },
-    queryProblem (index, row) {
+    queryProblem(index, row) {
       this.$router.push({
-        name: 'page_result',
+        name: "page_result",
         query: {
           problem: row.problem
         }
-      })
+      });
     },
-    deleteQuery (index, row) {
-      this.$store.commit('d2admin/DELETE_QUERY_DATA', index)
+    deleteQuery(index, row) {
+      this.$store.commit("d2admin/DELETE_QUERY_DATA", index);
       this.$notify({
-        title: '成功',
-        message: '删除' + row.title + '成功',
-        type: 'success'
-      })
+        title: "成功",
+        message: "删除" + row.title + "成功",
+        type: "success"
+      });
     },
-    saveQuery (index, row) {
-      var problem = row.problem
-      var table = []
-      var edges = problem.edges
+    saveQuery(index, row) {
+      var problem = row.problem;
+      var table = [];
+      var edges = problem.edges;
 
       if (!problem.routeMode) {
-        let row0 = ['物流中心(' + edges[0].x + ', ' + edges[0].y + ')']
-        table.push(row0)
+        let row0 = ["物流中心(" + edges[0].x + ", " + edges[0].y + ")"];
+        table.push(row0);
 
-        var header1 = ['配送节点', '横坐标x(km)', '纵坐标y(km)', '需求量q(t)']
+        var header1 = ["配送节点", "横坐标x(km)", "纵坐标y(km)", "需求量q(t)"];
 
-        table.push(header1)
+        table.push(header1);
 
         problem.nodes.forEach((node, i) => {
-          if (node.type === 'customer') {
-            let row = []
-            row.push(node.id)
-            row.push(edges[i].x)
-            row.push(edges[i].y)
-            row.push(node.demand)
-            table.push(row)
+          if (node.type === "customer") {
+            let row = [];
+            row.push(node.id);
+            row.push(edges[i].x);
+            row.push(edges[i].y);
+            row.push(node.demand);
+            table.push(row);
           }
-        })
+        });
       } else {
-        let row0 = ['各配送点与配送中心的距离（/KM）']
-        table.push(row0)
+        let row0 = ["各配送点与配送中心的距离（/KM）"];
+        table.push(row0);
 
-        let header1 = ['配送节点']
+        let header1 = ["配送节点"];
         problem.nodes.forEach(node => {
-          header1.push(node.id)
-        })
+          header1.push(node.id);
+        });
         // for (let i = 0; i < problem.num_node; i++) {
         //   header1.push(i)
         // }
-        table.push(header1)
+        table.push(header1);
 
         // init table
         for (let i = 0; i < problem.nodes.length; i++) {
-          let row = []
-          row.push(i)
+          let row = [];
+          row.push(i);
           for (var j = 0; j < problem.nodes.length; j++) {
             if (i === j) {
-              row.push(0)
+              row.push(0);
             } else {
-              row.push('')
+              row.push("");
             }
           }
-          table.push(row)
+          table.push(row);
         }
 
         for (let i = 0; i < problem.nodes.length; i++) {
-          let row = table[i + 2]
-          edges.forEach(function (item) {
+          let row = table[i + 2];
+          edges.forEach(function(item) {
             if (item.u === i) {
-              row[item.v + 1] = item.w
-              table[item.v + 2][item.u + 1] = item.w
+              row[item.v + 1] = item.w;
+              table[item.v + 2][item.u + 1] = item.w;
             }
-          })
+          });
         }
 
-        table.push([])
+        table.push([]);
 
-        table.push(['各配送点需求量（T）'])
-        var row1 = ['配送点']
-        var row2 = ['需求量（T)']
+        table.push(["各配送点需求量（T）"]);
+        var row1 = ["配送点"];
+        var row2 = ["需求量（T)"];
         // for (let i = 0; i < problem.nodes.length; i++) {
         //   if (problem.nodes[i] === 'customer') {
         //     row1.push(problem.nodes[i].id)
@@ -197,63 +199,63 @@ export default {
         //   }
         // }
         problem.nodes.forEach((node, i) => {
-          if (node.type === 'customer') {
-            row1.push(node.id)
-            row2.push(node.demand)
+          if (node.type === "customer") {
+            row1.push(node.id);
+            row2.push(node.demand);
           }
-        })
-        table.push(row1)
-        table.push(row2)
+        });
+        table.push(row1);
+        table.push(row2);
       }
 
       // 创建book
-      var wb = xlsx.utils.book_new()
+      var wb = xlsx.utils.book_new();
       // json转sheet
-      var ws = xlsx.utils.aoa_to_sheet(table)
+      var ws = xlsx.utils.aoa_to_sheet(table);
       // sheet写入book
-      xlsx.utils.book_append_sheet(wb, ws, 'query')
+      xlsx.utils.book_append_sheet(wb, ws, "query");
       // 输出
-      ipcRenderer.send('open-save-dialog', row.title)
-      ipcRenderer.once('selectedItem', function (e, path) {
+      ipcRenderer.send("open-save-dialog", row.title);
+      ipcRenderer.once("selectedItem", function(e, path) {
         if (path != null) {
-          xlsx.writeFile(wb, path)
+          xlsx.writeFile(wb, path);
         }
-      })
+      });
     },
-    saveQuery2 (index, row) {
-      var problem = row.problem
-      var table = []
-      var edges = problem.edges
-      var row0 = ['物流中心(' + edges[0].x + ', ' + edges[0].y + ')']
-      table.push(row0)
+    saveQuery2(index, row) {
+      var problem = row.problem;
+      var table = [];
+      var edges = problem.edges;
+      var row0 = ["物流中心(" + edges[0].x + ", " + edges[0].y + ")"];
+      table.push(row0);
 
-      var header1 = ['配送节点', '横坐标x(km)', '纵坐标y(km)', '需求量q(t)']
+      var header1 = ["配送节点", "横坐标x(km)", "纵坐标y(km)", "需求量q(t)"];
 
-      table.push(header1)
+      table.push(header1);
 
       for (var i = 1; i < edges.length; i++) {
-        let row = []
-        row.push(i)
-        row.push(edges[i].x)
-        row.push(edges[i].y)
-        row.push(problem.customers[i - 1])
-        table.push(row)
+        let row = [];
+        row.push(i);
+        row.push(edges[i].x);
+        row.push(edges[i].y);
+        row.push(problem.customers[i - 1]);
+        table.push(row);
       }
 
       // 创建book
-      var wb = xlsx.utils.book_new()
+      var wb = xlsx.utils.book_new();
       // json转sheet
-      var ws = xlsx.utils.aoa_to_sheet(table)
+      var ws = xlsx.utils.aoa_to_sheet(table);
       // sheet写入book
-      xlsx.utils.book_append_sheet(wb, ws, 'query')
+      xlsx.utils.book_append_sheet(wb, ws, "query");
       // 输出
-      ipcRenderer.send('open-save-dialog', row.title)
-      ipcRenderer.once('selectedItem', function (e, path) {
+      ipcRenderer.send("open-save-dialog", row.title);
+      ipcRenderer.once("selectedItem", function(e, path) {
         if (path != null) {
-          xlsx.writeFile(wb, path)
+          xlsx.writeFile(wb, path);
         }
-      })
+      });
     }
   }
-}
+};
 </script>

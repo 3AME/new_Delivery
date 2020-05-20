@@ -1,8 +1,9 @@
 <template>
-  <el-container class="container">
-    <el-aside width="230px" class="aside">
+  <el-container class="container" style="background: #fff;">
+    <el-aside width="230px" class="aside" style="overflow:scroll;overflow-x: hidden !important;">
       <div class="div-row">
         <!-- <el-button size="mini" type="success" style="margin-top: 10px;" @click="test()">地图查询</el-button> -->
+        <el-button @click="refresh">刷新当前界面</el-button>
         <el-button type="success" @click="test()">地图查询</el-button>
       </div>
       <!-- <div class="div-row">
@@ -10,100 +11,112 @@
       </div>
       <div class="div-row">
         <el-button size="mini" @click="testCoordMode()">测试坐标形式</el-button>
-      </div> -->
+      </div>-->
       <!-- <el-divider></el-divider> -->
 
-      <el-collapse id="collapse_nodes" accordion>
-        <el-collapse-item title="车辆列表" name="0">
-          <!-- <div v-if="vehicles.length == 0" class="box-card">
+      <el-card style="margin: 10px;">
+        <el-collapse id="collapse_nodes" accordion>
+          <el-collapse-item title="车辆列表" name="0">
             <div style="text-align: center;">
-              <el-button @click="addVehicle()" style="margin: 4px;" type="text">添加车辆</el-button>
-            </div>
-            <div style="text-align: center;">空空如也</div>
-          </div> -->
-
-          <!-- { id: 1, depot: 0, load: 2, mileage: 35, count: 1 }, -->
-          <el-collapse id="collapse_nodes" accordion>
-            <div style="text-align: center;">
-              <el-button @click="addVehicle()" style="margin: 4px;" type="text">添加车辆</el-button>
+              <el-button @click="addVehicle()" size="mini" style="margin: 8px;" type="primary">添加车辆</el-button>
             </div>
             <div v-if="vehicles.length == 0" class="box-card">
-            <div style="text-align: center;">空空如也</div>
-          </div>
-            <el-collapse-item
-              v-for="(vehicle, index) in vehicles"
-              :key="vehicle.id"
-              :title="'车辆' + vehicle.id"
-              :name="index"
-            >
-              <div style="text-align: center;">
-                车辆载重
-                <el-input-number v-model="vehicle.load" :min="1" :max="5" label="车辆载重" size="mini"></el-input-number>
-              </div>
-              <div style="text-align: center;">
-                车辆里程
-                <el-input-number
-                  v-model="vehicle.mileage"
-                  :step="5"
-                  :min="20"
-                  :max="50"
-                  label="车辆里程"
-                  size="mini"
-                ></el-input-number>
-              </div>
-              <div style="text-align: center;">
-                车辆数量
-                <el-input-number v-model="vehicle.count" :min="1" :max="5" label="车辆里程" size="mini"></el-input-number>
-              </div>
-              <div style="text-align: center;">
-                <i
-                  @click="removeVehicle(vehicle)"
-                  class="i-tag el-icon-delete"
-                  style="font-size: 16px;"
-                ></i>
-              </div>
-            </el-collapse-item>
-          </el-collapse>
-        </el-collapse-item>
+              <div style="text-align: center;">空空如也</div>
+            </div>
+            <el-collapse id="collapse_nodes" accordion>
+              <el-collapse-item
+                v-for="(vehicle, index) in vehicles"
+                :key="vehicle.id"
+                :title="'车辆' + vehicle.id"
+                :name="index"
+                style="margin-left: 8px;margin-right: 8px;"
+              >
+                <div style="text-align: center;">
+                  车辆载重
+                  <el-input-number
+                    v-model="vehicle.load"
+                    :min="1"
+                    :max="5"
+                    label="车辆载重"
+                    size="mini"
+                  ></el-input-number>
+                </div>
+                <div style="text-align: center;">
+                  车辆里程
+                  <el-input-number
+                    v-model="vehicle.mileage"
+                    :step="5"
+                    :min="20"
+                    :max="50"
+                    label="车辆里程"
+                    size="mini"
+                  ></el-input-number>
+                </div>
+                <div style="text-align: center;">
+                  车辆数量
+                  <el-input-number
+                    v-model="vehicle.count"
+                    :min="1"
+                    :max="5"
+                    label="车辆里程"
+                    size="mini"
+                  ></el-input-number>
+                </div>
+                <div style="text-align: center;">
+                  <i
+                    @click="removeVehicle(vehicle)"
+                    class="i-tag el-icon-delete"
+                    style="font-size: 16px;"
+                  ></i>
+                </div>
+              </el-collapse-item>
+            </el-collapse>
+          </el-collapse-item>
 
-        <el-collapse-item title="地点列表" name="1">
-          <div v-if="polylinePath.length > 0" style="text-align: center;">
-            <el-button @click="clearTags()" style="margin: 4px;" type="text">清空</el-button>
-          </div>
-          <div v-if="polylinePath.length == 0" class="box-card">
-            <!-- <el-divider></el-divider> -->
-            <div style="text-align: center;">空空如也</div>
-          </div>
+          <el-collapse-item title="地点列表" name="1">
+            <div v-if="polylinePath.length > 0" style="text-align: center;">
+              <el-button size="mini" type="danger" style="margin: 8px;" @click="clearTags()">清空</el-button>
+            </div>
+            <div v-if="polylinePath.length == 0" class="box-card">
+              <!-- <el-divider></el-divider> -->
+              <div style="text-align: center;">空空如也</div>
+            </div>
 
-          <el-collapse id="collapse_nodes" v-else v-model="activeName" accordion>
-            <el-collapse-item
-              v-for="(path, index) in polylinePath"
-              :key="path.name"
-              :title="path.name"
-              :name="index"
-            >
-              <div class="div-tag" style="text-align: center;" v-if="index == 0">中心节点</div>
-              <div class="div-tag" style="text-align: center;" v-else>子节点</div>
-              <div style="text-align: center;" v-if="index != 0">
-                <!-- 需求量 -->
-                <el-select
-                  v-model="path.need"
-                  filterable
-                  allow-create
-                  default-first-option
-                  placeholder="需求量"
-                  size="mini"
-                >
-                  <el-option v-for="item in need_options" :key="item" :label="item" :value="item"></el-option>
-                </el-select>
-              </div>
-              <div style="text-align: center;">
-                <i @click="handleClose(path)" class="i-tag el-icon-delete" style="font-size: 16px;"></i>
-              </div>
-            </el-collapse-item>
-          </el-collapse>
-        </el-collapse-item>
-      </el-collapse>
+            <el-collapse id="collapse_nodes" v-else v-model="activeName" accordion>
+              <el-collapse-item
+                v-for="(path, index) in polylinePath"
+                :key="path.name"
+                :title="path.name"
+                :name="index"
+                style="margin-left: 8px;margin-right: 8px;"
+              >
+                <div class="div-tag" style="text-align: center;" v-if="index == 0">中心节点</div>
+                <div class="div-tag" style="text-align: center;" v-else>子节点</div>
+                <div style="text-align: center;" v-if="index != 0">
+                  <!-- 需求量 -->
+                  <el-select
+                    v-model="path.need"
+                    filterable
+                    allow-create
+                    default-first-option
+                    placeholder="需求量"
+                    size="mini"
+                  >
+                    <el-option v-for="item in need_options" :key="item" :label="item" :value="item"></el-option>
+                  </el-select>
+                </div>
+                <div style="text-align: center;">
+                  <i
+                    @click="handleClose(path)"
+                    class="i-tag el-icon-delete"
+                    style="font-size: 16px;"
+                  ></i>
+                </div>
+              </el-collapse-item>
+            </el-collapse>
+          </el-collapse-item>
+        </el-collapse>
+      </el-card>
     </el-aside>
     <el-container>
       <div style="height:100%; width: 100%">
@@ -188,6 +201,7 @@ import BmNavigation from "vue-baidu-map/components/controls/Navigation";
 import BmGeolocation from "vue-baidu-map/components/controls/Geolocation";
 import BmMarker from "vue-baidu-map/components/overlays/Marker";
 export default {
+  inject: ["reload"], //注入依赖
   name: "ele-form-bmap",
   components: {
     BaiduMap,
@@ -237,6 +251,9 @@ export default {
     };
   },
   methods: {
+    refresh() {
+      this.reload();
+    },
     test() {
       if (this.polylinePath.length < 3) {
         this.$notify({
@@ -675,17 +692,17 @@ export default {
       var problem = {
         routeMode: false,
         nodes: [
-          { x: 14.2, y: 13.1, type: 'depot', id: 0, demand: '任意' },
-          { x: 12.8, y: 8.5, type: 'customer', id: 1, demand: 1.7 },
-          { x: 18.4, y: 3.4, type: 'customer', id: 2, demand: 0.8 },
-          { x: 15.4, y: 16.6, type: 'customer', id: 3, demand: 1.3 },
-          { x: 18.9, y: 15.2, type: 'customer', id: 4, demand: 2.8 },
-          { x: 15.5, y: 11.6, type: 'customer', id: 5, demand: 1.9 },
-          { x: 3.9, y: 10.6, type: 'customer', id: 6, demand: 3.5 },
-          { x: 10.6, y: 7.6, type: 'customer', id: 7, demand: 0.9 },
-          { x: 8.6, y: 8.4, type: 'customer', id: 8, demand: 0.3 },
-          { x: 12.5, y: 2.1, type: 'customer', id: 9, demand: 1.2 },
-          { x: 13.8, y: 5.2, type: 'other', id: 10, demand: '任意' }
+          { x: 14.2, y: 13.1, type: "depot", id: 0, demand: "任意" },
+          { x: 12.8, y: 8.5, type: "customer", id: 1, demand: 1.7 },
+          { x: 18.4, y: 3.4, type: "customer", id: 2, demand: 0.8 },
+          { x: 15.4, y: 16.6, type: "customer", id: 3, demand: 1.3 },
+          { x: 18.9, y: 15.2, type: "customer", id: 4, demand: 2.8 },
+          { x: 15.5, y: 11.6, type: "customer", id: 5, demand: 1.9 },
+          { x: 3.9, y: 10.6, type: "customer", id: 6, demand: 3.5 },
+          { x: 10.6, y: 7.6, type: "customer", id: 7, demand: 0.9 },
+          { x: 8.6, y: 8.4, type: "customer", id: 8, demand: 0.3 },
+          { x: 12.5, y: 2.1, type: "customer", id: 9, demand: 1.2 },
+          { x: 13.8, y: 5.2, type: "other", id: 10, demand: "任意" }
         ],
         edges: "euc2d",
         vehicles: [
@@ -698,7 +715,7 @@ export default {
         distancePrior: 5, // 路程加权
         timePrior: 1, // 用时加权
         loadPrior: 4 // 满载率加权
-      }
+      };
       console.log(problem);
       this.$router.push({
         name: "page_result",

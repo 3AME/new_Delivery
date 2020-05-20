@@ -1,5 +1,5 @@
 {
-  "name": "d2-admin-start-kit",
+  "name": "micrologic",
   "version": "1.10.0",
   "scripts": {
     "serve": "vue-cli-service serve --open",
