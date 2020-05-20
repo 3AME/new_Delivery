@@ -175,7 +175,18 @@
           />
 
           <bm-view style="width:100%;height:100%"></bm-view>
-          
+             <bm-driving
+            v-for="(item, index) in drivingPath"
+            :key="-index - 1"
+            :start="item.start"
+            :end="item.end"
+            startCity="成都市"
+            endCity="成都市"
+            :auto-viewport="true"
+            @onpolylinesset="onPolylinesSet"
+            @resultshtmlset="resultsHtmlSet"
+            @searchcomplete="searchComplete"
+          />
         </baidu-map>
       </div>
     </el-container>
