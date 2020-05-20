@@ -2,7 +2,7 @@
   <d2-container type="card">
     <template slot="header">
       <el-button-group>
-        <el-col :span="4">
+        <el-col :span="3.2">
           <el-upload :before-upload="handleUpload" action="default">
             <el-button type="primary">
               上传
@@ -22,7 +22,7 @@
           下载坐标查询表头
           <!-- <i class="el-icon-download el-icon--right"></i> -->
         </el-button>
-        <el-button @click="refresh">刷新当前界面</el-button>
+        <el-button @click="refresh">刷新</el-button>
       </el-button-group>
       <el-collapse @change="handleChange" class="yaoqiu">
         <el-collapse-item name="1">

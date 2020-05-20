@@ -1,8 +1,10 @@
 <template>
   <div class="d2-multiple-page-control-group" flex>
+    <div  class="d2-multiple-page-control-content-inner">
     <el-button @click="handleToggleAside" class="toggle">
         <d2-icon name="bars"/>
     </el-button>
+    </div>
     <div class="d2-multiple-page-control-content" flex-box="1">
       <div class="d2-multiple-page-control-content-inner">
         <d2-contextmenu
@@ -30,10 +32,18 @@
         </el-tabs>
       </div>
     </div>
-    <d2-header-search @click="handleSearchClick"/>
-    <el-button @click="closeAll">
+        
+    <div  class="d2-multiple-page-control-content-inner">
+       <el-button-group>
+         
+    <el-button @click="closeAll" >
+      
         <d2-icon name="times-circle"/>
     </el-button>
+    <d2-header-search @click="handleSearchClick" class="toggle"/>
+      </el-button-group>
+      
+    </div>
     <!-- <div class="d2-multiple-page-control-btn" flex-box="0">
       <el-dropdown
         size="default"
@@ -213,6 +223,6 @@ export default {
   /* margin-bottom:90%; */
   border-radius: 0px;
   /* background:transparent;	 */
-	border-width:0px;	
+	/* border-width:0px;	 */
 }
 </style>

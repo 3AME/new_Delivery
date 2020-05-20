@@ -42,7 +42,7 @@
           </el-popover>-->
           <!-- <el-input v-model="assetTypeSearch" size="mini" placeholder="输入关键字搜索" width="120"/> -->
           <!-- v-popover:popover1 -->
-          <el-button @click="refresh">刷新当前界面</el-button>
+          <!-- <el-button @click="refresh">刷新当前界面</el-button> -->
           <el-button size="mini" type="danger" style="margin: 10px;" @click="deleteAll()">全部删除</el-button>
         </template>
       </el-table-column>

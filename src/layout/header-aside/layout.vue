@@ -119,7 +119,8 @@ export default {
      */
     handleToggleAside () {
       this.asideCollapseToggle()
-    }
+    },
+    
   }
 }
 </script>

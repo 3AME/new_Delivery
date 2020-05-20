@@ -1,6 +1,6 @@
 <template>
   <d2-container>
-    <template slot="header">微逻辑配送</template>
+    <!-- <template slot="header">微逻辑配送</template> -->
     <div class="row">
       <div class="col-lg-12">
         <div class="card">

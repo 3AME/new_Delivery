@@ -17,7 +17,7 @@
   </d2-container> -->
 
   <d2-container >
-    <template slot="header">常见的一些问题</template>
+    <!-- <template slot="header">常见的一些问题</template> -->
      <div class="row">
       <div class="col-lg-12">
         <div class="card">
