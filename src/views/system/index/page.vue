@@ -1,7 +1,16 @@
 <template>
   <d2-container>
-    <h3>微逻辑智能物流系统</h3>
-     <img  class="page" src='./image/all.png' />
+    <div class="card m-b-30">
+        <div class="card-body">
+            <img class="rounded-circle" style="width: 300px;height: 300px;margin-top: 5%;" alt="200x200" src="./image/all.png" data-holder-rendered="true">
+            <div class="mytext">
+              <h3 class="mt-0" >MicroLogic</h3>
+            <h3 class="mt-0 header-title">微逻辑智能物流系统</h3>
+            <p class="sub-title">使用Node与Electron-Vue开发，GA智能优化算法提供支持</p>
+            </div>
+            
+        </div>
+    </div>
   </d2-container>
 </template>
 
@@ -26,6 +35,11 @@ export default {
     margin-top: 10%;
     margin-left: 30%;
   }
+  .mytext {
+    text-align: center;
+    margin-left: -10%;
+    margin-top: 6%;
+  }
   // .btn-group {
   //   color: $color-text-placehoder;
   //   font-size: 12px;
@@ -43,3 +57,7 @@ export default {
   //   }
   // }
 </style>
+<style src="../../../assets/style/bootstrap/css/metismenu.min.css" scoped></style>
+<style src="../../../assets/style/bootstrap/css/bootstrap.min.css" scoped></style>
+<style src="../../../assets/style/bootstrap/css/icons.css" scoped></style>
+<style src="../../../assets/style/bootstrap/css/style.css" scoped></style>

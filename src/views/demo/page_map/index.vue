@@ -1,9 +1,6 @@
 <template>
   <el-container class="container" style="background: #fff;">
     <el-aside width="230px" class="aside" style="overflow:scroll;overflow-x: hidden !important;">
-      <div class="div-row">
-        <el-button type="success" @click="test()">地图查询</el-button>
-      </div>
       <!-- <div class="div-row">
         <el-button size="mini" @click="testRouteMode()">测试路线形式</el-button>
       </div>
@@ -12,7 +9,11 @@
       </div>-->
       <!-- <el-divider></el-divider> -->
 
-      <el-card style="margin: 10px;">
+      <el-card style="margin: 5px;">
+      <el-button-group style="margin: 10px;">
+        <el-button @click="refresh">刷新</el-button>
+        <el-button type="success" @click="test()">查询</el-button>
+      </el-button-group>
         <el-collapse id="collapse_nodes" accordion>
           <el-collapse-item title="车辆列表" name="0">
             <div style="text-align: center;">
@@ -116,13 +117,13 @@
         </el-collapse>
       </el-card>
     </el-aside>
-    <el-container>
-      <div style="height:100%; width: 100%">
+    <el-container style="background-color: #f9f9f9">
+      <div style="height:100%; width: 98%;background-color: #f9f9f9">
         <baidu-map
           :ak="ak"
           :center="center"
           :scroll-wheel-zoom="isScrollWheelZoom"
-          style="height:100%"
+          style="height:100%;margin-top:5px"
           :zoom="12"
           @click="handleChange"
           @load="handleMapLoaded"
@@ -173,7 +174,7 @@
           />
 
           <bm-view style="width:100%;height:100%"></bm-view>
-          <bm-driving
+             <bm-driving
             v-for="(item, index) in drivingPath"
             :key="-index - 1"
             :start="item.start"
@@ -199,6 +200,7 @@ import BmNavigation from "vue-baidu-map/components/controls/Navigation";
 import BmGeolocation from "vue-baidu-map/components/controls/Geolocation";
 import BmMarker from "vue-baidu-map/components/overlays/Marker";
 export default {
+  inject: ["reload"], //注入依赖
   name: "ele-form-bmap",
   components: {
     BaiduMap,
@@ -248,6 +250,9 @@ export default {
     };
   },
   methods: {
+    refresh() {
+      this.reload();
+    },
     test() {
       if (this.polylinePath.length < 3) {
         this.$notify({

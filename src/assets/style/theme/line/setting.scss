@@ -12,20 +12,21 @@ $theme-message-info-border-color: $color-border-1;
 
 // container组件
 
-$theme-container-background-color: rgba(#FFF, .8);
-$theme-container-header-footer-background-color: #f8f8f8;
-$theme-container-border-inner: 1px solid $color-border-2;
+$theme-container-background-color: #f9f9f9;
+$theme-container-header-footer-background-color: #f9f9f9;
+$theme-container-border-inner: 1px solid #cfd7e5;
 $theme-container-border-outer: 1px solid #cfd7e5;
 
 $theme-multiple-page-control-color: #FFF;
 $theme-multiple-page-control-color-active: $color-text-normal;
+$theme-multiple-page-control-color-hover: $color-text-normal;
 $theme-multiple-page-control-nav-prev-color: #cfd7e5;
 $theme-multiple-page-control-nav-next-color: #cfd7e5;
 $theme-multiple-page-control-border-color: #cfd7e5;
 $theme-multiple-page-control-border-color-active: #FFF;
 // $theme-multiple-page-control-background-color: #5b98e0;
 $theme-multiple-page-control-background-color: #cfd7e5;
-$theme-multiple-page-control-background-color-active: #f8f8f8;
+$theme-multiple-page-control-background-color-active: #f9f9f9;
 
 // 顶栏和侧边栏中展开的菜单 hover 状态下
 $theme-menu-item-color-hover: #293849;
