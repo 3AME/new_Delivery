@@ -42,7 +42,6 @@
           </el-popover>-->
           <!-- <el-input v-model="assetTypeSearch" size="mini" placeholder="输入关键字搜索" width="120"/> -->
           <!-- v-popover:popover1 -->
-          <el-button @click="refresh">刷新当前界面</el-button>
           <el-button size="mini" type="danger" style="margin: 10px;" @click="deleteAll()">全部删除</el-button>
         </template>
       </el-table-column>
@@ -54,7 +53,6 @@
 import * as xlsx from "xlsx";
 import { ipcRenderer } from "electron";
 export default {
-  inject: ["reload"], //注入依赖
   data() {
     return {
       popoverVisible: false
@@ -78,9 +76,6 @@ export default {
     // this.$store.dispatch('d2admin/historyLoad', null)
   },
   methods: {
-    refresh() {
-      this.reload();
-    },
     deleteAll() {
       this.$confirm("此操作将删除全部历史记录, 是否继续?", "警告", {
         confirmButtonText: "确定",
