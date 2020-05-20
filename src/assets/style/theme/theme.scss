@@ -268,12 +268,16 @@
                   padding: 0px 20px;
                 }
               }
+              &:hover {
+                color: $theme-multiple-page-control-color-hover;
+              }
             }
             .el-tabs__item.is-active {
               color: $theme-multiple-page-control-color-active;
               background-color: $theme-multiple-page-control-background-color-active;
               border-bottom-color: $theme-bg-color;
             }
+            
           }
           %el-tabs__nav {
             font-size: 20px;

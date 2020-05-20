@@ -322,6 +322,15 @@ export default {
 
       solver.on('exit', code => {
         console.log(`child process exit，code = ${code}`)
+        if(code>0){
+          this.$confirm("出现了错误，请重试一遍", "错误", {
+            confirmButtonText: "确定",
+            showCancelButton: false,
+            type: "error"
+          })
+          return false;
+          //路由返回？
+        }
       })
     },
     toggleRoute () {
