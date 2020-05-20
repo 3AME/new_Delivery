@@ -22,8 +22,8 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="text-center">
-                    <h5>Frequently asked Questions</h5>
-                    <p class="text-muted">If several languages coalesce, the grammar of the resulting language is more simple and regular than that of the individual languages will be more simple and regular.</p>
+                    <h5>常见的一些问题</h5>
+                    <p class="text-muted">这部分总结用户遇到的问题，集中展示，方便后续用户自助解决问题</p>
                 </div>
             </div>
         </div>
@@ -35,8 +35,12 @@
                             <i class="fas fa-question-circle font-24 mt-2 text-success"></i>
                         </div>
                         <h5 class="text-success">01.</h5>
-                        <h5 class="font-16 mb-3 mt-4">What is Lorem Ipsum?</h5>
-                        <p class="text-muted mb-0">Phasellus eros odio Curabitur hendrerit neque at vestibulum consequat Cras nibh ipsum tempor ac ex eget euismod auctor mi Ut condimentum eu elit eget cursus Fusce eu consequat nisl Praesent vel dictum enim ac convallis dolor Proin in velit vel enim laoreet cursus.</p>
+                        <h5 class="font-16 mb-3 mt-4">
+                          点击查询结果不显示？
+                        </h5>
+                        <p class="text-muted mb-0">
+                          检查导入文档表头是否与导入文档提示一致，不一致会导致无法获取查询结果。
+                          </p>
                     </div>
                 </div>
             </div>
@@ -48,10 +52,10 @@
                             <i class="fas fa-question-circle font-24 mt-2 text-primary"></i>
                         </div>
                         <h5 class="text-primary">02.</h5>
-                        <h5 class="font-16 mb-3 mt-4">Where can I get some?</h5>
-                        <p class="text-muted mb-0">Aliquam sed efficitur urna Integer mattis metus risus egestas hendrerit condimentum dolor auctor quis In vitae dictum eros 
-                            Vestibulum aliquet tortor sapien 
-                            ut sodales massa faucibus nec cras tristique condintum rsum a tincidunt Ut lacinia ornare tempor.</p>
+                        <h5 class="font-16 mb-3 mt-4">如何清除上一次导入的excel文件？</h5>
+                        <p class="text-muted mb-0">
+                            点击导入.xlsx/.xls按钮，自动覆盖内容，不会影响下一次查询，或者点击清除按钮重新导入
+                        </p>
                     </div>
                 </div>
             </div>
@@ -63,10 +67,10 @@
                             <i class="fas fa-question-circle font-24 mt-2 text-warning"></i>
                         </div>
                         <h5 class="text-warning">03.</h5>
-                        <h5 class="font-16 mb-3 mt-4">Where does it come from?</h5>
-                        <p class="text-muted mb-0">Quisque aliquet egestas vel tincidunt sem pretium mattis suspendisse euismod at elit eu tempor Nunc ac vehicula dolor Maecenas
-                              at tincidunt accumsan nibh Sed dapibus
-                              augue quis dignissim ultrices turpis mauris porta lectus sed ullamcorper leo risus in metus.</p>
+                        <h5 class="font-16 mb-3 mt-4">点击查询以后没有页面跳转？</h5>
+                        <p class="text-muted mb-0">
+                          可能是因为运行环境的问题导致响应时间的差异，请耐心等待。也可能是因为数据量大，查询需要一定时间。
+                        </p>
                     </div>
                 </div>
             </div>
@@ -124,8 +128,6 @@
   </d2-container>
 </template>
 
-<style lang="css">
-@import "~@/assets/style/bootstrap/css/metismenu.min.css";
-@import "~@/assets/style/bootstrap/css/icons.css" ;
-@import "~@/assets/style/bootstrap/css/style.css" ;
-</style>
+<style scoped src="../../../assets/style/bootstrap/css/metismenu.min.css"></style>
+<style scoped src="../../../assets/style/bootstrap/css/icons.css"></style>
+<style scoped src="../../../assets/style/bootstrap/css/style.css"></style>
