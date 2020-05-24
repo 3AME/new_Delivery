@@ -63,9 +63,12 @@
         </div>
       </el-card>
     </el-aside>
-    <div style="height:100%; width: 100%">
-      <svg id="graph_svg" style="height:100%; width: 100%" ref="svg" />
-    </div>
+    <!-- <div style="height:100%; width: 100%;background-color: #f9f9f9"> -->
+    <el-container style="background-color: #fff">
+      <svg id="graph_svg" style="height:100%; width: 98%;background-color: #fff" ref="svg" />
+    <!-- </div>
+     -->
+    </el-container>
     <el-drawer title="路线详情" :visible.sync="drawer" :with-header="false" direction="rtl">
       <el-card class="box-card">
         <div class="clearfix">

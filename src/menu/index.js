@@ -19,7 +19,7 @@ export const menuHeader = supplementPath([
   { path: '/index', title: '首页', icon: 'home' },
   {
     title: '查询',
-    icon: 'search',
+    icon: 'search-plus',
     children: [
       { path: '/page_coordinate', icon: 'object-ungroup', title: '坐标查询' },
       { path: '/page2', icon: 'road',title:  '路线查询' },
@@ -42,7 +42,7 @@ export const menuAside = supplementPath([
   { path: '/index', title: '首页', icon: 'home' },
   {
     title: '查询',
-    icon: 'search',
+    icon: 'search-plus',
     children: [
       { path: '/page_coordinate', icon: 'object-ungroup', title: '坐标查询' },
       { path: '/page2', icon: 'road',title:  '路线查询' },

@@ -117,7 +117,7 @@
         </el-collapse>
       </el-card>
     </el-aside>
-    <el-container style="background-color: #f9f9f9">
+    <el-container>
       <div style="height:100%; width: 98%;background-color: #f9f9f9">
         <baidu-map
           :ak="ak"
