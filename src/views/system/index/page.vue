@@ -6,9 +6,9 @@
             <div class="mytext">
               <h3 class="mt-0" >MicroLogic</h3>
             <h3 class="mt-0 header-title">微逻辑智能物流系统</h3>
-            <p class="sub-title">使用Node与Electron-Vue开发，GA智能优化算法提供支持</p>
+            <p class="sub-title">基于NodeJs + Vue + Electron开发，GA智能优化算法提供支持</p>
             </div>
-            
+
         </div>
     </div>
   </d2-container>

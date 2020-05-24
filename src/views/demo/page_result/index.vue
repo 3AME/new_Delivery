@@ -70,13 +70,15 @@
      -->
     </el-container>
     <el-drawer title="路线详情" :visible.sync="drawer" :with-header="false" direction="rtl">
-      <el-card class="box-card">
+      <d2-container>
+        <el-card class="box-card">
         <div class="clearfix">
           <span>路线详情</span>
           <el-button style="float: right; padding: 3px 0" type="text" @click="drawer = false">关闭</el-button>
         </div>
       </el-card>
-      <el-card
+      <div>
+        <el-card
         class="box-card"
         v-for="(route, index) in routes"
         :key="index"
@@ -99,6 +101,9 @@
           :fill="route.color"
         >时间：{{ route.time.toFixed(2) }}小时</div>
       </el-card>
+      </div>
+
+      </d2-container>
     </el-drawer>
   </el-container>
 </template>
@@ -290,6 +295,7 @@ export default {
 
       pipe(problem.distancePrior, problem.timePrior, problem.loadPrior);
       pipe(npop, popsize, maxiter);
+      let out = "";
       solver.stdout.on("data", buffer => {
         console.log("dddddddddddddddddd=" + buffer.toString());
         // eslint-disable-next-line no-eval
@@ -297,28 +303,39 @@ export default {
         // console.log(solution)
 
         // eslint-disable-next-line no-eval
-        this.result = eval("(" + buffer.toString() + ")");
+        // this.result = eval("(" + buffer.toString() + ")");
 
-        if (isRouteMode) {
-          this.showGraph();
-        } else {
-          this.showScatterGraph();
-        }
-        this.loading = false;
+        out += buffer.toString();
+
+        // if (isRouteMode) {
+        //   this.showGraph();
+        // } else {
+        //   this.showScatterGraph();
+        // }
+        // this.loading = false;
       });
 
-      solver.on('exit', code => {
-        console.log(`child process exit，code = ${code}`)
-        if(code>0){
+      solver.on("exit", code => {
+        console.log(`child process exit，code = ${code}`);
+        if (code > 0) {
           this.$confirm("出现了错误，请重试一遍", "错误", {
             confirmButtonText: "确定",
             showCancelButton: false,
             type: "error"
-          })
+          });
           return false;
           //路由返回？
+        } else {
+          console.log('out=' + out)
+          this.result = eval("(" + out + ")");
+          if (isRouteMode) {
+            this.showGraph();
+          } else {
+            this.showScatterGraph();
+          }
+          this.loading = false;
         }
-      })
+      });
     },
     toggleRoute() {
       let visibility = this.hideRoute ? "hidden" : "visible";
@@ -376,7 +393,7 @@ export default {
             tempRoute = route;
           });
           legendTexts.push({
-            id: item.vid + "_" + index,
+            id: item.vid + "-" + index,
             text: text,
             checked: true,
             distance: trip.distance,
@@ -446,7 +463,7 @@ export default {
 
       let width = this.$refs["svg"].clientWidth;
       let height = this.$refs["svg"].clientHeight;
-      const margin = { top: 30, right: 30, bottom: 30, left: 30 };
+      const margin = { top: 30, right: 30, bottom: 60, left: 60 };
 
       let svg = d3
         .select("svg#graph_svg")
@@ -667,9 +684,9 @@ export default {
           })
           .attr("class", "legend")
           .attr("y", function(d, i) {
-            return i * 20 + 20;
+            return i * 20 + 40;
           })
-          .attr("x", 70)
+          .attr("x", 90)
           .attr("fill", function(d, i) {
             return legendColors(i);
           });
@@ -684,9 +701,9 @@ export default {
           .enter()
           .append("rect")
           .attr("y", function(d, i) {
-            return i * 20 + 8;
+            return i * 20 + 28;
           })
-          .attr("x", 50)
+          .attr("x", 70)
           .attr("width", 12)
           .attr("height", 12)
           .attr("fill", function(d, i) {
@@ -768,7 +785,7 @@ export default {
             tempRoute = route;
           });
           legendTexts.push({
-            id: item.vid + "_" + index,
+            id: item.vid + "-" + index,
             text: text,
             checked: true,
             distance: trip.distance,

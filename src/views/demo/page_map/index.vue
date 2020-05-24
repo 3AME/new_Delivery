@@ -10,10 +10,10 @@
       <!-- <el-divider></el-divider> -->
 
       <el-card style="margin: 5px;">
-      <el-button-group style="margin: 10px;">
-        <el-button @click="refresh">刷新</el-button>
-        <el-button type="success" @click="test()">查询</el-button>
-      </el-button-group>
+        <el-button-group style="margin: 10px;">
+          <el-button @click="refresh">刷新</el-button>
+          <el-button type="success" @click="test()">查询</el-button>
+        </el-button-group>
         <el-collapse id="collapse_nodes" accordion>
           <el-collapse-item title="车辆列表" name="0">
             <div style="text-align: center;">
@@ -174,7 +174,7 @@
           />
 
           <bm-view style="width:100%;height:100%"></bm-view>
-             <bm-driving
+          <bm-driving
             v-for="(item, index) in drivingPath"
             :key="-index - 1"
             :start="item.start"
@@ -199,6 +199,7 @@ import BmLocalSearch from "vue-baidu-map/components/search/LocalSearch";
 import BmNavigation from "vue-baidu-map/components/controls/Navigation";
 import BmGeolocation from "vue-baidu-map/components/controls/Geolocation";
 import BmMarker from "vue-baidu-map/components/overlays/Marker";
+
 export default {
   inject: ["reload"], //注入依赖
   name: "ele-form-bmap",
@@ -247,8 +248,34 @@ export default {
       mileageOptions: [20, 25, 30, 35, 40, 45, 50],
       countOptions: [1, 2, 3],
       activeName: "0"
+      // loading: true
     };
   },
+  // activated() {
+  //   let me = this;
+  //   window.addEventListener("online", () => {
+  //     me.loading = false;
+  //   });
+
+  //   window.addEventListener("offline", () => {
+  //     me.loading = true;
+  //     me.$notify({
+  //       title: "警告",
+  //       message: "网络已断开，请连接网络",
+  //       type: "warning"
+  //     });
+  //   });
+  //   if (navigator.onLine) {
+  //     this.loading = false;
+  //   } else {
+  //     this.loading = true;
+  //     this.$notify({
+  //       title: "警告",
+  //       message: "网络连接失败，请连接网络",
+  //       type: "warning"
+  //     });
+  //   }
+  // },
   methods: {
     refresh() {
       this.reload();
@@ -488,6 +515,11 @@ export default {
               path.need = 0.1;
             }
             me.polylinePath.push(path);
+          } else {
+            me.$notify.error({
+              title: "错误",
+              message: "地址解析错误，添加地点失败！"
+            });
           }
         },
         res.item.city
@@ -528,8 +560,20 @@ export default {
       //     break
       //   }
       // }
-      this.drivingPath[this.drivingPath.length - 1].len = r.taxiFare.distance;
-      // this.tempDrivingPath[0].len = r.taxiFare.distance
+      if (
+        r != undefined &&
+        r.taxiFare != undefined &&
+        r.taxiFare.distance != undefined
+      ) {
+        this.drivingPath[this.drivingPath.length - 1].len = r.taxiFare.distance;
+        // this.tempDrivingPath[0].len = r.taxiFare.distance
+      } else {
+        this.drivingPath.splice(this.drivingPath.length - 1, 1);
+        this.$notify.error({
+          title: "错误",
+          message: "路线查询失败！"
+        });
+      }
       this.tempDrivingPath.splice(0, 1);
       if (this.tempDrivingPath.length > 0) {
         this.drivingPath.push(this.tempDrivingPath[0]);
