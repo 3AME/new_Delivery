@@ -64,8 +64,8 @@
       </el-card>
     </el-aside>
     <!-- <div style="height:100%; width: 100%;background-color: #f9f9f9"> -->
-    <el-container style="background-color: #fff">
-      <svg id="graph_svg" style="height:100%; width: 98%;background-color: #fff" ref="svg" />
+    <el-container style="background-color: #f9f9f9">
+      <svg id="graph_svg" style="height:100%; width: 100%;background-color: #f9f9f9" ref="svg" />
     <!-- </div>
      -->
     </el-container>
@@ -322,9 +322,10 @@ export default {
             confirmButtonText: "确定",
             showCancelButton: false,
             type: "error"
-          });
-          return false;
-          //路由返回？
+          }).then(() => {
+            this.$router.go(-1)
+        })
+        
         } else {
           console.log('out=' + out)
           this.result = eval("(" + out + ")");
@@ -602,7 +603,7 @@ export default {
           y(data[d.target].y)
         );
       }
-      addLegend();
+      // addLegend();
 
       function dodge(text, iterations = 300) {
         const nodes = text.nodes();
@@ -1062,7 +1063,7 @@ export default {
           return d.name;
         });
 
-      addLegend();
+      // addLegend();
 
       function ticked() {
         links.attr("fill", "transparent").attr("d", linkArc);

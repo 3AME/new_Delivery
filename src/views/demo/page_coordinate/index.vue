@@ -121,6 +121,8 @@ export default {
   methods: {
     refresh() {
       this.reload();
+      // this.$router.replace( this.$router)
+      // Object.assign(this.$data, this.$options.data())
     },
     clear() {
       this.table = {
@@ -150,6 +152,7 @@ export default {
               "格式错误",
               {
                 confirmButtonText: "确定",
+                showCancelButton: false,
                 type: "error"
               }
             );

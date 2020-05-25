@@ -163,6 +163,7 @@ export default {
               "格式错误",
               {
                 confirmButtonText: "确定",
+                showCancelButton: false,
                 type: "error"
               }
             );
