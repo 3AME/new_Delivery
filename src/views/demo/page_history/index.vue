@@ -15,17 +15,21 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-tooltip class="item" effect="dark" content="查询" placement="bottom">
-            <el-button size="mini" type="primary" @click="queryProblem(scope.$index, scope.row)">
+            <el-button
+              size="mini"
+              class="btn-success"
+              @click="queryProblem(scope.$index, scope.row)"
+            >
               <i class="el-icon-search" />
             </el-button>
           </el-tooltip>
           <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
-            <el-button size="mini" type="danger" @click="deleteQuery(scope.$index, scope.row)">
+            <el-button size="mini" class="btn-danger" @click="deleteQuery(scope.$index, scope.row)">
               <i class="el-icon-delete" />
             </el-button>
           </el-tooltip>
           <el-tooltip class="item" effect="dark" content="保存" placement="bottom">
-            <el-button size="mini" type="success" @click="saveQuery(scope.$index, scope.row)">
+            <el-button size="mini" class="btn-warning" @click="saveQuery(scope.$index, scope.row)">
               <i class="el-icon-download" />
             </el-button>
           </el-tooltip>
@@ -33,12 +37,9 @@
       </el-table-column>
       <el-table-column align="right">
         <template slot="header">
-          <el-button
-            size="mini"
-            type="danger"
-            style="margin: 10px;"
-            @click="deleteAll()"
-          >全部删除</el-button>
+          <el-button 
+          size="mini" class="btn-danger" style="margin: 10px;" @click="deleteAll()">
+          全部删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -250,3 +251,4 @@ export default {
   }
 };
 </script>
+<style src="../../../assets/btn.css" scoped></style>

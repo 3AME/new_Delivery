@@ -1,28 +1,28 @@
 <template>
   <d2-container type="card">
     <template slot="header">
-      <el-button-group>
+      <el-button-group class="btn-circle">
         <el-col :span="3.2">
           <el-upload :before-upload="handleUpload" action="default">
-            <el-button type="primary">
+            <el-button class="btn-upload">
               上传
               <!-- <i class="el-icon-upload el-icon--right"></i> -->
             </el-button>
           </el-upload>
         </el-col>
-        <el-button @click="inquery" type="success">
+        <el-button @click="inquery" class="btn-success">
           查询
           <!-- <i class="fa fa-search" aria-hidden="true"></i> -->
         </el-button>
-        <el-button type="danger" @click="clear">
+        <el-button class="btn-danger" @click="clear">
           清除数据
           <!-- <i class="fa fa-close" aria-hidden="true"></i> -->
         </el-button>
-        <el-button @click="handleDownload" type="warning">
+        <el-button @click="handleDownload" class="btn-warning">
           下载坐标查询表头
           <!-- <i class="el-icon-download el-icon--right"></i> -->
         </el-button>
-        <el-button @click="refresh">刷新</el-button>
+        <el-button @click="refresh" class="btn-dark">刷新</el-button>
       </el-button-group>
       <el-collapse @change="handleChange" class="yaoqiu">
         <el-collapse-item name="1">
@@ -324,22 +324,5 @@ export default {
   }
 };
 </script>
-<style scoped>
-.yaoqiu {
-  margin-top: 1%;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
-}
-.s {
-  /* color: red; */
-  width: 100%;
-  margin-left: 1%;
-}
-.btn1 {
-  margin-left: 5%;
-  background-color: rgba(76, 167, 228, 0.466);
-}
-.btn {
-  margin-left: 5%;
-  background-color: rgb(146, 171, 196);
-}
-</style>
+
+<style src="../../../assets/btn.css" scoped></style>

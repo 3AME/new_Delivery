@@ -17,7 +17,8 @@
           <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
         </div>
         <div style="text-align: center; margin-bottom: 20px;">
-          <el-button type="primary" size="mini" @click="drawer = true">路线详情</el-button>
+          <el-button class="btn-success" size="mini" @click="drawer = true">路线详情</el-button>
+          <!-- <el-button class="btn-success">test</el-button> -->
         </div>
         <div style="text-align: center; margin-bottom: 20px;">
           <el-switch
@@ -1210,3 +1211,4 @@ export default {
   border-radius: 5px;
 }
 </style>
+<style src="../../../assets/btn.css" scoped></style>

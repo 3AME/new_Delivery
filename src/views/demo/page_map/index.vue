@@ -11,18 +11,18 @@
 
       <el-card style="margin: 5px;">
         <el-button-group style="margin: 10px;">
-          <el-button @click="refresh">刷新</el-button>
-          <el-button type="success" @click="test()">查询</el-button>
+          <el-button @click="refresh" class="btn-dark">刷新</el-button>
+          <el-button class="btn-success" @click="test()">查询</el-button>
         </el-button-group>
         <el-collapse id="collapse_nodes" accordion>
-          <el-collapse-item title="车辆列表" name="0">
+          <el-collapse-item title="车辆列表" name="0" class="btn-upload">
             <div style="text-align: center;">
-              <el-button @click="addVehicle()" size="mini" style="margin: 8px;" type="primary">添加车辆</el-button>
+              <el-button @click="addVehicle()" size="mini" style="margin: 8px;" class="btn-upload">添加车辆</el-button>
             </div>
             <div v-if="vehicles.length == 0" class="box-card">
               <div style="text-align: center;">空空如也</div>
             </div>
-            <el-collapse id="collapse_nodes" accordion>
+            <el-collapse id="collapse_nodes" accordion >
               <el-collapse-item
                 v-for="(vehicle, index) in vehicles"
                 :key="vehicle.id"
@@ -72,9 +72,9 @@
             </el-collapse>
           </el-collapse-item>
 
-          <el-collapse-item title="地点列表" name="1">
+          <el-collapse-item title="地点列表" name="1" class="btn-upload">
             <div v-if="polylinePath.length > 0" style="text-align: center;">
-              <el-button size="mini" type="danger" style="margin: 8px;" @click="clearTags()">清空</el-button>
+              <el-button size="mini" class="btn-danger" style="margin: 8px;" @click="clearTags()">清空</el-button>
             </div>
             <div v-if="polylinePath.length == 0" class="box-card">
               <!-- <el-divider></el-divider> -->
@@ -885,5 +885,25 @@ export default {
   -webkit-transition: border-bottom-color 0.3s;
   transition: border-bottom-color 0.3s;
   outline: 0;
+}
+.btn-success {
+  background-color: #02c58d;
+  border: 1px solid #02c58d;
+  color: #ffffff;
+}
+.btn-dark {
+  background-color: #354558;
+  border: 1px solid #354558;
+  color: #ffffff;
+}
+.btn-danger {
+  background-color: #fc5454;
+  border: 1px solid #fc5454;
+  color: #ffffff;
+}
+.btn-upload {
+  background-color: #30419b;
+  border: 1px solid #30419b;
+  color: #ffffff;
 }
 </style>
