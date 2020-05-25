@@ -35,7 +35,7 @@
                       <span class="timeline-icon"></span>
                       <span class="year">part 3</span>
                       <div class="timeline-content">
-                        <h3 class="title">名称简介</h3>
+                        <h3 class="title">名称由来</h3>
                         <p
                           class="description text-muted"
                         >我们是微逻辑开发团队，“微逻辑”这个名字与该系统的功能相关，该系统致力于查询物流配送最优方案，涉及到算法求解，算法与逻辑思维相关，而我们能做的仅仅至少一小部分，对于解决实际问题还存在着差距，故取名微逻辑。</p>
