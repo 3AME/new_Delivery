@@ -312,9 +312,33 @@ export default {
         // this.loading = false;
       });
 
+      let exitCode = 0;
+
       solver.on("exit", code => {
         console.log(`child process exit，code = ${code}`);
-        if (code > 0) {
+        exitCode = code;
+        // if (code > 0) {
+        //   this.$confirm("出现了错误，请重试一遍", "错误", {
+        //     confirmButtonText: "确定",
+        //     showCancelButton: false,
+        //     type: "error"
+        //   });
+        //   return false;
+        //   //路由返回？
+        // } else {
+        //   console.log('out=' + out)
+        //   this.result = eval("(" + out + ")");
+        //   if (isRouteMode) {
+        //     this.showGraph();
+        //   } else {
+        //     this.showScatterGraph();
+        //   }
+        //   this.loading = false;
+        // }
+      });
+
+      solver.on("close", () => {
+        if (exitCode > 0) {
           this.$confirm("出现了错误，请重试一遍", "错误", {
             confirmButtonText: "确定",
             showCancelButton: false,
@@ -367,8 +391,11 @@ export default {
       var legendTexts = [];
       // let vid = 0
       plan.plan.forEach(function(item) {
+        let same = legendTexts.filter(t => {
+          return t.id.indexOf(item.vid + "-") == 0
+        })
         item.trips.forEach(function(trip, index) {
-          let text = item.vid + "-" + index + " : ";
+          let text = item.vid + "-" + (index + same.length) + " : ";
           var tempRoute = 0;
           trip.route.forEach(function(route, i) {
             if (i !== 0) {
@@ -599,7 +626,7 @@ export default {
           y(data[d.target].y)
         );
       }
-      addLegend();
+      // addLegend();
 
       function dodge(text, iterations = 300) {
         const nodes = text.nodes();
@@ -752,8 +779,11 @@ export default {
 
       var legendTexts = [];
       plan.plan.forEach(function(item) {
+        let same = legendTexts.filter(t => {
+          return t.id.indexOf(item.vid + "-") == 0
+        })
         item.trips.forEach(function(trip, index) {
-          let text = item.vid + "-" + index + " : ";
+          let text = item.vid + "-" + (index + same.length) + " : ";
           var tempRoute = 0;
 
           trip.route.forEach(function(route, i) {
@@ -1059,7 +1089,7 @@ export default {
           return d.name;
         });
 
-      addLegend();
+      // addLegend();
 
       function ticked() {
         links.attr("fill", "transparent").attr("d", linkArc);

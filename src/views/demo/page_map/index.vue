@@ -1,14 +1,7 @@
 <template>
-  <el-container class="container" style="background: #fff;">
+  <el-container class="container" style="background: #fff;" >
+    <!-- v-loading="loading" -->
     <el-aside width="230px" class="aside" style="overflow:scroll;overflow-x: hidden !important;">
-      <!-- <div class="div-row">
-        <el-button size="mini" @click="testRouteMode()">测试路线形式</el-button>
-      </div>
-      <div class="div-row">
-        <el-button size="mini" @click="testCoordMode()">测试坐标形式</el-button>
-      </div>-->
-      <!-- <el-divider></el-divider> -->
-
       <el-card style="margin: 5px;">
         <el-button-group style="margin: 10px;">
           <el-button @click="refresh">刷新</el-button>
@@ -247,32 +240,37 @@ export default {
       loadOptions: [1, 2, 3, 4, 5],
       mileageOptions: [20, 25, 30, 35, 40, 45, 50],
       countOptions: [1, 2, 3],
-      activeName: "0"
+      activeName: "0",
       // loading: true
     };
   },
   // activated() {
   //   let me = this;
   //   window.addEventListener("online", () => {
+  //     if (!me.loading) {
+  //       return;
+  //     }
   //     me.loading = false;
+  //     me.reload();
   //   });
 
   //   window.addEventListener("offline", () => {
+  //     if (me.loading) {
+  //       return;
+  //     }
   //     me.loading = true;
-  //     me.$notify({
-  //       title: "警告",
-  //       message: "网络已断开，请连接网络",
-  //       type: "warning"
+  //     me.$notify.error({
+  //       title: "错误",
+  //       message: "网络已断开，请连接网络"
   //     });
   //   });
   //   if (navigator.onLine) {
   //     this.loading = false;
   //   } else {
   //     this.loading = true;
-  //     this.$notify({
-  //       title: "警告",
-  //       message: "网络连接失败，请连接网络",
-  //       type: "warning"
+  //     this.$notify.error({
+  //       title: "错误",
+  //       message: "网络连接失败，请连接网络"
   //     });
   //   }
   // },
