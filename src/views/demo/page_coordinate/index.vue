@@ -4,7 +4,7 @@
       <el-button-group>
         <el-col :span="3.2">
           <el-upload :before-upload="handleUpload" action="default">
-            <el-button class="btn-upload">
+            <el-button class="btn-upload" style="border-top-right-radius: 0px;border-bottom-right-radius: 0px;">
               上传
               <!-- <i class="el-icon-upload el-icon--right"></i> -->
             </el-button>
@@ -19,7 +19,7 @@
           <!-- <i class="fa fa-close" aria-hidden="true"></i> -->
         </el-button>
         <el-button @click="handleDownload" class="btn-warning">
-          下载坐标查询表头
+          格式模板
           <!-- <i class="el-icon-download el-icon--right"></i> -->
         </el-button>
         <el-button @click="refresh" class="btn-dark">刷新</el-button>
