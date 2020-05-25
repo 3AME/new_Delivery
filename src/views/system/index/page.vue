@@ -2,11 +2,13 @@
   <d2-container>
     <div class="card m-b-30">
         <div class="card-body">
-            <img class="rounded-circle" style="width: 300px;height: 300px;margin-top: 5%;" alt="200x200" src="./image/all.png" data-holder-rendered="true">
+            <div class="myimg">
+            <img class="rounded-circle" style="width: 300px;height: 300px;margin-top: 5%;" alt="200x200" src="./image/all.png" >
+            </div>
             <div class="mytext">
               <h3 class="mt-0" >MicroLogic</h3>
             <h3 class="mt-0 header-title">微逻辑智能物流系统</h3>
-            <p class="sub-title">基于NodeJs + Vue + Electron开发，GA智能优化算法提供支持</p>
+            <p class="sub-title">基于Node + VueJs + Electron开发, GA智能优化算法提供支持</p>
             </div>
 
         </div>
@@ -29,16 +31,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  img {
-    width: 400px;
-    height: 400px;
-    margin-top: 10%;
-    margin-left: 30%;
+  .myimg {
+    text-align: center;
   }
   .mytext {
     text-align: center;
-    margin-left: -10%;
-    margin-top: 6%;
+    // margin-left: -10%;
+    margin-top: 5%;
   }
   // .btn-group {
   //   color: $color-text-placehoder;
