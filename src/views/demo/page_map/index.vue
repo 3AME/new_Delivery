@@ -11,19 +11,19 @@
       <!-- <el-divider></el-divider> -->
 
       <el-card style="margin: 5px;">
-        <el-button-group style="margin: 10px;">
+        <el-button-group style="margin: 13px;">
           <el-button @click="refresh" class="btn-dark">刷新</el-button>
           <el-button class="btn-success" @click="test()">查询</el-button>
         </el-button-group>
-        <el-collapse id="collapse_nodes" accordion>
-          <el-collapse-item title="车辆列表" name="0" class="btn-upload">
-            <div style="text-align: center;">
+        <el-collapse id="collapse_nodes" accordion style="border:1px solid #f7f7f7;background-color: #f1eeee;">
+          <el-collapse-item title="车辆列表" name="0" class="list" style="">
+            <div class="side-bk" style="text-align: center;">
               <el-button @click="addVehicle()" size="mini" style="margin: 8px;" class="btn-upload">添加车辆</el-button>
             </div>
-            <div v-if="vehicles.length == 0" class="box-card">
+            <div v-if="vehicles.length == 0" class="box-card" >
               <div style="text-align: center;">空空如也</div>
             </div>
-            <el-collapse id="collapse_nodes" accordion >
+            <el-collapse id="collapse_nodes" accordion style="">
               <el-collapse-item
                 v-for="(vehicle, index) in vehicles"
                 :key="vehicle.id"
@@ -73,16 +73,16 @@
             </el-collapse>
           </el-collapse-item>
 
-          <el-collapse-item title="地点列表" name="1" class="btn-upload">
+          <el-collapse-item title="地点列表" name="1" class="site-list" style="">
             <div v-if="polylinePath.length > 0" style="text-align: center;">
               <el-button size="mini" class="btn-danger" style="margin: 8px;" @click="clearTags()">清空</el-button>
             </div>
-            <div v-if="polylinePath.length == 0" class="box-card">
+            <div v-if="polylinePath.length == 0" class="box-card" style=""> 
               <!-- <el-divider></el-divider> -->
               <div style="text-align: center;">空空如也</div>
             </div>
 
-            <el-collapse id="collapse_nodes" v-else v-model="activeName" accordion>
+            <el-collapse id="collapse_nodes" v-else v-model="activeName" accordion style="">
               <el-collapse-item
                 v-for="(path, index) in polylinePath"
                 :key="path.name"
@@ -729,6 +729,22 @@ export default {
 </script>
 
 <style>
+.list {
+  border-radius: 2px;
+  /* border: 1px solid #f7f7f7; */
+  border-bottom: 0px;
+  color: #000;
+}
+.site-list {
+  border-radius: 2px;
+  /* border: 1px solid #f7f7f7; */
+  border-top: 0px;
+
+  color: #000;
+}
+.side-bk {
+  background-color: #f1eeee;
+}
 .container {
   height: 100%;
   width: 100%;
@@ -842,6 +858,9 @@ export default {
   -webkit-transition: border-bottom-color 0.3s;
   transition: border-bottom-color 0.3s;
   outline: 0;
+}
+#collapse_nodes .el-collapse-item__wrap {
+  background-color: #f1eeee;
 }
 .btn-success {
   background-color: #02c58d;
