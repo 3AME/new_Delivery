@@ -1,15 +1,7 @@
 <template>
-  <el-container class="container" style="background: #fff;">
+  <el-container class="container" style="background: #fff;" >
+    <!-- v-loading="loading" -->
     <el-aside width="230px" class="aside" style="overflow:scroll;overflow-x: hidden !important;">
-
-      <!-- <div class="div-row">
-        <el-button size="mini" @click="testRouteMode()">测试路线形式</el-button>
-      </div>
-      <div class="div-row">
-        <el-button size="mini" @click="testCoordMode()">测试坐标形式</el-button>
-      </div>-->
-      <!-- <el-divider></el-divider> -->
-
       <el-card style="margin: 5px;">
         <el-button-group style="margin: 13px;">
           <el-button @click="refresh" class="btn-dark">刷新</el-button>
@@ -77,7 +69,7 @@
             <div v-if="polylinePath.length > 0" style="text-align: center;">
               <el-button size="mini" class="btn-danger" style="margin: 8px;" @click="clearTags()">清空</el-button>
             </div>
-            <div v-if="polylinePath.length == 0" class="box-card" style=""> 
+            <div v-if="polylinePath.length == 0" class="box-card" style="">
               <!-- <el-divider></el-divider> -->
               <div style="text-align: center;">空空如也</div>
             </div>
@@ -247,9 +239,40 @@ export default {
       loadOptions: [1, 2, 3, 4, 5],
       mileageOptions: [20, 25, 30, 35, 40, 45, 50],
       countOptions: [1, 2, 3],
-      activeName: "0"
+      activeName: "0",
+      // loading: true
     };
   },
+  // activated() {
+  //   let me = this;
+  //   window.addEventListener("online", () => {
+  //     if (!me.loading) {
+  //       return;
+  //     }
+  //     me.loading = false;
+  //     me.reload();
+  //   });
+
+  //   window.addEventListener("offline", () => {
+  //     if (me.loading) {
+  //       return;
+  //     }
+  //     me.loading = true;
+  //     me.$notify.error({
+  //       title: "错误",
+  //       message: "网络已断开，请连接网络"
+  //     });
+  //   });
+  //   if (navigator.onLine) {
+  //     this.loading = false;
+  //   } else {
+  //     this.loading = true;
+  //     this.$notify.error({
+  //       title: "错误",
+  //       message: "网络连接失败，请连接网络"
+  //     });
+  //   }
+  // },
   methods: {
     refresh() {
       // this.reload();
