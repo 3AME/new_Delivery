@@ -3438,7 +3438,7 @@ table.focus-on tbody tr.focused td {
 .main-timeline .year:before {
   content: "";
   border-right: 18px solid #30419b;
-  border-top: 18px solid transparent;
+  border-top: 14px solid transparent;
   border-bottom: 18px solid transparent;
   position: absolute;
   top: 0;
@@ -3516,7 +3516,7 @@ table.focus-on tbody tr.focused td {
 }
 
 .main-timeline .timeline:nth-child(2n) .year:before {
-  border: 18px solid transparent;
+  border: 16px solid transparent;
   border-right: none;
   border-left: 18px solid #30419b;
   left: auto;
