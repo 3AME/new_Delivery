@@ -252,7 +252,8 @@ export default {
   },
   methods: {
     refresh() {
-      this.reload();
+      // this.reload();
+      window.location.reload();
     },
     test() {
       if (this.polylinePath.length < 3) {

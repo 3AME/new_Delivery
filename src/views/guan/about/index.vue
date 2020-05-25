@@ -35,7 +35,7 @@
                       <span class="timeline-icon"></span>
                       <span class="year">part 3</span>
                       <div class="timeline-content">
-                        <h3 class="title">团队&logo简介</h3>
+                        <h3 class="title">名称简介</h3>
                         <p
                           class="description text-muted"
                         >我们是微逻辑开发团队，“微逻辑”这个名字与该系统的功能相关，该系统致力于查询物流配送最优方案，涉及到算法求解，算法与逻辑思维相关，而我们能做的仅仅至少一小部分，对于解决实际问题还存在着差距，故取名微逻辑。</p>
@@ -83,17 +83,29 @@
         </div>
       </div>
     </div>
-    <template slot="footer">
+    <!-- <template slot="footer">
       <div class="alert alert-primary alert-dismissible fade show" role="alert">
         如果你对此项目感兴趣
         请加入我们的爱好者团队群
         <strong>822843622</strong>
       </div>
-    </template>
+    </template> -->
+    <d2-module-index-banner slot="footer" v-bind="banner"/>
   </d2-container>
 </template>
 
-
+<script>
+export default {
+  data () {
+    return {
+      banner: {
+        // title: 'CHARTS',
+        subTitle: '如果你对此项目感兴趣，请加入我们的爱好者团队群：822843622'
+      }
+    }
+  }
+}
+</script>
 <style src="../../../assets/style/bootstrap/css/metismenu.min.css" scoped></style>
 <style src="../../../assets/style/bootstrap/css/bootstrap.min.css" scoped></style>
 <style src="../../../assets/style/bootstrap/css/icons.css" scoped></style>
