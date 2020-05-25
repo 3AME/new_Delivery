@@ -42,7 +42,7 @@
         <el-button @click="Refresh" >
             <d2-icon name="refresh"/>
         </el-button> 
-        <d2-header-search @click="handleSearchClick" class="toggle"/>
+        <!-- <d2-header-search @click="handleSearchClick" class="toggle"/> -->
           </el-button-group>
       
     </div>
@@ -79,16 +79,16 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import Sortable from 'sortablejs'
-import d2HeaderSearch from '../header-search'
-import mixinSearch from '../../mixins/search'
+// import d2HeaderSearch from '../header-search'
+// import mixinSearch from '../../mixins/search'
 export default {
-  mixins: [
-    mixinSearch
-  ],
+  // mixins: [
+  //   mixinSearch
+  // ],
   components: {
     D2Contextmenu: () => import('../contextmenu'),
     D2ContextmenuList: () => import('../contextmenu/components/contentmenuList'),
-    d2HeaderSearch,
+    // d2HeaderSearch,
   },
   data () {
     return {
