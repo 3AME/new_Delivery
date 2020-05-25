@@ -162,7 +162,6 @@ export default {
     this.problem = this.$route.query.problem;
     this.hideRoute = false;
     this.problem = this.$route.query.problem;
-    this.$store.dispatch("d2admin/addQuery", this.problem);
     this.solve(this.problem);
   },
   deactivated() {},
@@ -350,8 +349,9 @@ export default {
           }).then(() => {
             this.$router.go(-1)
         })
-        
+
         } else {
+          this.$store.dispatch("d2admin/addQuery", problem);
           console.log('out=' + out)
           this.result = eval("(" + out + ")");
           if (isRouteMode) {
