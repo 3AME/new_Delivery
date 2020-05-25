@@ -17,7 +17,8 @@
           <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
         </div>
         <div style="text-align: center; margin-bottom: 20px;">
-          <el-button type="primary" size="mini" @click="drawer = true">路线详情</el-button>
+          <el-button class="btn-success" size="mini" @click="drawer = true">路线详情</el-button>
+          <!-- <el-button class="btn-success">test</el-button> -->
         </div>
         <div style="text-align: center; margin-bottom: 20px;">
           <el-switch
@@ -63,9 +64,12 @@
         </div>
       </el-card>
     </el-aside>
-    <div style="height:100%; width: 100%">
-      <svg id="graph_svg" style="height:100%; width: 100%" ref="svg" />
-    </div>
+    <!-- <div style="height:100%; width: 100%;background-color: #f9f9f9"> -->
+    <el-container style="background-color: #f9f9f9">
+      <svg id="graph_svg" style="height:100%; width: 100%;background-color: #f9f9f9" ref="svg" />
+    <!-- </div>
+     -->
+    </el-container>
     <el-drawer title="路线详情" :visible.sync="drawer" :with-header="false" direction="rtl">
       <d2-container>
         <el-card class="box-card">
@@ -343,9 +347,10 @@ export default {
             confirmButtonText: "确定",
             showCancelButton: false,
             type: "error"
-          });
-          return false;
-          //路由返回？
+          }).then(() => {
+            this.$router.go(-1)
+        })
+        
         } else {
           console.log('out=' + out)
           this.result = eval("(" + out + ")");
@@ -1240,3 +1245,4 @@ export default {
   border-radius: 5px;
 }
 </style>
+<style src="../../../assets/btn.css" scoped></style>

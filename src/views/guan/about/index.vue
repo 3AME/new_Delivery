@@ -67,17 +67,27 @@
         </div>
       </div>
     </div>
-    <template slot="footer">
+    <!-- <template slot="footer">
          <div class="alert alert-primary  alert-dismissible fade show" role="alert">
-                如果你对此项目感兴趣
-                请加入我们的爱好者团队群
-                <strong>822843622</strong>
+                
         </div>
-    </template>
+    </template> -->
+    <d2-module-index-banner slot="footer" v-bind="banner"/>
   </d2-container>
 </template>
 <style src="../../../assets/style/bootstrap/css/bootstrap.min.css" scoped></style>
-
+<script>
+export default {
+  data () {
+    return {
+      banner: {
+        // title: 'CHARTS',
+        subTitle: '如果你对此项目感兴趣，请加入我们的爱好者团队群：822843622'
+      }
+    }
+  }
+}
+</script>
 <style scoped>
 /* @import url("http://cdn.bootstrapmb.com/bootstrap/4.3.1/css/bootstrap.min.css"); */
 h1 {

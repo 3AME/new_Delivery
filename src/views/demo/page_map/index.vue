@@ -3,19 +3,19 @@
     <!-- v-loading="loading" -->
     <el-aside width="230px" class="aside" style="overflow:scroll;overflow-x: hidden !important;">
       <el-card style="margin: 5px;">
-        <el-button-group style="margin: 10px;">
-          <el-button @click="refresh">刷新</el-button>
-          <el-button type="success" @click="test()">查询</el-button>
+        <el-button-group style="margin: 13px;">
+          <el-button @click="refresh" class="btn-dark">刷新</el-button>
+          <el-button class="btn-success" @click="test()">查询</el-button>
         </el-button-group>
-        <el-collapse id="collapse_nodes" accordion>
-          <el-collapse-item title="车辆列表" name="0">
-            <div style="text-align: center;">
-              <el-button @click="addVehicle()" size="mini" style="margin: 8px;" type="primary">添加车辆</el-button>
+        <el-collapse id="collapse_nodes" accordion style="border:1px solid #f7f7f7;background-color: #f1eeee;">
+          <el-collapse-item title="车辆列表" name="0" class="list" style="">
+            <div class="side-bk" style="text-align: center;">
+              <el-button @click="addVehicle()" size="mini" style="margin: 8px;" class="btn-upload">添加车辆</el-button>
             </div>
-            <div v-if="vehicles.length == 0" class="box-card">
+            <div v-if="vehicles.length == 0" class="box-card" >
               <div style="text-align: center;">空空如也</div>
             </div>
-            <el-collapse id="collapse_nodes" accordion>
+            <el-collapse id="collapse_nodes" accordion style="">
               <el-collapse-item
                 v-for="(vehicle, index) in vehicles"
                 :key="vehicle.id"
@@ -65,16 +65,16 @@
             </el-collapse>
           </el-collapse-item>
 
-          <el-collapse-item title="地点列表" name="1">
+          <el-collapse-item title="地点列表" name="1" class="site-list" style="">
             <div v-if="polylinePath.length > 0" style="text-align: center;">
-              <el-button size="mini" type="danger" style="margin: 8px;" @click="clearTags()">清空</el-button>
+              <el-button size="mini" class="btn-danger" style="margin: 8px;" @click="clearTags()">清空</el-button>
             </div>
-            <div v-if="polylinePath.length == 0" class="box-card">
+            <div v-if="polylinePath.length == 0" class="box-card" style="">
               <!-- <el-divider></el-divider> -->
               <div style="text-align: center;">空空如也</div>
             </div>
 
-            <el-collapse id="collapse_nodes" v-else v-model="activeName" accordion>
+            <el-collapse id="collapse_nodes" v-else v-model="activeName" accordion style="">
               <el-collapse-item
                 v-for="(path, index) in polylinePath"
                 :key="path.name"
@@ -116,7 +116,7 @@
           :ak="ak"
           :center="center"
           :scroll-wheel-zoom="isScrollWheelZoom"
-          style="height:100%;margin-top:5px"
+          style="height:100%;margin-top:10px"
           :zoom="12"
           @click="handleChange"
           @load="handleMapLoaded"
@@ -167,7 +167,7 @@
           />
 
           <bm-view style="width:100%;height:100%"></bm-view>
-          <bm-driving
+             <bm-driving
             v-for="(item, index) in drivingPath"
             :key="-index - 1"
             :start="item.start"
@@ -192,7 +192,6 @@ import BmLocalSearch from "vue-baidu-map/components/search/LocalSearch";
 import BmNavigation from "vue-baidu-map/components/controls/Navigation";
 import BmGeolocation from "vue-baidu-map/components/controls/Geolocation";
 import BmMarker from "vue-baidu-map/components/overlays/Marker";
-
 export default {
   inject: ["reload"], //注入依赖
   name: "ele-form-bmap",
@@ -513,11 +512,6 @@ export default {
               path.need = 0.1;
             }
             me.polylinePath.push(path);
-          } else {
-            me.$notify.error({
-              title: "错误",
-              message: "地址解析错误，添加地点失败！"
-            });
           }
         },
         res.item.city
@@ -558,20 +552,8 @@ export default {
       //     break
       //   }
       // }
-      if (
-        r != undefined &&
-        r.taxiFare != undefined &&
-        r.taxiFare.distance != undefined
-      ) {
-        this.drivingPath[this.drivingPath.length - 1].len = r.taxiFare.distance;
-        // this.tempDrivingPath[0].len = r.taxiFare.distance
-      } else {
-        this.drivingPath.splice(this.drivingPath.length - 1, 1);
-        this.$notify.error({
-          title: "错误",
-          message: "路线查询失败！"
-        });
-      }
+      this.drivingPath[this.drivingPath.length - 1].len = r.taxiFare.distance;
+      // this.tempDrivingPath[0].len = r.taxiFare.distance
       this.tempDrivingPath.splice(0, 1);
       if (this.tempDrivingPath.length > 0) {
         this.drivingPath.push(this.tempDrivingPath[0]);
@@ -770,6 +752,22 @@ export default {
 </script>
 
 <style>
+.list {
+  border-radius: 2px;
+  /* border: 1px solid #f7f7f7; */
+  border-bottom: 0px;
+  color: #000;
+}
+.site-list {
+  border-radius: 2px;
+  /* border: 1px solid #f7f7f7; */
+  border-top: 0px;
+
+  color: #000;
+}
+.side-bk {
+  background-color: #f1eeee;
+}
 .container {
   height: 100%;
   width: 100%;
@@ -883,5 +881,28 @@ export default {
   -webkit-transition: border-bottom-color 0.3s;
   transition: border-bottom-color 0.3s;
   outline: 0;
+}
+#collapse_nodes .el-collapse-item__wrap {
+  background-color: #f1eeee;
+}
+.btn-success {
+  background-color: #02c58d;
+  border: 1px solid #02c58d;
+  color: #ffffff;
+}
+.btn-dark {
+  background-color: #354558;
+  border: 1px solid #354558;
+  color: #ffffff;
+}
+.btn-danger {
+  background-color: #fc5454;
+  border: 1px solid #fc5454;
+  color: #ffffff;
+}
+.btn-upload {
+  background-color: #30419b;
+  border: 1px solid #30419b;
+  color: #ffffff;
 }
 </style>
