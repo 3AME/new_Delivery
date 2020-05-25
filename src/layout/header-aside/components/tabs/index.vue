@@ -35,12 +35,13 @@
         
     <div  class="d2-multiple-page-control-content-inner">
        <el-button-group>
-        <el-button @click="Refresh" >
-            <d2-icon name="refresh"/>
-        </el-button> 
+        
         <el-button @click="closeAll" >
             <d2-icon name="times-circle"/>
         </el-button>
+        <el-button @click="Refresh" >
+            <d2-icon name="refresh"/>
+        </el-button> 
         <d2-header-search @click="handleSearchClick" class="toggle"/>
           </el-button-group>
       
