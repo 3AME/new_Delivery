@@ -1,5 +1,5 @@
 <template>
-  <el-container class="container" style="background: #fff;" >
+  <el-container class="container" style="background: #fff;" v-loading="loading">
     <!-- v-loading="loading" -->
     <el-aside width="230px" class="aside" style="overflow:scroll;overflow-x: hidden !important;">
       <el-card style="margin: 5px;">
@@ -240,39 +240,39 @@ export default {
       mileageOptions: [20, 25, 30, 35, 40, 45, 50],
       countOptions: [1, 2, 3],
       activeName: "0",
-      // loading: true
+      loading: true
     };
   },
-  // activated() {
-  //   let me = this;
-  //   window.addEventListener("online", () => {
-  //     if (!me.loading) {
-  //       return;
-  //     }
-  //     me.loading = false;
-  //     me.reload();
-  //   });
+  activated() {
+    let me = this;
+    window.addEventListener("online", () => {
+      if (!me.loading) {
+        return;
+      }
+      me.loading = false;
+      me.reload();
+    });
 
-  //   window.addEventListener("offline", () => {
-  //     if (me.loading) {
-  //       return;
-  //     }
-  //     me.loading = true;
-  //     me.$notify.error({
-  //       title: "错误",
-  //       message: "网络已断开，请连接网络"
-  //     });
-  //   });
-  //   if (navigator.onLine) {
-  //     this.loading = false;
-  //   } else {
-  //     this.loading = true;
-  //     this.$notify.error({
-  //       title: "错误",
-  //       message: "网络连接失败，请连接网络"
-  //     });
-  //   }
-  // },
+    window.addEventListener("offline", () => {
+      if (me.loading) {
+        return;
+      }
+      me.loading = true;
+      me.$notify.error({
+        title: "错误",
+        message: "网络已断开，请连接网络"
+      });
+    });
+    if (navigator.onLine) {
+      this.loading = false;
+    } else {
+      this.loading = true;
+      this.$notify.error({
+        title: "错误",
+        message: "网络连接失败，请连接网络"
+      });
+    }
+  },
   methods: {
     refresh() {
       // this.reload();
