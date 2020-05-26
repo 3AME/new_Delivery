@@ -12,11 +12,11 @@
                 class="d-flex mr-3 rounded-circle"
                 src="../../../assets/images/small/1.jpg"
                 alt
-                height="64"
+                height="250"
               />
               <div class="media-body">
-                <h5 class="mt-0 font-24">系统功能简介</h5>
-                <br>该系统主要用来解决VRP问题。
+                <h5 class="mt-0 font-24">系统简介</h5>
+                <br>该系统主要用来解决VRP与CVRP问题。
                 <br />系统支持单配送中心查询、多配送中心查询；
                 <br />可自行设置车辆信息，车辆载重、车辆里程、车辆类型、车辆数量；
                 <br />支持时间窗，用户可自定义接受配送到达的最早时间以及接受配送到达的最晚时间；
@@ -29,26 +29,26 @@
             </div>
 
             <div class="media m-b-30">
-              <div class="media-body text-white bg-primary">
+              <div class="media-body">
                 <h5 class="mt-0 font-24">首页</h5>
                 <br>展示系统logo、团队名称、系统名称、开发技术支持等信息
               </div>
-              <img
+              <!-- <img
                 class="d-flex mr-3 rounded-circle"
                 src="../../../assets/images/small/1.jpg"
                 alt
                 height="64"
-              />
+              /> -->
             </div>
 
             <div class="media">
-              <img
+              <!-- <img
                 class="d-flex ml-3 rounded-circle"
                 src="../../../assets/images/small/1.jpg"
                 alt
                 height="64"
-              />
-              <div class="media-body text-white bg-info">
+              /> -->
+              <div class="media-body">
                 <h5 class="mt-0 mb-1 font-24">坐标查询</h5>
                 <br>坐标查询：以横坐标纵坐标的方式确定配送中心/客户点的位置。
                 <br />采用坐标查询的页面入口，通过导入文件的方式输入数据进行查询。
@@ -57,26 +57,26 @@
             <p class="sub-title"></p>
             <p class="sub-title"></p>
             <div class="media m-b-30">
-              <div class="media-body text-white bg-info">
+              <div class="media-body">
                 <h5 class="mt-0 font-24">路线查询</h5>
                 <br>路线查询：以邻接表的方式确定配送中心、客户点的距离以及客户点之间的距离，输入需确定配送中心。
                 <br />采用路线查询的页面入口，通过导入文件的方式输入数据进行查询。
               </div>
-              <img
+              <!-- <img
                 class="d-flex mr-3 rounded-circle"
                 src="../../../assets/images/small/1.jpg"
                 alt
                 height="64"
-              />
+              /> -->
             </div>
             <div class="media">
-              <img
+              <!-- <img
                 class="d-flex ml-3 rounded-circle"
                 src="../../../assets/images/small/1.jpg"
                 alt
                 height="64"
-              />
-              <div class="media-body text-white bg-primary">
+              /> -->
+              <div class="media-body">
                 <h5 class="mt-0 mb-1 font-24">地图选择</h5>
                 <br>地图选择：在页面选择成都市境内的地点，第一个点默认为配送中心，其后选择的都是客户点，若删除中心点，在原本配送中心之后的那个点默认变为配送中心。
                 <br />采用地图选择的页面入口，通过选择成都市地点、页面输入车辆信息的方式进行最优配送方案查询。
@@ -98,21 +98,21 @@
                 <br />隐藏无关路线：该选项只有在查询方式是路线查询和地图查询的时候显示，可隐藏图示中与最优配送方案无关的路线，保留最优配送方案路线。
                 <br />
               </div>
-              <img
+              <!-- <img
                 class="d-flex mr-3 rounded-circle"
                 src="../../../assets/images/small/1.jpg"
                 alt
                 height="64"
-              />
+              /> -->
             </div>
             <div class="media">
-              <img
+              <!-- <img
                 class="d-flex ml-3 rounded-circle"
                 src="../../../assets/images/small/1.jpg"
                 alt
                 height="64"
-              />
-              <div class="media-body text-white bg-primary">
+              /> -->
+              <div class="media-body">
                 <h5 class="mt-0 mb-1 font-24">历史记录</h5>
                 <br>历史记录页面展示查询记录。
                 <br />点击查看则进入到该条记录的查询结果页面；
@@ -144,7 +144,7 @@
                 <br />
               </p>
             </div>
-            <div class="card-body">
+            <!-- <div class="card-body">
               <h4 class="card-title font-20 mt-0">表头要求</h4>
               <p class="card-text">
                 <br>type：点的类型，depot——配送中心，customer——客户点，other——其他类型的点
@@ -161,7 +161,7 @@
                 <br />Vehicle_mileage：车辆里程
                 <br />Center_name：车辆所在配送中心的名字，对应type=depot的name值
               </p>
-            </div>
+            </div> -->
           </div>
           <div class="card m-b-30">
             <img
@@ -178,7 +178,7 @@
                 <br />
               </p>
             </div>
-            <div class="card-body">
+            <!-- <div class="card-body">
               <h4 class="card-title font-20 mt-0">表头要求</h4>
               <p class="card-text">
                 <br>type：点的类型，depot——配送中心，customer——客户点，other——其他类型的点
@@ -193,7 +193,7 @@
                 <br />Center_name：Center_name：车辆所在配送中心的名字，对应type="depot"类型点的的编号
                 <br />0、1、2对应的字段为name_a
               </p>
-            </div>
+            </div> -->
           </div>
           <div class="card m-b-30 text-white bg-primary">
             <img
