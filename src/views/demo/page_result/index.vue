@@ -15,6 +15,7 @@
         <div slot="header" class="clearfix">
           <span>最优路线</span>
           <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
+          <el-checkbox v-model="checked" style="float: right; padding: 3px 0" @change="onCheckboxChange"></el-checkbox>
         </div>
         <div style="text-align: center; margin-bottom: 20px;">
           <el-button class="btn-success" size="mini" @click="drawer = true">路线详情</el-button>
@@ -39,7 +40,8 @@
             :style="'margin-right: 4px;color:' + route.color"
             @change="onCheckedChange(route, index)"
           ></el-checkbox>-->
-          <label class="el-checkbox is-checked" style="margin-right: 4px;">
+          <div @click="toggleVisible(route, index)">
+            <label class="el-checkbox is-checked" style="margin-right: 4px;">
             <span class="el-checkbox__input is-checked">
               <span
                 class="el-checkbox__inner"
@@ -54,13 +56,18 @@
                 :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
               />
             </span>
-            <!---->
           </label>
           <span
+            :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+            >
+              车辆{{ route.id }}：
+            </span>
+          </div>
+          <div
             @click="toggleVisible(route, index)"
             :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
             :fill="route.color"
-          >车辆{{ route.text }}</span>
+          >{{ route.text }}</div>
         </div>
       </el-card>
     </el-aside>
@@ -123,7 +130,8 @@ export default {
       problem: undefined,
       hideRoute: false,
       routes: [],
-      loading: true
+      loading: true,
+      checked: true
     };
   },
   mounted() {
@@ -354,12 +362,12 @@ export default {
           this.$store.dispatch("d2admin/addQuery", problem);
           console.log('out=' + out)
           this.result = eval("(" + out + ")");
+          this.loading = false;
           if (isRouteMode) {
             this.showGraph();
           } else {
             this.showScatterGraph();
           }
-          this.loading = false;
         }
       });
     },
@@ -371,23 +379,34 @@ export default {
     toggleVisible(route, i) {
       route.checked = !route.checked;
       this.onCheckedChange(route, i);
+      let size = this.routes.filter(r => {
+        return route.checked
+      }).length
+      this.checked = (size == this.routes.length)
     },
     onCheckedChange(route, i) {
       let visibility = route.checked ? "visible" : "hidden";
       d3.selectAll(".link-edge-route-" + i).attr("visibility", visibility);
       d3.selectAll(".link-text-route-" + i).attr("visibility", visibility);
     },
+    onCheckboxChange(checked) {
+      this.routes.forEach((route, i) => {
+        route.checked = checked
+        this.onCheckedChange(route, i)
+      })
+    },
     // 散点图
     showScatterGraph() {
       var problem = this.problem;
-      var data = [];
-      problem.nodes.forEach(function(node, index) {
-        data.push({
-          name: "节点" + index + ":(" + node.x + ", " + node.y + ")",
-          x: node.x,
-          y: node.y
-        });
-      });
+      let data = problem.nodes;
+      // problem.nodes.forEach(function(node, index) {
+      //   data.push({
+      //     type: node.type,
+      //     name: "节点" + node.id + ":(" + node.x + ", " + node.y + ")",
+      //     x: node.x,
+      //     y: node.y
+      //   });
+      // });
 
       var plan = this.result;
 
@@ -400,7 +419,9 @@ export default {
           return t.id.indexOf(item.vid + "-") == 0
         })
         item.trips.forEach(function(trip, index) {
-          let text = item.vid + "-" + (index + same.length) + " : ";
+          let id = item.vid + "-" + (index + same.length)
+          // let text = id + " : ";
+          let text = ""
           var tempRoute = 0;
           trip.route.forEach(function(route, i) {
             if (i !== 0) {
@@ -422,7 +443,7 @@ export default {
             tempRoute = route;
           });
           legendTexts.push({
-            id: item.vid + "-" + index,
+            id: id,
             text: text,
             checked: true,
             distance: trip.distance,
@@ -492,7 +513,7 @@ export default {
 
       let width = this.$refs["svg"].clientWidth;
       let height = this.$refs["svg"].clientHeight;
-      const margin = { top: 30, right: 30, bottom: 60, left: 60 };
+      const margin = { top: 30, right: 60, bottom: 60, left: 60 };
 
       let svg = d3
         .select("svg#graph_svg")
@@ -525,29 +546,39 @@ export default {
       // 绘制坐标点
       svg
         .append("g")
-        .attr("fill", "#000")
         .selectAll("circle")
         .data(data)
         .join("circle")
         .attr("cx", d => x(d.x))
         .attr("cy", d => y(d.y))
+        // .attr("fill", "#000")
+        .attr("fill", function(d, i) {
+          if (d.type == "depot") {
+            return "#FF0000"
+          } else if (d.type == "customer") {
+            return "#000"
+          } else {
+            return "#1f77b4"
+          }
+        })
         .attr("r", 4);
 
       // 标注文字
       svg
         .append("g")
         .attr("font-family", "sans-serif")
-        .attr("font-size", 14)
+        .attr("font-size", 12)
         .selectAll("text")
         .data(data)
         .join("text")
-        .attr("x", d => x(d.x))
-        .attr("y", d => y(d.y))
+        .attr("x", d => x(d.x - 5))
+        .attr("y", d => y(d.y + 1))
         .text(d => {
-          if (problem.names !== undefined) {
-            return problem.names[d.name];
-          }
-          return d.name;
+          // if (problem.names !== undefined) {
+          //   return problem.names[d.name];
+          // }
+          // return d.name;
+          return "节点" + d.id + ":(" + d.x + ", " + d.y + ")"
         })
         .call(dodge);
 
@@ -602,9 +633,21 @@ export default {
         .attr("d", linkArc);
 
       function linkArc(d) {
-        // console.log('linkArc linkArc linkArc')
-        var dx = x(data[d.target].x) - x(data[d.source].x);
-        var dy = y(data[d.target].y) - y(data[d.source].y);
+        console.log('target=' + d.target + " source=" + d.source + " data.size=" + data.length)
+        console.log('linkArc linkArc linkArc   data=' + JSON.stringify(data[d.target]))
+        let target = undefined;
+        let source = undefined;
+        data.forEach(dd => {
+          if (dd.id == d.target) {
+            target = dd;
+          } else if (dd.id == d.source) {
+            source = dd;
+          }
+        })
+        // var dx = x(data[d.target].x) - x(data[d.source].x);
+        // var dy = y(data[d.target].y) - y(data[d.source].y);
+        var dx = x(target.x) - x(source.x);
+        var dy = y(target.y) - y(source.y);
         var dr = Math.sqrt(dx * dx + dy * dy);
         var unevenCorrection = d.sameUneven ? 0 : 0.5;
         var arc =
@@ -616,9 +659,9 @@ export default {
 
         return (
           "M" +
-          x(data[d.source].x) +
+          x(source.x) +
           "," +
-          y(data[d.source].y) +
+          y(source.y) +
           "A" +
           arc +
           "," +
@@ -626,9 +669,9 @@ export default {
           " 0 0," +
           d.sameArcDirection +
           " " +
-          x(data[d.target].x) +
+          x(target.x) +
           "," +
-          y(data[d.target].y)
+          y(target.y)
         );
       }
       // addLegend();
@@ -788,7 +831,9 @@ export default {
           return t.id.indexOf(item.vid + "-") == 0
         })
         item.trips.forEach(function(trip, index) {
-          let text = item.vid + "-" + (index + same.length) + " : ";
+          let id = item.vid + "-" + (index + same.length)
+          // let text = id + " : ";
+          let text = ""
           var tempRoute = 0;
 
           trip.route.forEach(function(route, i) {
@@ -817,7 +862,7 @@ export default {
             tempRoute = route;
           });
           legendTexts.push({
-            id: item.vid + "-" + index,
+            id: id,
             text: text,
             checked: true,
             distance: trip.distance,
@@ -1077,16 +1122,19 @@ export default {
           return d.group * 15;
         })
         .attr("fill", function(d, i) {
-          return "#ccc";
-          // if (d.group === 2) {
-          //   return "#ccc"
-          // }
-          // return colorScale(i);
-          // return colorScale(d.group);
+          if (d.group == 2) {
+            return "#FF0000"
+          } else if (d.group == 1.5) {
+            return "#2ca02c"
+          } else {
+            return "#1f77b4"
+          }
         });
       // 文字
       gs.append("text")
         .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "middle")
+        .attr("fill", "#fff")
         .text(function(d) {
           if (problem.names !== undefined) {
             return problem.names[d.name];
