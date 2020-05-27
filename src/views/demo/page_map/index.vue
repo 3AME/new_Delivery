@@ -1,13 +1,13 @@
 <template>
   <el-container class="container" style="background: #fff;" v-loading="loading">
     <!-- v-loading="loading" -->
-    <el-aside width="230px" class="aside" style="overflow:scroll;overflow-x: hidden !important;">
-      <el-card style="margin: 5px;">
+    <el-aside width="250px" class="aside" style="overflow:scroll;overflow-x: hidden !important;">
+      <el-card style="margin: 5px;text-align: center;">
         <el-button-group style="margin: 13px;">
           <el-button @click="refresh" class="btn-dark">刷新</el-button>
           <el-button class="btn-success" @click="test()">查询</el-button>
         </el-button-group>
-        <el-collapse id="collapse_nodes" accordion style="border:1px solid #f7f7f7;background-color: #f1eeee;">
+        <el-collapse id="collapse_nodes" v-model="activeName" accordion style="border:1px solid #f7f7f7;background-color: #f5f5f5;">
           <el-collapse-item title="车辆列表" name="0" class="list" style="">
             <div class="side-bk" style="text-align: center;">
               <el-button @click="addVehicle()" size="mini" style="margin: 8px;" class="btn-upload">添加车辆</el-button>
@@ -74,7 +74,7 @@
               <div style="text-align: center;">空空如也</div>
             </div>
 
-            <el-collapse id="collapse_nodes" v-else v-model="activeName" accordion style="">
+            <el-collapse id="collapse_nodes" v-else v-model="activeNode" accordion style="" aria-expanded="true">
               <el-collapse-item
                 v-for="(path, index) in polylinePath"
                 :key="path.name"
@@ -240,6 +240,7 @@ export default {
       mileageOptions: [20, 25, 30, 35, 40, 45, 50],
       countOptions: [1, 2, 3],
       activeName: "0",
+      activeNode: 0,
       loading: true
     };
   },
@@ -498,6 +499,7 @@ export default {
             if (me.tempDrivingPath.length > 0) {
               me.drivingPath.push(me.tempDrivingPath[0]);
             }
+            me.activeNode = me.drivingPath.length
             // console.log('size=' + me.drivingPath.length)
             // console.log('me.drivingPath=' + JSON.stringify(me.drivingPath))
             // console.log('lng=' + point.lng + ' lat=' + point.lat)
@@ -884,7 +886,7 @@ export default {
   outline: 0;
 }
 #collapse_nodes .el-collapse-item__wrap {
-  background-color: #f1eeee;
+  background-color: #f5f5f5;
 }
 .btn-success {
   background-color: #02c58d;

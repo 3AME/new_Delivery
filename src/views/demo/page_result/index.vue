@@ -1,5 +1,11 @@
 <template>
-  <el-container class="container" style="margin: 10px;background: #fff;" v-loading="loading">
+  <el-container
+    class="container"
+    style="margin: 10px;background: #fff;"
+    v-loading="loading"
+    element-loading-text="拼命加载中"
+    element-loading-spinner="el-icon-loading"
+  >
     <el-aside width="230px" class="aside">
       <el-card class="box-card">
         <div slot="header" class="clearfix">
@@ -15,6 +21,11 @@
         <div slot="header" class="clearfix">
           <span>最优路线</span>
           <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
+          <el-checkbox
+            v-model="checked"
+            style="float: right; padding: 3px 0"
+            @change="onCheckboxChange"
+          ></el-checkbox>
         </div>
         <div style="text-align: center; margin-bottom: 20px;">
           <el-button class="btn-success" size="mini" @click="drawer = true">路线详情</el-button>
@@ -39,71 +50,74 @@
             :style="'margin-right: 4px;color:' + route.color"
             @change="onCheckedChange(route, index)"
           ></el-checkbox>-->
-          <label class="el-checkbox is-checked" style="margin-right: 4px;">
-            <span class="el-checkbox__input is-checked">
-              <span
-                class="el-checkbox__inner"
-                :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
-              ></span>
-              <input
-                @click="toggleVisible(route, index)"
-                type="checkbox"
-                aria-hidden="false"
-                class="el-checkbox__original"
-                :value="route.checked"
-                :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
-              />
-            </span>
-            <!---->
-          </label>
-          <span
+          <div @click="toggleVisible(route, index)">
+            <label class="el-checkbox is-checked" style="margin-right: 4px;">
+              <span class="el-checkbox__input is-checked">
+                <span
+                  class="el-checkbox__inner"
+                  :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
+                ></span>
+                <input
+                  @click="toggleVisible(route, index)"
+                  type="checkbox"
+                  aria-hidden="false"
+                  class="el-checkbox__original"
+                  :value="route.checked"
+                  :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
+                />
+              </span>
+            </label>
+            <span
+              :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+            >车辆{{ route.id }}：</span>
+          </div>
+          <div
             @click="toggleVisible(route, index)"
             :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
             :fill="route.color"
-          >车辆{{ route.text }}</span>
+          >{{ route.text }}</div>
         </div>
       </el-card>
     </el-aside>
     <!-- <div style="height:100%; width: 100%;background-color: #f9f9f9"> -->
     <el-container style="background-color: #f9f9f9">
       <svg id="graph_svg" style="height:100%; width: 100%;background-color: #f9f9f9" ref="svg" />
-    <!-- </div>
-     -->
+      <!-- </div>
+      -->
     </el-container>
     <el-drawer title="路线详情" :visible.sync="drawer" :with-header="false" direction="rtl">
       <d2-container>
         <el-card class="box-card">
-        <div class="clearfix">
-          <span>路线详情</span>
-          <el-button style="float: right; padding: 3px 0" type="text" @click="drawer = false">关闭</el-button>
-        </div>
-      </el-card>
-      <div>
-        <el-card
-        class="box-card"
-        v-for="(route, index) in routes"
-        :key="index"
-        style="padding-top: 4px; padding-bottom: 4px;"
-      >
-        <div
-          :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-          :fill="route.color"
-        >车辆{{ route.text }}</div>
-        <!-- <span
+          <div class="clearfix">
+            <span>路线详情</span>
+            <el-button style="float: right; padding: 3px 0" type="text" @click="drawer = false">关闭</el-button>
+          </div>
+        </el-card>
+        <div>
+          <el-card
+            class="box-card"
+            v-for="(route, index) in routes"
+            :key="index"
+            style="padding-top: 4px; padding-bottom: 4px;"
+          >
+            <div
+              :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+              :fill="route.color"
+            >车辆{{ route.id }}：{{route.text}}</div>
+            <!-- <span
             :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
             :fill="route.color"
-        >车辆{{ route.id }}：路程：{{ route.distance.toFixed(2) }}公里 | 时间：{{ route.time.toFixed(2) }}小时</span>-->
-        <div
-          :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-          :fill="route.color"
-        >路程：{{ route.distance.toFixed(2) }}公里</div>
-        <div
-          :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-          :fill="route.color"
-        >时间：{{ route.time.toFixed(2) }}小时</div>
-      </el-card>
-      </div>
-
+            >车辆{{ route.id }}：路程：{{ route.distance.toFixed(2) }}公里 | 时间：{{ route.time.toFixed(2) }}小时</span>-->
+            <div
+              :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+              :fill="route.color"
+            >路程：{{ route.distance.toFixed(2) }}公里</div>
+            <div
+              :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+              :fill="route.color"
+            >时间：{{ route.time.toFixed(2) }}小时</div>
+          </el-card>
+        </div>
       </d2-container>
     </el-drawer>
   </el-container>
@@ -123,7 +137,8 @@ export default {
       problem: undefined,
       hideRoute: false,
       routes: [],
-      loading: true
+      loading: true,
+      checked: true
     };
   },
   mounted() {
@@ -156,6 +171,7 @@ export default {
       this.loading = false;
       return;
     }
+    this.checked = true;
     this.loading = true;
     svgChildren.remove();
     console.log("activated");
@@ -347,19 +363,18 @@ export default {
             showCancelButton: false,
             type: "error"
           }).then(() => {
-            this.$router.go(-1)
-        })
-
+            this.$router.go(-1);
+          });
         } else {
           this.$store.dispatch("d2admin/addQuery", problem);
-          console.log('out=' + out)
+          console.log("out=" + out);
           this.result = eval("(" + out + ")");
+          this.loading = false;
           if (isRouteMode) {
             this.showGraph();
           } else {
             this.showScatterGraph();
           }
-          this.loading = false;
         }
       });
     },
@@ -371,23 +386,35 @@ export default {
     toggleVisible(route, i) {
       route.checked = !route.checked;
       this.onCheckedChange(route, i);
+      let size = this.routes.filter(r => {
+        return r.checked;
+      }).length;
+      console.log("size=" + size + " length=" + this.routes.length)
+      this.checked = size == this.routes.length;
     },
     onCheckedChange(route, i) {
       let visibility = route.checked ? "visible" : "hidden";
       d3.selectAll(".link-edge-route-" + i).attr("visibility", visibility);
       d3.selectAll(".link-text-route-" + i).attr("visibility", visibility);
     },
+    onCheckboxChange(checked) {
+      this.routes.forEach((route, i) => {
+        route.checked = checked;
+        this.onCheckedChange(route, i);
+      });
+    },
     // 散点图
     showScatterGraph() {
       var problem = this.problem;
-      var data = [];
-      problem.nodes.forEach(function(node, index) {
-        data.push({
-          name: "节点" + index + ":(" + node.x + ", " + node.y + ")",
-          x: node.x,
-          y: node.y
-        });
-      });
+      let data = problem.nodes;
+      // problem.nodes.forEach(function(node, index) {
+      //   data.push({
+      //     type: node.type,
+      //     name: "节点" + node.id + ":(" + node.x + ", " + node.y + ")",
+      //     x: node.x,
+      //     y: node.y
+      //   });
+      // });
 
       var plan = this.result;
 
@@ -397,10 +424,12 @@ export default {
       // let vid = 0
       plan.plan.forEach(function(item) {
         let same = legendTexts.filter(t => {
-          return t.id.indexOf(item.vid + "-") == 0
-        })
+          return t.id.indexOf(item.vid + "-") == 0;
+        });
         item.trips.forEach(function(trip, index) {
-          let text = item.vid + "-" + (index + same.length) + " : ";
+          let id = item.vid + "-" + (index + same.length);
+          // let text = id + " : ";
+          let text = "";
           var tempRoute = 0;
           trip.route.forEach(function(route, i) {
             if (i !== 0) {
@@ -422,7 +451,7 @@ export default {
             tempRoute = route;
           });
           legendTexts.push({
-            id: item.vid + "-" + index,
+            id: id,
             text: text,
             checked: true,
             distance: trip.distance,
@@ -492,7 +521,7 @@ export default {
 
       let width = this.$refs["svg"].clientWidth;
       let height = this.$refs["svg"].clientHeight;
-      const margin = { top: 30, right: 30, bottom: 60, left: 60 };
+      const margin = { top: 30, right: 60, bottom: 60, left: 60 };
 
       let svg = d3
         .select("svg#graph_svg")
@@ -525,29 +554,39 @@ export default {
       // 绘制坐标点
       svg
         .append("g")
-        .attr("fill", "#000")
         .selectAll("circle")
         .data(data)
         .join("circle")
         .attr("cx", d => x(d.x))
         .attr("cy", d => y(d.y))
+        // .attr("fill", "#000")
+        .attr("fill", function(d, i) {
+          if (d.type == "depot") {
+            return "#FF0000";
+          } else if (d.type == "customer") {
+            return "#000";
+          } else {
+            return "#1f77b4";
+          }
+        })
         .attr("r", 4);
 
       // 标注文字
       svg
         .append("g")
         .attr("font-family", "sans-serif")
-        .attr("font-size", 14)
+        .attr("font-size", 12)
         .selectAll("text")
         .data(data)
         .join("text")
         .attr("x", d => x(d.x))
         .attr("y", d => y(d.y))
         .text(d => {
-          if (problem.names !== undefined) {
-            return problem.names[d.name];
-          }
-          return d.name;
+          // if (problem.names !== undefined) {
+          //   return problem.names[d.name];
+          // }
+          // return d.name;
+          return "节点" + d.id + ":(" + d.x + ", " + d.y + ")";
         })
         .call(dodge);
 
@@ -602,9 +641,30 @@ export default {
         .attr("d", linkArc);
 
       function linkArc(d) {
-        // console.log('linkArc linkArc linkArc')
-        var dx = x(data[d.target].x) - x(data[d.source].x);
-        var dy = y(data[d.target].y) - y(data[d.source].y);
+        console.log(
+          "target=" +
+            d.target +
+            " source=" +
+            d.source +
+            " data.size=" +
+            data.length
+        );
+        console.log(
+          "linkArc linkArc linkArc   data=" + JSON.stringify(data[d.target])
+        );
+        let target = undefined;
+        let source = undefined;
+        data.forEach(dd => {
+          if (dd.id == d.target) {
+            target = dd;
+          } else if (dd.id == d.source) {
+            source = dd;
+          }
+        });
+        // var dx = x(data[d.target].x) - x(data[d.source].x);
+        // var dy = y(data[d.target].y) - y(data[d.source].y);
+        var dx = x(target.x) - x(source.x);
+        var dy = y(target.y) - y(source.y);
         var dr = Math.sqrt(dx * dx + dy * dy);
         var unevenCorrection = d.sameUneven ? 0 : 0.5;
         var arc =
@@ -616,9 +676,9 @@ export default {
 
         return (
           "M" +
-          x(data[d.source].x) +
+          x(source.x) +
           "," +
-          y(data[d.source].y) +
+          y(source.y) +
           "A" +
           arc +
           "," +
@@ -626,9 +686,9 @@ export default {
           " 0 0," +
           d.sameArcDirection +
           " " +
-          x(data[d.target].x) +
+          x(target.x) +
           "," +
-          y(data[d.target].y)
+          y(target.y)
         );
       }
       // addLegend();
@@ -636,13 +696,13 @@ export default {
       function dodge(text, iterations = 300) {
         const nodes = text.nodes();
         const left = () =>
-          text.attr("text-anchor", "start").attr("dy", "0.32em");
+          text.attr("text-anchor", "middle").attr("dy", "1em");
         const right = () =>
-          text.attr("text-anchor", "end").attr("dy", "0.32em");
+          text.attr("text-anchor", "middle").attr("dy", "1em");
         const top = () =>
-          text.attr("text-anchor", "middle").attr("dy", "0.0em");
+          text.attr("text-anchor", "middle").attr("dy", "1em");
         const bottom = () =>
-          text.attr("text-anchor", "middle").attr("dy", "0.8em");
+          text.attr("text-anchor", "middle").attr("dy", "1em");
         const points = nodes.map(node => ({
           fx: +node.getAttribute("x"),
           fy: +node.getAttribute("y")
@@ -785,10 +845,12 @@ export default {
       var legendTexts = [];
       plan.plan.forEach(function(item) {
         let same = legendTexts.filter(t => {
-          return t.id.indexOf(item.vid + "-") == 0
-        })
+          return t.id.indexOf(item.vid + "-") == 0;
+        });
         item.trips.forEach(function(trip, index) {
-          let text = item.vid + "-" + (index + same.length) + " : ";
+          let id = item.vid + "-" + (index + same.length);
+          // let text = id + " : ";
+          let text = "";
           var tempRoute = 0;
 
           trip.route.forEach(function(route, i) {
@@ -817,7 +879,7 @@ export default {
             tempRoute = route;
           });
           legendTexts.push({
-            id: item.vid + "-" + index,
+            id: id,
             text: text,
             checked: true,
             distance: trip.distance,
@@ -1077,16 +1139,19 @@ export default {
           return d.group * 15;
         })
         .attr("fill", function(d, i) {
-          return "#ccc";
-          // if (d.group === 2) {
-          //   return "#ccc"
-          // }
-          // return colorScale(i);
-          // return colorScale(d.group);
+          if (d.group == 2) {
+            return "#FF0000";
+          } else if (d.group == 1.5) {
+            return "#2ca02c";
+          } else {
+            return "#1f77b4";
+          }
         });
       // 文字
       gs.append("text")
         .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "middle")
+        .attr("fill", "#fff")
         .text(function(d) {
           if (problem.names !== undefined) {
             return problem.names[d.name];
