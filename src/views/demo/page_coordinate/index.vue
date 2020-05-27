@@ -38,13 +38,31 @@
             <el-form :model="form">
               <el-card>
                 <el-form-item label="距离优先参数" :label-width="formLabelWidth">
-                  <el-input size="mini" v-model="distancePrior" autocomplete="off" clearable></el-input>
+                  <el-input
+                    size="mini"
+                    v-model="distancePrior"
+                    autocomplete="off"
+                    clearable
+                    placeholder="5"
+                  ></el-input>
                 </el-form-item>
                 <el-form-item label="时间优先参数" :label-width="formLabelWidth">
-                  <el-input size="mini" v-model="timePrior" autocomplete="off" clearable></el-input>
+                  <el-input
+                    size="mini"
+                    v-model="timePrior"
+                    autocomplete="off"
+                    clearable
+                    placeholder="1"
+                  ></el-input>
                 </el-form-item>
                 <el-form-item label="满载率优先参数" :label-width="formLabelWidth">
-                  <el-input size="mini" v-model="loadPrior" autocomplete="off" clearable></el-input>
+                  <el-input
+                    size="mini"
+                    v-model="loadPrior"
+                    autocomplete="off"
+                    clearable
+                    placeholder="4"
+                  ></el-input>
                 </el-form-item>
                 <el-form-item label="车辆速度(km/h)" :label-width="formLabelWidth">
                   <el-select
@@ -53,7 +71,7 @@
                     filterable
                     allow-create
                     style="font-size:12px"
-                    placeholder="选择输入车辆速度"
+                    placeholder="60"
                     clearable
                   >
                     <el-option
@@ -152,6 +170,7 @@ var form;
 var distancePrior;
 var timePrior;
 var loadPrior;
+var speed;
 export default {
   inject: ["reload"], //注入依赖
   data() {
@@ -211,9 +230,25 @@ export default {
       this.$confirm("确定要提交表单吗？")
         .then(_ => {
           this.loading = true;
-          console.log(this.distancePrior); //获取输入的值
-          console.log(this.timePrior); //获取输入的值
-          console.log(this.loadPrior); //获取输入的值
+          // console.log(this.distancePrior); //获取输入的值
+          // console.log(this.timePrior); //获取输入的值
+          // console.log(this.loadPrior); //获取输入的值
+          // console.log(this.speed_value);
+          if (this.distancePrior == "") {
+            this.distancePrior = 5;
+          }
+          if (this.timePrior == "") {
+            this.timePrior = 1;
+          }
+          if (this.loadPrior == "") {
+            this.loadPrior = 4;
+          }
+          if (this.speed_value == "") {
+            this.speed_value = 60;
+          }
+          console.log(this.distancePrior);
+          console.log(this.timePrior);
+          console.log(this.loadPrior);
           console.log(this.speed_value);
           this.timer = setTimeout(() => {
             done();
@@ -339,187 +374,17 @@ export default {
           loadPrior: 4 // 满载率加权
         };
         // eslint-disable-next-line camelcase
-        if (this.speed_value == "") {
-          if (this.distancePrior == "") {
-            if (this.timePrior == "" && this.loadPrior == "") {
-              newproblem_edges = {
-                routeMode: false,
-                nodes: new_nodes,
-                edges: newproblem_edges,
-                vehicles: new_vehicles,
-                distancePrior: new_test.distancePrior,
-                timePrior: new_test.timePrior,
-                loadPrior: new_test.loadPrior
-              };
-            } else if (this.timePrior == "" && this.loadPrior != "") {
-              newproblem_edges = {
-                routeMode: false,
-                nodes: new_nodes,
-                edges: newproblem_edges,
-                vehicles: new_vehicles,
-                distancePrior: new_test.distancePrior,
-                timePrior: new_test.timePrior,
-                loadPrior: this.loadPrior
-              };
-            } else if (this.timePrior != "" && this.loadPrior == "") {
-              newproblem_edges = {
-                routeMode: false,
-                nodes: new_nodes,
-                edges: newproblem_edges,
-                vehicles: new_vehicles,
-                distancePrior: new_test.distancePrior,
-                timePrior: this.timePrior,
-                loadPrior: new_test.loadPrior
-              };
-            } else if (this.timePrior != "" && this.loadPrior != "") {
-              newproblem_edges = {
-                routeMode: false,
-                nodes: new_nodes,
-                edges: newproblem_edges,
-                vehicles: new_vehicles,
-                distancePrior: new_test.distancePrior,
-                timePrior: this.timePrior,
-                loadPrior: this.loadPrior
-              };
-            }
-          } else {
-            if (this.timePrior == "" && this.loadPrior == "") {
-              newproblem_edges = {
-                routeMode: false,
-                nodes: new_nodes,
-                edges: newproblem_edges,
-                vehicles: new_vehicles,
-                distancePrior: this.distancePrior,
-                timePrior: new_test.timePrior,
-                loadPrior: new_test.loadPrior
-              };
-            } else if (this.timePrior == "" && this.loadPrior != "") {
-              newproblem_edges = {
-                routeMode: false,
-                nodes: new_nodes,
-                edges: newproblem_edges,
-                vehicles: new_vehicles,
-                distancePrior: this.distancePrior,
-                timePrior: new_test.timePrior,
-                loadPrior: this.loadPrior
-              };
-            } else if (this.timePrior != "" && this.loadPrior == "") {
-              newproblem_edges = {
-                routeMode: false,
-                nodes: new_nodes,
-                edges: newproblem_edges,
-                vehicles: new_vehicles,
-                distancePrior: this.distancePrior,
-                timePrior: this.timePrior,
-                loadPrior: new_test.loadPrior
-              };
-            } else if (this.timePrior != "" && this.loadPrior != "") {
-              newproblem_edges = {
-                routeMode: false,
-                nodes: new_nodes,
-                edges: newproblem_edges,
-                vehicles: new_vehicles,
-                distancePrior: this.distancePrior,
-                timePrior: this.timePrior,
-                loadPrior: this.loadPrior,
-              };
-            }
-          }
-        } else {
-          if (this.distancePrior == "") {
-            if (this.timePrior == "" && this.loadPrior == "") {
-              newproblem_edges = {
-                routeMode: false,
-                nodes: new_nodes,
-                edges: newproblem_edges,
-                vehicles: new_vehicles,
-                distancePrior: new_test.distancePrior,
-                timePrior: new_test.timePrior,
-                loadPrior: new_test.loadPrior,
-                speed:this.speed_value
-              };
-            } else if (this.timePrior == "" && this.loadPrior != "") {
-              newproblem_edges = {
-                routeMode: false,
-                nodes: new_nodes,
-                edges: newproblem_edges,
-                vehicles: new_vehicles,
-                distancePrior: new_test.distancePrior,
-                timePrior: new_test.timePrior,
-                loadPrior: this.loadPrior,
-                speed:this.speed_value
-              };
-            } else if (this.timePrior != "" && this.loadPrior == "") {
-              newproblem_edges = {
-                routeMode: false,
-                nodes: new_nodes,
-                edges: newproblem_edges,
-                vehicles: new_vehicles,
-                distancePrior: new_test.distancePrior,
-                timePrior: this.timePrior,
-                loadPrior: new_test.loadPrior,
-                speed:this.speed_value
-              };
-            } else if (this.timePrior != "" && this.loadPrior != "") {
-              newproblem_edges = {
-                routeMode: false,
-                nodes: new_nodes,
-                edges: newproblem_edges,
-                vehicles: new_vehicles,
-                distancePrior: new_test.distancePrior,
-                timePrior: this.timePrior,
-                loadPrior: this.loadPrior,
-                speed:this.speed_value
-              };
-            }
-          } else {
-            if (this.timePrior == "" && this.loadPrior == "") {
-              newproblem_edges = {
-                routeMode: false,
-                nodes: new_nodes,
-                edges: newproblem_edges,
-                vehicles: new_vehicles,
-                distancePrior: this.distancePrior,
-                timePrior: new_test.timePrior,
-                loadPrior: new_test.loadPrior,
-                speed:this.speed_value
-              };
-            } else if (this.timePrior == "" && this.loadPrior != "") {
-              newproblem_edges = {
-                routeMode: false,
-                nodes: new_nodes,
-                edges: newproblem_edges,
-                vehicles: new_vehicles,
-                distancePrior: this.distancePrior,
-                timePrior: new_test.timePrior,
-                loadPrior: this.loadPrior,
-                speed:this.speed_value
-              };
-            } else if (this.timePrior != "" && this.loadPrior == "") {
-              newproblem_edges = {
-                routeMode: false,
-                nodes: new_nodes,
-                edges: newproblem_edges,
-                vehicles: new_vehicles,
-                distancePrior: this.distancePrior,
-                timePrior: this.timePrior,
-                loadPrior: new_test.loadPrior,
-                speed:this.speed_value
-              };
-            } else if (this.timePrior != "" && this.loadPrior != "") {
-              newproblem_edges = {
-                routeMode: false,
-                nodes: new_nodes,
-                edges: newproblem_edges,
-                vehicles: new_vehicles,
-                distancePrior: this.distancePrior,
-                timePrior: this.timePrior,
-                loadPrior: this.loadPrior,
-                speed:this.speed_value,
-              };
-            }
-          }
-        }
+     
+        newproblem_edges = {
+          routeMode: false,
+          nodes: new_nodes,
+          edges: newproblem_edges,
+          vehicles: new_vehicles,
+          distancePrior: this.distancePrior,
+          timePrior: this.timePrior,
+          loadPrior: this.loadPrior,
+          speed: this.speed_value
+        };
 
         console.log("problem:" + JSON.stringify(newproblem_edges));
         this.$router.push({
@@ -532,7 +397,7 @@ export default {
         this.distancePrior = "";
         this.timePrior = "";
         this.loadPrior = "";
-        this.speed_value="";
+        this.speed_value = "";
         console.log(this.distancePrior);
       }
     },

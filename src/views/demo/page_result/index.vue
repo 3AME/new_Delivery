@@ -175,7 +175,7 @@ export default {
     this.loading = true;
     svgChildren.remove();
     console.log("activated");
-    this.problem = this.$route.query.problem;
+    // this.problem = this.$route.query.problem;
     this.hideRoute = false;
     this.problem = this.$route.query.problem;
     this.solve(this.problem);
