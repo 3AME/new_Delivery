@@ -1,5 +1,11 @@
 <template>
-  <el-container class="container" style="margin: 10px;background: #fff;" v-loading="loading">
+  <el-container
+    class="container"
+    style="margin: 10px;background: #fff;"
+    v-loading="loading"
+    element-loading-text="拼命加载中"
+    element-loading-spinner="el-icon-loading"
+  >
     <el-aside width="230px" class="aside">
       <el-card class="box-card">
         <div slot="header" class="clearfix">
@@ -15,7 +21,11 @@
         <div slot="header" class="clearfix">
           <span>最优路线</span>
           <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
-          <el-checkbox v-model="checked" style="float: right; padding: 3px 0" @change="onCheckboxChange"></el-checkbox>
+          <el-checkbox
+            v-model="checked"
+            style="float: right; padding: 3px 0"
+            @change="onCheckboxChange"
+          ></el-checkbox>
         </div>
         <div style="text-align: center; margin-bottom: 20px;">
           <el-button class="btn-success" size="mini" @click="drawer = true">路线详情</el-button>
@@ -42,26 +52,24 @@
           ></el-checkbox>-->
           <div @click="toggleVisible(route, index)">
             <label class="el-checkbox is-checked" style="margin-right: 4px;">
-            <span class="el-checkbox__input is-checked">
-              <span
-                class="el-checkbox__inner"
-                :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
-              ></span>
-              <input
-                @click="toggleVisible(route, index)"
-                type="checkbox"
-                aria-hidden="false"
-                class="el-checkbox__original"
-                :value="route.checked"
-                :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
-              />
-            </span>
-          </label>
-          <span
-            :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-            >
-              车辆{{ route.id }}：
-            </span>
+              <span class="el-checkbox__input is-checked">
+                <span
+                  class="el-checkbox__inner"
+                  :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
+                ></span>
+                <input
+                  @click="toggleVisible(route, index)"
+                  type="checkbox"
+                  aria-hidden="false"
+                  class="el-checkbox__original"
+                  :value="route.checked"
+                  :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
+                />
+              </span>
+            </label>
+            <span
+              :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+            >车辆{{ route.id }}：</span>
           </div>
           <div
             @click="toggleVisible(route, index)"
@@ -74,43 +82,42 @@
     <!-- <div style="height:100%; width: 100%;background-color: #f9f9f9"> -->
     <el-container style="background-color: #f9f9f9">
       <svg id="graph_svg" style="height:100%; width: 100%;background-color: #f9f9f9" ref="svg" />
-    <!-- </div>
-     -->
+      <!-- </div>
+      -->
     </el-container>
     <el-drawer title="路线详情" :visible.sync="drawer" :with-header="false" direction="rtl">
       <d2-container>
         <el-card class="box-card">
-        <div class="clearfix">
-          <span>路线详情</span>
-          <el-button style="float: right; padding: 3px 0" type="text" @click="drawer = false">关闭</el-button>
-        </div>
-      </el-card>
-      <div>
-        <el-card
-        class="box-card"
-        v-for="(route, index) in routes"
-        :key="index"
-        style="padding-top: 4px; padding-bottom: 4px;"
-      >
-        <div
-          :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-          :fill="route.color"
-        >车辆{{ route.text }}</div>
-        <!-- <span
+          <div class="clearfix">
+            <span>路线详情</span>
+            <el-button style="float: right; padding: 3px 0" type="text" @click="drawer = false">关闭</el-button>
+          </div>
+        </el-card>
+        <div>
+          <el-card
+            class="box-card"
+            v-for="(route, index) in routes"
+            :key="index"
+            style="padding-top: 4px; padding-bottom: 4px;"
+          >
+            <div
+              :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+              :fill="route.color"
+            >车辆{{ route.id }}：{{route.text}}</div>
+            <!-- <span
             :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
             :fill="route.color"
-        >车辆{{ route.id }}：路程：{{ route.distance.toFixed(2) }}公里 | 时间：{{ route.time.toFixed(2) }}小时</span>-->
-        <div
-          :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-          :fill="route.color"
-        >路程：{{ route.distance.toFixed(2) }}公里</div>
-        <div
-          :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-          :fill="route.color"
-        >时间：{{ route.time.toFixed(2) }}小时</div>
-      </el-card>
-      </div>
-
+            >车辆{{ route.id }}：路程：{{ route.distance.toFixed(2) }}公里 | 时间：{{ route.time.toFixed(2) }}小时</span>-->
+            <div
+              :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+              :fill="route.color"
+            >路程：{{ route.distance.toFixed(2) }}公里</div>
+            <div
+              :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+              :fill="route.color"
+            >时间：{{ route.time.toFixed(2) }}小时</div>
+          </el-card>
+        </div>
       </d2-container>
     </el-drawer>
   </el-container>
@@ -164,6 +171,7 @@ export default {
       this.loading = false;
       return;
     }
+    this.checked = true;
     this.loading = true;
     svgChildren.remove();
     console.log("activated");
@@ -355,12 +363,11 @@ export default {
             showCancelButton: false,
             type: "error"
           }).then(() => {
-            this.$router.go(-1)
-        })
-
+            this.$router.go(-1);
+          });
         } else {
           this.$store.dispatch("d2admin/addQuery", problem);
-          console.log('out=' + out)
+          console.log("out=" + out);
           this.result = eval("(" + out + ")");
           this.loading = false;
           if (isRouteMode) {
@@ -380,9 +387,10 @@ export default {
       route.checked = !route.checked;
       this.onCheckedChange(route, i);
       let size = this.routes.filter(r => {
-        return route.checked
-      }).length
-      this.checked = (size == this.routes.length)
+        return r.checked;
+      }).length;
+      console.log("size=" + size + " length=" + this.routes.length)
+      this.checked = size == this.routes.length;
     },
     onCheckedChange(route, i) {
       let visibility = route.checked ? "visible" : "hidden";
@@ -391,9 +399,9 @@ export default {
     },
     onCheckboxChange(checked) {
       this.routes.forEach((route, i) => {
-        route.checked = checked
-        this.onCheckedChange(route, i)
-      })
+        route.checked = checked;
+        this.onCheckedChange(route, i);
+      });
     },
     // 散点图
     showScatterGraph() {
@@ -416,12 +424,12 @@ export default {
       // let vid = 0
       plan.plan.forEach(function(item) {
         let same = legendTexts.filter(t => {
-          return t.id.indexOf(item.vid + "-") == 0
-        })
+          return t.id.indexOf(item.vid + "-") == 0;
+        });
         item.trips.forEach(function(trip, index) {
-          let id = item.vid + "-" + (index + same.length)
+          let id = item.vid + "-" + (index + same.length);
           // let text = id + " : ";
-          let text = ""
+          let text = "";
           var tempRoute = 0;
           trip.route.forEach(function(route, i) {
             if (i !== 0) {
@@ -554,11 +562,11 @@ export default {
         // .attr("fill", "#000")
         .attr("fill", function(d, i) {
           if (d.type == "depot") {
-            return "#FF0000"
+            return "#FF0000";
           } else if (d.type == "customer") {
-            return "#000"
+            return "#000";
           } else {
-            return "#1f77b4"
+            return "#1f77b4";
           }
         })
         .attr("r", 4);
@@ -571,14 +579,14 @@ export default {
         .selectAll("text")
         .data(data)
         .join("text")
-        .attr("x", d => x(d.x - 5))
-        .attr("y", d => y(d.y + 1))
+        .attr("x", d => x(d.x))
+        .attr("y", d => y(d.y))
         .text(d => {
           // if (problem.names !== undefined) {
           //   return problem.names[d.name];
           // }
           // return d.name;
-          return "节点" + d.id + ":(" + d.x + ", " + d.y + ")"
+          return "节点" + d.id + ":(" + d.x + ", " + d.y + ")";
         })
         .call(dodge);
 
@@ -633,8 +641,17 @@ export default {
         .attr("d", linkArc);
 
       function linkArc(d) {
-        console.log('target=' + d.target + " source=" + d.source + " data.size=" + data.length)
-        console.log('linkArc linkArc linkArc   data=' + JSON.stringify(data[d.target]))
+        console.log(
+          "target=" +
+            d.target +
+            " source=" +
+            d.source +
+            " data.size=" +
+            data.length
+        );
+        console.log(
+          "linkArc linkArc linkArc   data=" + JSON.stringify(data[d.target])
+        );
         let target = undefined;
         let source = undefined;
         data.forEach(dd => {
@@ -643,7 +660,7 @@ export default {
           } else if (dd.id == d.source) {
             source = dd;
           }
-        })
+        });
         // var dx = x(data[d.target].x) - x(data[d.source].x);
         // var dy = y(data[d.target].y) - y(data[d.source].y);
         var dx = x(target.x) - x(source.x);
@@ -679,13 +696,13 @@ export default {
       function dodge(text, iterations = 300) {
         const nodes = text.nodes();
         const left = () =>
-          text.attr("text-anchor", "start").attr("dy", "0.32em");
+          text.attr("text-anchor", "middle").attr("dy", "1em");
         const right = () =>
-          text.attr("text-anchor", "end").attr("dy", "0.32em");
+          text.attr("text-anchor", "middle").attr("dy", "1em");
         const top = () =>
-          text.attr("text-anchor", "middle").attr("dy", "0.0em");
+          text.attr("text-anchor", "middle").attr("dy", "1em");
         const bottom = () =>
-          text.attr("text-anchor", "middle").attr("dy", "0.8em");
+          text.attr("text-anchor", "middle").attr("dy", "1em");
         const points = nodes.map(node => ({
           fx: +node.getAttribute("x"),
           fy: +node.getAttribute("y")
@@ -828,12 +845,12 @@ export default {
       var legendTexts = [];
       plan.plan.forEach(function(item) {
         let same = legendTexts.filter(t => {
-          return t.id.indexOf(item.vid + "-") == 0
-        })
+          return t.id.indexOf(item.vid + "-") == 0;
+        });
         item.trips.forEach(function(trip, index) {
-          let id = item.vid + "-" + (index + same.length)
+          let id = item.vid + "-" + (index + same.length);
           // let text = id + " : ";
-          let text = ""
+          let text = "";
           var tempRoute = 0;
 
           trip.route.forEach(function(route, i) {
@@ -1123,11 +1140,11 @@ export default {
         })
         .attr("fill", function(d, i) {
           if (d.group == 2) {
-            return "#FF0000"
+            return "#FF0000";
           } else if (d.group == 1.5) {
-            return "#2ca02c"
+            return "#2ca02c";
           } else {
-            return "#1f77b4"
+            return "#1f77b4";
           }
         });
       // 文字
