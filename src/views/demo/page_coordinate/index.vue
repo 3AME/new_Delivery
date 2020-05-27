@@ -422,7 +422,6 @@ export default {
                 distancePrior: this.distancePrior,
                 timePrior: this.timePrior,
                 loadPrior: this.loadPrior,
-                speed: this.speed_value
               };
             }
           }
@@ -516,8 +515,7 @@ export default {
                 distancePrior: this.distancePrior,
                 timePrior: this.timePrior,
                 loadPrior: this.loadPrior,
-                speed: this.speed_value,
-                speed:this.speed_value
+                speed:this.speed_value,
               };
             }
           }
@@ -530,10 +528,11 @@ export default {
             problem: newproblem_edges
           }
         });
-        //刷新三个参数的值
+        //刷新四个参数的值
         this.distancePrior = "";
         this.timePrior = "";
         this.loadPrior = "";
+        this.speed_value="";
         console.log(this.distancePrior);
       }
     },
