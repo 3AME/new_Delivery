@@ -23,6 +23,65 @@
           <!-- <i class="el-icon-download el-icon--right"></i> -->
         </el-button>
         <el-button @click="refresh" class="btn-dark">刷新</el-button>
+        <el-button class="btn-primary" @click="dialog = true">设置算法参数</el-button>
+        <el-drawer
+          :before-close="handleClose"
+          :visible.sync="dialog"
+          direction="rtl"
+          custom-class="demo-drawer"
+          ref="drawer"
+        >
+          <div class="demo-drawer__content">
+            <el-form :model="form">
+              <el-card>
+                <el-form-item label="距离优先参数" :label-width="formLabelWidth">
+                  <el-input size="mini" v-model="distancePrior" autocomplete="off" clearable placeholder="5"></el-input>
+                </el-form-item>
+                <el-form-item label="时间优先参数" :label-width="formLabelWidth">
+                  <el-input size="mini" v-model="timePrior" autocomplete="off" clearable placeholder="1"></el-input>
+                </el-form-item>
+                <el-form-item label="满载率优先参数" :label-width="formLabelWidth">
+                  <el-input size="mini" v-model="loadPrior" autocomplete="off" clearable placeholder="4"></el-input>
+                </el-form-item>
+                <el-form-item label="车辆速度(km/h)" :label-width="formLabelWidth">
+                  <el-select
+                    size="medium"
+                    v-model="speed_value"
+                    filterable
+                    allow-create
+                    style="font-size:12px"
+                    placeholder="60"
+                    clearable
+                  >
+                    <el-option
+                      v-for="item in vehicles_speed"
+                      :key="item.speed_value"
+                      :label="item.label"
+                      :value="item.speed_value"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-card>
+              <el-card>
+                <el-form-item>
+                  1.&nbsp;&nbsp;&nbsp;&nbsp;距离优先参数范围:0-100
+                  <br />2.&nbsp;时间优先参数范围:0-100
+                  <br />3.&nbsp;满载率优先参数范围:0-100
+                  <br />4.&nbsp;车辆速度范围：1-120(单位：km/h)
+                </el-form-item>
+              </el-card>
+            </el-form>
+            <div class="demo-drawer__footer">
+              <el-button style="float: left;margin-left:40px;" @click="cancelForm">取 消</el-button>
+              <el-button
+                class="btn-success"
+                @click="$refs.drawer.closeDrawer()"
+                :loading="loading"
+                style="float: left;margin-left:70px;"
+              >{{ loading ? '提交中 ...' : '确 定' }}</el-button>
+            </div>
+          </div>
+        </el-drawer>
       </el-button-group>
       <el-collapse @change="handleChange" class="yaoqiu">
         <el-collapse-item name="1">
@@ -107,6 +166,25 @@ export default {
   inject: ["reload"], //注入依赖
   data() {
     return {
+      dialog: false,
+      loading: false,
+      distancePrior: "", //距离优先
+      timePrior: "", //时间优先
+      loadPrior: "", //满载率优先
+      form: {},
+      formLabelWidth: "110px",
+      timer: null,
+      vehicles_speed: [
+        {
+          speed_value: 10,
+          label: 10
+        },
+        {
+          speed_value: 60,
+          label: 60
+        }
+      ],
+      speed_value: [],
       table: {
         columns: [],
         data: [],
@@ -134,6 +212,48 @@ export default {
     ];
   },
   methods: {
+    handleClose(done) {
+      if (this.loading) {
+        return;
+      }
+      this.$confirm("确定要提交表单吗？")
+        .then(_ => {
+          this.loading = true;
+          // console.log(this.distancePrior); //获取输入的值
+          // console.log(this.timePrior); //获取输入的值
+          // console.log(this.loadPrior); //获取输入的值
+          console.log(this.speed_value);
+          if (this.distancePrior == "") {
+            this.distancePrior = 5;
+          }
+          if (this.timePrior == "") {
+            this.timePrior = 1;
+          }
+          if (this.loadPrior == "") {
+            this.loadPrior = 4;
+          }
+          if (this.speed_value == "") {
+            this.speed_value = 60;
+          }
+          console.log(this.distancePrior);
+          console.log(this.timePrior);
+          console.log(this.loadPrior);
+          console.log(this.speed_value);
+          this.timer = setTimeout(() => {
+            done();
+            // 动画关闭需要一定的时间
+            setTimeout(() => {
+              this.loading = false;
+            }, 400);
+          }, 2000);
+        })
+        .catch(_ => {});
+    },
+    cancelForm() {
+      this.loading = false;
+      this.dialog = false;
+      clearTimeout(this.timer);
+    },
     refresh() {
       this.reload();
     },
@@ -179,8 +299,8 @@ export default {
 
     inquery() {
       // eslint-disable-next-line camelcase
-      var num_node = this.input;
-      console.log(num_node);
+      // var num_node = this.input;
+      // console.log(num_node);
       if (outdata == null) {
         this.$confirm("还未选择文件上传哦", "温馨提示", {
           confirmButtonText: "确定",
@@ -286,14 +406,16 @@ export default {
         };
         console.log(new_test);
         // eslint-disable-next-line camelcase
+        // var new_problem;
         var new_problem = {
           routeMode: true,
           nodes: new_nodes,
           edges: new_outdata,
           vehicles: new_vehicles,
-          distancePrior: new_test.distancePrior,
-          timePrior: new_test.timePrior,
-          loadPrior: new_test.loadPrior
+          distancePrior: this.distancePrior,
+          timePrior: this.timePrior,
+          loadPrior: this.loadPrior,
+          speed:this.speed_value
         };
         console.log(new_problem);
         this.$router.push({
@@ -302,6 +424,12 @@ export default {
             problem: new_problem
           }
         });
+        //刷新四个参数的值
+        this.distancePrior = "";
+        this.timePrior = "";
+        this.loadPrior = "";
+        this.speed_value="";
+        console.log(this.distancePrior);
       }
     },
     handleChange(val) {

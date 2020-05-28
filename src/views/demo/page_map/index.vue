@@ -339,7 +339,7 @@ export default {
       }
 
       console.log("test problem=" + JSON.stringify(problem));
-
+      
       this.$router.push({
         name: "page_result",
         query: {
