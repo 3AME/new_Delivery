@@ -1,5 +1,6 @@
 <template>
-  <el-container
+  <d2-container>
+    <el-container
     class="container"
     style="margin: 10px;background: #fff;"
     v-loading="loading"
@@ -80,11 +81,11 @@
       </el-card>
     </el-aside>
     <!-- <div style="height:100%; width: 100%;background-color: #f9f9f9"> -->
-    <el-container style="background-color: #f9f9f9">
+    <el-main style="background-color: #f9f9f9">
       <svg id="graph_svg" style="height:100%; width: 100%;background-color: #f9f9f9" ref="svg" />
       <!-- </div>
       -->
-    </el-container>
+    </el-main>
     <el-drawer title="路线详情" :visible.sync="drawer" :with-header="false" direction="rtl">
       <d2-container>
         <el-card class="box-card">
@@ -121,6 +122,8 @@
       </d2-container>
     </el-drawer>
   </el-container>
+  </d2-container>
+
 </template>
 
 <script>
@@ -174,8 +177,8 @@ export default {
     this.checked = true;
     this.loading = true;
     svgChildren.remove();
-    console.log("activated");
-    this.problem = this.$route.query.problem;
+    // console.log("activated");
+    // this.problem = this.$route.query.problem;
     this.hideRoute = false;
     this.problem = this.$route.query.problem;
     this.solve(this.problem);
@@ -297,7 +300,7 @@ export default {
       }
       console.log("vehicles", problem.vehicles);
       pipe(problem.vehicles.length);
-      var speed = problem.speed || 1;
+      var speed = problem.speed || 10;
       var work_time = problem.work_time || -1;
       pipe(speed, work_time);
       for (var i in problem.vehicles) {
@@ -396,6 +399,13 @@ export default {
       let visibility = route.checked ? "visible" : "hidden";
       d3.selectAll(".link-edge-route-" + i).attr("visibility", visibility);
       d3.selectAll(".link-text-route-" + i).attr("visibility", visibility);
+
+      if (!this.problem.routeMode) {
+        route.serve.forEach(id => {
+          d3.selectAll(".graph-dot-" + id).attr("visibility", visibility);
+          d3.selectAll(".dot-text-" + id).attr("visibility", visibility);
+        })
+      }
     },
     onCheckboxChange(checked) {
       this.routes.forEach((route, i) => {
@@ -455,7 +465,8 @@ export default {
             text: text,
             checked: true,
             distance: trip.distance,
-            time: trip.time
+            time: trip.time,
+            serve: trip.serve
           });
           // this.routes.push(text);
           // vid++
@@ -560,6 +571,12 @@ export default {
         .attr("cx", d => x(d.x))
         .attr("cy", d => y(d.y))
         // .attr("fill", "#000")
+        .attr("class", function(d) {
+          if (d.type == "depot") {
+            return "dot-depot-" + d.id;
+          }
+          return "graph-dot-" + d.id;
+        })
         .attr("fill", function(d, i) {
           if (d.type == "depot") {
             return "#FF0000";
@@ -579,6 +596,12 @@ export default {
         .selectAll("text")
         .data(data)
         .join("text")
+        .attr("class", function(d) {
+          if (d.type == "depot") {
+            return "text-depot-" + d.id;
+          }
+          return "dot-text-" + d.id;
+        })
         .attr("x", d => x(d.x))
         .attr("y", d => y(d.y))
         .text(d => {
@@ -883,7 +906,8 @@ export default {
             text: text,
             checked: true,
             distance: trip.distance,
-            time: trip.time
+            time: trip.time,
+            serve: trip.serve
           });
         });
       });
@@ -1150,8 +1174,9 @@ export default {
       // 文字
       gs.append("text")
         .attr("text-anchor", "middle")
+        .attr("font-size", "12px")
         .attr("dominant-baseline", "middle")
-        .attr("fill", "#fff")
+        .attr("fill", "#000")
         .text(function(d) {
           if (problem.names !== undefined) {
             return problem.names[d.name];

@@ -5,7 +5,7 @@
         <el-col :span="3.2">
           <el-upload :before-upload="handleUpload" action="default">
             <el-button class="btn-upload" style="border-top-right-radius: 0px;border-bottom-right-radius: 0px;">
-              上传
+              打开
               <!-- <i class="el-icon-upload el-icon--right"></i> -->
             </el-button>
           </el-upload>
@@ -80,6 +80,8 @@
 </template>
 
 <script>
+import * as xlsx from "xlsx";
+import { ipcRenderer } from "electron";
 import Vue from "vue";
 import pluginImport from "@d2-projects/vue-table-import";
 import pluginExport from "@d2-projects/vue-table-export";
@@ -250,17 +252,36 @@ export default {
       console.log(val);
     },
     handleDownload() {
-      var columns = [];
-      for (var i in this.stdcolumns) {
-        columns.push({
-          label: this.stdcolumns[i].label,
-          prop: this.stdcolumns[i].prop
-        });
-      }
+      // var columns = [];
+      // for (var i in this.stdcolumns) {
+      //   columns.push({
+      //     label: this.stdcolumns[i].label,
+      //     prop: this.stdcolumns[i].prop
+      //   });
+      // }
 
-      this.$export.excel({
-        title: "坐标查询文件",
-        columns
+      // this.$export.excel({
+      //   title: "坐标查询文件",
+      //   columns
+      // });
+
+      var table = []
+      table.push(this.stdcolumns.map(item => {
+        return item.label
+      }))
+
+       // 创建book
+      var wb = xlsx.utils.book_new();
+      // json转sheet
+      var ws = xlsx.utils.aoa_to_sheet(table);
+      // sheet写入book
+      xlsx.utils.book_append_sheet(wb, ws, "query");
+      // 输出
+      ipcRenderer.send("open-save-dialog", "坐标查询文件");
+      ipcRenderer.once("selectedItem", function(e, path) {
+        if (path != null) {
+          xlsx.writeFile(wb, path);
+        }
       });
     }
   }

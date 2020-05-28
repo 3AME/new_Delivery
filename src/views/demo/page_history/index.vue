@@ -122,11 +122,26 @@ export default {
     saveQuery(index, row) {
       var problem = row.problem;
       var table = [];
-      var edges = problem.edges;
+      // var edges = problem.edges;
+
+      let depots = problem.nodes.filter(node => {
+        return node.type == "depot"
+      });
 
       if (!problem.routeMode) {
-        let row0 = ["物流中心(" + edges[0].x + ", " + edges[0].y + ")"];
-        table.push(row0);
+        // problem.nodes.forEach(node => {
+        //   if (node.type == "depot") {
+        //     let row0 = ["物流中心" + node.id + "(" + node.x + ", " + node.y + ")"];
+        //     table.push(row0);
+        //   }
+        // })
+        // let row0 = ["物流中心(" + edges[0].x + ", " + edges[0].y + ")"];
+        // table.push(row0);
+
+        depots.forEach(node => {
+          let row0 = ["物流中心" + node.id + "(" + node.x + ", " + node.y + ")"];
+          table.push(row0);
+        })
 
         var header1 = ["配送节点", "横坐标x(km)", "纵坐标y(km)", "需求量q(t)"];
 
@@ -136,13 +151,19 @@ export default {
           if (node.type === "customer") {
             let row = [];
             row.push(node.id);
-            row.push(edges[i].x);
-            row.push(edges[i].y);
+            row.push(node.x);
+            row.push(node.y);
             row.push(node.demand);
             table.push(row);
           }
         });
       } else {
+
+        depots.forEach(node => {
+          let row0 = ["物流中心" + node.id + "(" + node.x + ", " + node.y + ")"];
+          table.push(row0);
+        })
+
         let row0 = ["各配送点与配送中心的距离（/KM）"];
         table.push(row0);
 
@@ -156,10 +177,23 @@ export default {
         table.push(header1);
 
         // init table
-        for (let i = 0; i < problem.nodes.length; i++) {
+        // for (let i = 0; i < problem.nodes.length; i++) {
+        //   let row = [];
+        //   row.push(i);
+        //   for (let j = 0; j < problem.nodes.length; j++) {
+        //     if (i === j) {
+        //       row.push(0);
+        //     } else {
+        //       row.push("");
+        //     }
+        //   }
+        //   table.push(row);
+        // }
+
+        problem.nodes.forEach((node, i) => {
           let row = [];
-          row.push(i);
-          for (var j = 0; j < problem.nodes.length; j++) {
+          row.push(node.id);
+          for (let j = 0; j < problem.nodes.length; j++) {
             if (i === j) {
               row.push(0);
             } else {
@@ -167,17 +201,27 @@ export default {
             }
           }
           table.push(row);
-        }
+        });
 
-        for (let i = 0; i < problem.nodes.length; i++) {
+        problem.nodes.forEach((node, i) => {
           let row = table[i + 2];
-          edges.forEach(function(item) {
-            if (item.u === i) {
+          problem.edges.forEach((item, j) => {
+            if (item.u === node.id) {
               row[item.v + 1] = item.w;
               table[item.v + 2][item.u + 1] = item.w;
             }
           });
-        }
+        });
+
+        // for (let i = 0; i < problem.nodes.length; i++) {
+        //   let row = table[i + 2];
+        //   problem.nodes.forEach(function(item) {
+        //     if (item.u === i) {
+        //       row[item.v + 1] = item.w;
+        //       table[item.v + 2][item.u + 1] = item.w;
+        //     }
+        //   });
+        // }
 
         table.push([]);
 
