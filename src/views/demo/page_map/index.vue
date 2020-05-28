@@ -7,15 +7,26 @@
           <el-button @click="refresh" class="btn-dark">刷新</el-button>
           <el-button class="btn-success" @click="test()">查询</el-button>
         </el-button-group>
-        <el-collapse id="collapse_nodes" v-model="activeName" accordion style="border:1px solid #f7f7f7;background-color: #f5f5f5;">
-          <el-collapse-item title="车辆列表" name="0" class="list" style="">
+        <el-button class="btn-primary" @click="drawerValue.drawerShow = true">设置算法参数</el-button>
+        <el-collapse
+          id="collapse_nodes"
+          v-model="activeName"
+          accordion
+          style="border:1px solid #f7f7f7;background-color: #f5f5f5;"
+        >
+          <el-collapse-item title="车辆列表" name="0" class="list" style>
             <div class="side-bk" style="text-align: center;">
-              <el-button @click="addVehicle()" size="mini" style="margin: 8px;" class="btn-upload">添加车辆</el-button>
+              <el-button
+                @click="addVehicle()"
+                size="mini"
+                style="margin: 8px;"
+                class="btn-upload"
+              >添加车辆</el-button>
             </div>
-            <div v-if="vehicles.length == 0" class="box-card" >
+            <div v-if="vehicles.length == 0" class="box-card">
               <div style="text-align: center;">空空如也</div>
             </div>
-            <el-collapse id="collapse_nodes" accordion style="">
+            <el-collapse id="collapse_nodes" accordion style>
               <el-collapse-item
                 v-for="(vehicle, index) in vehicles"
                 :key="vehicle.id"
@@ -65,16 +76,23 @@
             </el-collapse>
           </el-collapse-item>
 
-          <el-collapse-item title="地点列表" name="1" class="site-list" style="">
+          <el-collapse-item title="地点列表" name="1" class="site-list" style>
             <div v-if="polylinePath.length > 0" style="text-align: center;">
               <el-button size="mini" class="btn-danger" style="margin: 8px;" @click="clearTags()">清空</el-button>
             </div>
-            <div v-if="polylinePath.length == 0" class="box-card" style="">
+            <div v-if="polylinePath.length == 0" class="box-card" style>
               <!-- <el-divider></el-divider> -->
               <div style="text-align: center;">空空如也</div>
             </div>
 
-            <el-collapse id="collapse_nodes" v-else v-model="activeNode" accordion style="" aria-expanded="true">
+            <el-collapse
+              id="collapse_nodes"
+              v-else
+              v-model="activeNode"
+              accordion
+              style
+              aria-expanded="true"
+            >
               <el-collapse-item
                 v-for="(path, index) in polylinePath"
                 :key="path.name"
@@ -167,7 +185,7 @@
           />
 
           <bm-view style="width:100%;height:100%"></bm-view>
-             <bm-driving
+          <bm-driving
             v-for="(item, index) in drivingPath"
             :key="-index - 1"
             :start="item.start"
@@ -182,6 +200,83 @@
         </baidu-map>
       </div>
     </el-container>
+    <!-- <el-drawer
+      :before-close="handleDrawerClose"
+      :visible.sync="dialog"
+      direction="rtl"
+      custom-class="demo-drawer"
+      ref="drawer"
+      :with-header="false"
+    >
+      <div class="demo-drawer__content">
+        <el-form>
+          <el-card style="margin: 10px;">
+            <el-form-item label="距离优先参数" :label-width="formLabelWidth">
+              <el-input
+                size="mini"
+                v-model="distancePrior"
+                autocomplete="off"
+                clearable
+                placeholder="5"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="时间优先参数" :label-width="formLabelWidth">
+              <el-input
+                size="mini"
+                v-model="timePrior"
+                autocomplete="off"
+                clearable
+                placeholder="1"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="满载率优先参数" :label-width="formLabelWidth">
+              <el-input
+                size="mini"
+                v-model="loadPrior"
+                autocomplete="off"
+                clearable
+                placeholder="4"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="车辆速度(km/h)" :label-width="formLabelWidth">
+              <el-select
+                size="medium"
+                v-model="speed_value"
+                filterable
+                allow-create
+                style="font-size:12px"
+                placeholder="60"
+                clearable
+              >
+                <el-option
+                  v-for="item in vehicles_speed"
+                  :key="item.speed_value"
+                  :label="item.label"
+                  :value="item.speed_value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-card>
+          <el-card style="margin: 10px;">
+            <el-form-item>
+              1.&nbsp;&nbsp;&nbsp;&nbsp;距离优先参数范围:0-100
+              <br />2.&nbsp;时间优先参数范围:0-100
+              <br />3.&nbsp;满载率优先参数范围:0-100
+              <br />4.&nbsp;车辆速度范围：1-120(单位：km/h)
+            </el-form-item>
+          </el-card>
+        </el-form>
+        <div class="demo-drawer__footer" style="text-align: center;">
+          <el-button style="margin-right:40px;" @click="$refs.drawer.closeDrawer()">取 消</el-button>
+          <el-button
+            class="btn-success"
+            @click="closeDrawer"
+            style="margin-left:40px;"
+          >确 定</el-button>
+        </div>
+      </div>
+    </el-drawer> -->
+    <drawer v-model="drawerValue" />
   </el-container>
 </template>
 
@@ -192,6 +287,7 @@ import BmLocalSearch from "vue-baidu-map/components/search/LocalSearch";
 import BmNavigation from "vue-baidu-map/components/controls/Navigation";
 import BmGeolocation from "vue-baidu-map/components/controls/Geolocation";
 import BmMarker from "vue-baidu-map/components/overlays/Marker";
+import drawer from "../drawer/";
 export default {
   inject: ["reload"], //注入依赖
   name: "ele-form-bmap",
@@ -201,10 +297,35 @@ export default {
     BmNavigation,
     BmLocalSearch,
     BmGeolocation,
-    BmMarker
+    BmMarker,
+    drawer
   },
   data() {
     return {
+      // saveConfig: false,
+      // distancePrior: 5, //距离优先
+      // timePrior: 1, //时间优先
+      // loadPrior: 4, //满载率优先
+      // speed_value: 10,
+      // vehicles_speed: [
+      //   {
+      //     speed_value: 10,
+      //     label: 10
+      //   },
+      //   {
+      //     speed_value: 60,
+      //     label: 60
+      //   }
+      // ],
+      // formLabelWidth: "110px",
+      // dialog: false,
+      drawerValue: {
+        drawerShow: false,
+        distancePrior: 5, //距离优先
+        timePrior: 1, //时间优先
+        loadPrior: 4, //满载率优先
+        speedValue: 10
+      },
       dialogVisible: true,
       center: "成都市",
       logisticsCenter: undefined,
@@ -275,6 +396,39 @@ export default {
     }
   },
   methods: {
+    // closeDrawer() {
+    //   this.saveConfig = true;
+    //   this.$refs.drawer.closeDrawer();
+    // },
+    // handleDrawerClose(done) {
+    //   if (!this.saveConfig) {
+    //     done();
+    //     return;
+    //   }
+    //   this.saveConfig = false;
+    //   if (this.distancePrior == "") {
+    //     this.distancePrior = 5;
+    //   }
+    //   if (this.timePrior == "") {
+    //     this.timePrior = 1;
+    //   }
+    //   if (this.loadPrior == "") {
+    //     this.loadPrior = 4;
+    //   }
+    //   if (this.speed_value == "") {
+    //     this.speed_value = 60;
+    //   }
+    //   console.log(this.distancePrior);
+    //   console.log(this.timePrior);
+    //   console.log(this.loadPrior);
+    //   console.log(this.speed_value);
+    //   done();
+    //   this.$notify({
+    //     title: "成功",
+    //     message: "参数设置成功",
+    //     type: "success"
+    //   });
+    // },
     refresh() {
       // this.reload();
       window.location.reload();
@@ -313,9 +467,13 @@ export default {
         //   { id: 5, depot: 0, load: 5, mileage: 35, count: 1 }
         // ],
         vehicles: this.vehicles,
-        distancePrior: 5, // 路程加权
-        timePrior: 1, // 用时加权
-        loadPrior: 4 // 满载率加权
+        // distancePrior: 5, // 路程加权
+        // timePrior: 1, // 用时加权
+        // loadPrior: 4 // 满载率加权
+        distancePrior: this.drawerValue.distancePrior,
+        timePrior: this.drawerValue.timePrior,
+        loadPrior: this.drawerValue.loadPrior,
+        speed: this.drawerValue.speed_value
       };
       console.log("drivingPath=" + JSON.stringify(this.drivingPath));
       this.drivingPath.forEach(function(path, i) {
@@ -339,7 +497,7 @@ export default {
       }
 
       console.log("test problem=" + JSON.stringify(problem));
-      
+
       this.$router.push({
         name: "page_result",
         query: {
@@ -499,7 +657,7 @@ export default {
             if (me.tempDrivingPath.length > 0) {
               me.drivingPath.push(me.tempDrivingPath[0]);
             }
-            me.activeNode = me.drivingPath.length
+            me.activeNode = me.drivingPath.length;
             // console.log('size=' + me.drivingPath.length)
             // console.log('me.drivingPath=' + JSON.stringify(me.drivingPath))
             // console.log('lng=' + point.lng + ' lat=' + point.lat)

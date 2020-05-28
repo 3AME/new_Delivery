@@ -1,129 +1,127 @@
 <template>
   <d2-container>
     <el-container
-    class="container"
-    style="margin: 10px;background: #fff;"
-    v-loading="loading"
-    element-loading-text="拼命加载中"
-    element-loading-spinner="el-icon-loading"
-  >
-    <el-aside width="230px" class="aside">
-      <el-card class="box-card">
-        <div slot="header" class="clearfix">
-          <span>最优结果</span>
-          <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
-        </div>
-        <div class="text-item" v-if="result">总路程: {{ result.distance.toFixed(2) }} 公里</div>
-        <div class="text-item" v-if="result">总时间: {{ result.time.toFixed(2) }} 小时</div>
-        <div class="text-item" v-if="result">平均满载率: {{ (result.loadFactor * 100).toFixed(2) }} %</div>
-      </el-card>
+      class="container"
+      style="margin: 10px;background: #fff;"
+      v-loading="loading"
+      element-loading-text="拼命加载中"
+      element-loading-spinner="el-icon-loading"
+    >
+      <el-aside width="230px" class="aside">
+        <el-card class="box-card">
+          <div slot="header" class="clearfix">
+            <span>最优结果</span>
+            <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
+          </div>
+          <div class="text-item" v-if="result">总路程: {{ result.distance.toFixed(2) }} 公里</div>
+          <div class="text-item" v-if="result">总时间: {{ result.time.toFixed(2) }} 小时</div>
+          <div class="text-item" v-if="result">平均满载率: {{ (result.loadFactor * 100).toFixed(2) }} %</div>
+        </el-card>
 
-      <el-card class="box-card">
-        <div slot="header" class="clearfix">
-          <span>最优路线</span>
-          <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
-          <el-checkbox
-            v-model="checked"
-            style="float: right; padding: 3px 0"
-            @change="onCheckboxChange"
-          ></el-checkbox>
-        </div>
-        <div style="text-align: center; margin-bottom: 20px;">
-          <el-button class="btn-success" size="mini" @click="drawer = true">路线详情</el-button>
-          <!-- <el-button class="btn-success">test</el-button> -->
-        </div>
-        <div style="text-align: center; margin-bottom: 20px;">
-          <el-switch
-            v-if="problem && problem.routeMode && problem.nodes.length !== 0"
-            v-model="hideRoute"
-            @change="toggleRoute()"
-            active-text="隐藏无关路线"
-          ></el-switch>
-        </div>
-        <div
-          v-for="(route, index) in routes"
-          :key="index"
-          style="padding-top: 4px; padding-bottom: 4px;"
-        >
-          <!-- @change="onCheckedChange(route, index)" -->
-          <!-- <el-checkbox
-            v-model="route.checked"
-            :style="'margin-right: 4px;color:' + route.color"
-            @change="onCheckedChange(route, index)"
-          ></el-checkbox>-->
-          <div @click="toggleVisible(route, index)">
-            <label class="el-checkbox is-checked" style="margin-right: 4px;">
-              <span class="el-checkbox__input is-checked">
-                <span
-                  class="el-checkbox__inner"
-                  :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
-                ></span>
-                <input
-                  @click="toggleVisible(route, index)"
-                  type="checkbox"
-                  aria-hidden="false"
-                  class="el-checkbox__original"
-                  :value="route.checked"
-                  :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
-                />
-              </span>
-            </label>
-            <span
-              :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-            >车辆{{ route.id }}：</span>
+        <el-card class="box-card">
+          <div slot="header" class="clearfix">
+            <span>最优路线</span>
+            <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
+            <el-checkbox
+              v-model="checked"
+              style="float: right; padding: 3px 0"
+              @change="onCheckboxChange"
+            ></el-checkbox>
+          </div>
+          <div style="text-align: center; margin-bottom: 20px;">
+            <el-button class="btn-success" size="mini" @click="drawer = true">路线详情</el-button>
+            <!-- <el-button class="btn-success">test</el-button> -->
+          </div>
+          <div style="text-align: center; margin-bottom: 20px;">
+            <el-switch
+              v-model="hideRoute"
+              @change="toggleRoute()"
+              :active-text="problem.routeMode ? '隐藏无关路线' : '隐藏坐标文字'"
+            ></el-switch>
           </div>
           <div
-            @click="toggleVisible(route, index)"
-            :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-            :fill="route.color"
-          >{{ route.text }}</div>
-        </div>
-      </el-card>
-    </el-aside>
-    <!-- <div style="height:100%; width: 100%;background-color: #f9f9f9"> -->
-    <el-main style="background-color: #f9f9f9">
-      <svg id="graph_svg" style="height:100%; width: 100%;background-color: #f9f9f9" ref="svg" />
-      <!-- </div>
-      -->
-    </el-main>
-    <el-drawer title="路线详情" :visible.sync="drawer" :with-header="false" direction="rtl">
-      <d2-container>
-        <el-card class="box-card">
-          <div class="clearfix">
-            <span>路线详情</span>
-            <el-button style="float: right; padding: 3px 0" type="text" @click="drawer = false">关闭</el-button>
-          </div>
-        </el-card>
-        <div>
-          <el-card
-            class="box-card"
             v-for="(route, index) in routes"
             :key="index"
             style="padding-top: 4px; padding-bottom: 4px;"
           >
+            <!-- @change="onCheckedChange(route, index)" -->
+            <!-- <el-checkbox
+            v-model="route.checked"
+            :style="'margin-right: 4px;color:' + route.color"
+            @change="onCheckedChange(route, index)"
+            ></el-checkbox>-->
+            <div @click="toggleVisible(route, index)">
+              <label class="el-checkbox is-checked" style="margin-right: 4px;">
+                <span class="el-checkbox__input is-checked">
+                  <span
+                    class="el-checkbox__inner"
+                    :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
+                  ></span>
+                  <input
+                    @click="toggleVisible(route, index)"
+                    type="checkbox"
+                    aria-hidden="false"
+                    class="el-checkbox__original"
+                    :value="route.checked"
+                    :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
+                  />
+                </span>
+              </label>
+              <span
+                :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+              >车辆{{ route.id }}：</span>
+            </div>
             <div
+              @click="toggleVisible(route, index)"
               :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
               :fill="route.color"
-            >车辆{{ route.id }}：{{route.text}}</div>
-            <!-- <span
+            >{{ route.text }}</div>
+          </div>
+        </el-card>
+      </el-aside>
+      <!-- <div style="height:100%; width: 100%;background-color: #f9f9f9"> -->
+      <el-main style="background-color: #f9f9f9">
+        <svg id="graph_svg" style="height:100%; width: 100%;background-color: #f9f9f9" ref="svg" />
+        <!-- </div>
+        -->
+      </el-main>
+      <el-drawer title="路线详情" :visible.sync="drawer" :with-header="false" direction="rtl">
+        <d2-container>
+          <el-card class="box-card">
+            <div class="clearfix">
+              <span>路线详情</span>
+              <el-button style="float: right; padding: 3px 0" type="text" @click="drawer = false">关闭</el-button>
+            </div>
+          </el-card>
+          <div>
+            <el-card
+              class="box-card"
+              v-for="(route, index) in routes"
+              :key="index"
+              style="padding-top: 4px; padding-bottom: 4px;"
+            >
+              <div
+                :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+                :fill="route.color"
+              >车辆{{ route.id }}：{{route.text}}</div>
+              <!-- <span
             :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
             :fill="route.color"
-            >车辆{{ route.id }}：路程：{{ route.distance.toFixed(2) }}公里 | 时间：{{ route.time.toFixed(2) }}小时</span>-->
-            <div
-              :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-              :fill="route.color"
-            >路程：{{ route.distance.toFixed(2) }}公里</div>
-            <div
-              :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-              :fill="route.color"
-            >时间：{{ route.time.toFixed(2) }}小时</div>
-          </el-card>
-        </div>
-      </d2-container>
-    </el-drawer>
-  </el-container>
+              >车辆{{ route.id }}：路程：{{ route.distance.toFixed(2) }}公里 | 时间：{{ route.time.toFixed(2) }}小时</span>-->
+              <div
+                :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+                :fill="route.color"
+              >路程：{{ route.distance.toFixed(2) }}公里</div>
+              <div
+                :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+                :fill="route.color"
+              >时间：{{ route.time.toFixed(2) }}小时</div>
+            </el-card>
+          </div>
+        </d2-container>
+      </el-drawer>
+    </el-container>
   </d2-container>
-
 </template>
 
 <script>
@@ -162,7 +160,7 @@ export default {
     };
   },
   activated() {
-    console.log("activated problem=" + JSON.stringify(this.problem));
+    // console.log("activated problem=" + JSON.stringify(this.problem));
     // console.log('this.$route.query.problem=' + JSON.stringify(this.$route.query.problem))
     // console.log('==============' + (this.problem === this.$route.query.problem))
     let svgChildren = d3.selectAll("svg#graph_svg > *");
@@ -181,6 +179,7 @@ export default {
     // this.problem = this.$route.query.problem;
     this.hideRoute = false;
     this.problem = this.$route.query.problem;
+    console.log("tttttttttt=" + typeof this.problem);
     this.solve(this.problem);
   },
   deactivated() {},
@@ -383,8 +382,20 @@ export default {
     },
     toggleRoute() {
       let visibility = this.hideRoute ? "hidden" : "visible";
-      d3.selectAll(".link-edge-normal").attr("visibility", visibility);
-      d3.selectAll(".link-text-normal").attr("visibility", visibility);
+      if (this.problem.routeMode) {
+        d3.selectAll(".link-edge-normal").attr("visibility", visibility);
+        d3.selectAll(".link-text-normal").attr("visibility", visibility);
+      } else {
+        d3.selectAll(".dot-text").attr("visibility", visibility);
+
+        this.routes.forEach(route => {
+          let visibility = route.checked ? "visible" : "hidden";
+          let textvisibility = this.hideRoute ? "hidden" : visibility;
+          route.serve.forEach(id => {
+            d3.selectAll(".dot-text-" + id).attr("visibility", textvisibility);
+          });
+        });
+      }
     },
     toggleVisible(route, i) {
       route.checked = !route.checked;
@@ -392,7 +403,7 @@ export default {
       let size = this.routes.filter(r => {
         return r.checked;
       }).length;
-      console.log("size=" + size + " length=" + this.routes.length)
+      console.log("size=" + size + " length=" + this.routes.length);
       this.checked = size == this.routes.length;
     },
     onCheckedChange(route, i) {
@@ -401,10 +412,11 @@ export default {
       d3.selectAll(".link-text-route-" + i).attr("visibility", visibility);
 
       if (!this.problem.routeMode) {
+        let textvisibility = this.hideRoute ? "hidden" : visibility;
         route.serve.forEach(id => {
           d3.selectAll(".graph-dot-" + id).attr("visibility", visibility);
-          d3.selectAll(".dot-text-" + id).attr("visibility", visibility);
-        })
+          d3.selectAll(".dot-text-" + id).attr("visibility", textvisibility);
+        });
       }
     },
     onCheckboxChange(checked) {
@@ -598,9 +610,9 @@ export default {
         .join("text")
         .attr("class", function(d) {
           if (d.type == "depot") {
-            return "text-depot-" + d.id;
+            return "dot-text text-depot-" + d.id;
           }
-          return "dot-text-" + d.id;
+          return "dot-text dot-text-" + d.id;
         })
         .attr("x", d => x(d.x))
         .attr("y", d => y(d.y))
@@ -635,46 +647,35 @@ export default {
           return "#ccc";
         })
         .attr("stroke-width", 1)
-        .attr("marker-end", function(d, i) {
-          // eslint-disable-next-line no-unused-vars
-          var arrowMarker = svg
-            .append("marker")
-            .attr("id", "arrow" + i)
-            .attr("markerUnits", "userSpaceOnUse")
-            .attr("markerWidth", "16")
-            .attr("markerHeight", "15")
-            .attr("viewBox", "0 0 12 12")
-            .attr("refX", 30)
-            .attr("refY", 6)
-            .attr("orient", "auto")
-            .append("svg:path")
-            .attr("d", "M2,2 L10,6 L2,10 L6,6 L2,2")
-            .attr("fill", function() {
-              if (d.vid !== undefined) {
-                return legendColors(d.vid);
-              }
-              return "#000000";
-            });
-          if (d.vid !== undefined) {
-            return "url(#arrow" + i + ")";
-          }
-          return "url(#end)";
-        })
+        // .attr("marker-end", function(d, i) {
+        //   // eslint-disable-next-line no-unused-vars
+        //   var arrowMarker = svg
+        //     .append("marker")
+        //     .attr("id", "arrow" + i)
+        //     .attr("markerUnits", "userSpaceOnUse")
+        //     .attr("markerWidth", "16")
+        //     .attr("markerHeight", "15")
+        //     .attr("viewBox", "0 0 12 12")
+        //     .attr("refX", 30)
+        //     .attr("refY", 6)
+        //     .attr("orient", "auto")
+        //     .append("svg:path")
+        //     .attr("d", "M2,2 L10,6 L2,10 L6,6 L2,2")
+        //     .attr("fill", function() {
+        //       if (d.vid !== undefined) {
+        //         return legendColors(d.vid);
+        //       }
+        //       return "#000000";
+        //     });
+        //   if (d.vid !== undefined) {
+        //     return "url(#arrow" + i + ")";
+        //   }
+        //   return "url(#end)";
+        // })
         .attr("fill", "transparent")
         .attr("d", linkArc);
 
       function linkArc(d) {
-        console.log(
-          "target=" +
-            d.target +
-            " source=" +
-            d.source +
-            " data.size=" +
-            data.length
-        );
-        console.log(
-          "linkArc linkArc linkArc   data=" + JSON.stringify(data[d.target])
-        );
         let target = undefined;
         let source = undefined;
         data.forEach(dd => {
@@ -684,46 +685,98 @@ export default {
             source = dd;
           }
         });
-        // var dx = x(data[d.target].x) - x(data[d.source].x);
-        // var dy = y(data[d.target].y) - y(data[d.source].y);
-        var dx = x(target.x) - x(source.x);
-        var dy = y(target.y) - y(source.y);
-        var dr = Math.sqrt(dx * dx + dy * dy);
-        var unevenCorrection = d.sameUneven ? 0 : 0.5;
-        var arc =
-          (dr * d.maxSameHalf) / (d.sameIndexCorrected - unevenCorrection);
+        var x1 = x(source.x);
+        var y1 = y(source.y);
+        var x2 = x(target.x);
+        var y2 = y(target.y);
+        var path;
+        var slopy, cosy, siny;
+        var Par = 6.0;
+        var x3, y3;
+        slopy = Math.atan2(y1 - y2, x1 - x2);
+        cosy = Math.cos(slopy);
+        siny = Math.sin(slopy);
 
-        if (d.sameMiddleLink) {
-          arc = 0;
-        }
+        path = "M" + x1 + "," + y1 + " L" + x2 + "," + y2;
 
-        return (
-          "M" +
-          x(source.x) +
+        x3 = (Number(x1) + Number(x2)) / 2;
+        y3 = (Number(y1) + Number(y2)) / 2;
+
+        path += " M" + x3 + "," + y3;
+
+        path +=
+          " L" +
+          (Number(x3) + Number(Par * cosy - (Par / 2.0) * siny)) +
           "," +
-          y(source.y) +
-          "A" +
-          arc +
-          "," +
-          arc +
-          " 0 0," +
-          d.sameArcDirection +
-          " " +
-          x(target.x) +
-          "," +
-          y(target.y)
-        );
+          (Number(y3) + Number(Par * siny + (Par / 2.0) * cosy));
+
+        path +=
+          " M" +
+          (Number(x3) +
+            Number(Par * cosy + (Par / 2.0) * siny) +
+            "," +
+            (Number(y3) - Number((Par / 2.0) * cosy - Par * siny)));
+        path += " L" + x3 + "," + y3;
+        return path;
+
+        // console.log(
+        //   "target=" +
+        //     d.target +
+        //     " source=" +
+        //     d.source +
+        //     " data.size=" +
+        //     data.length
+        // );
+        // console.log(
+        //   "linkArc linkArc linkArc   data=" + JSON.stringify(data[d.target])
+        // );
+        // let target = undefined;
+        // let source = undefined;
+        // data.forEach(dd => {
+        //   if (dd.id == d.target) {
+        //     target = dd;
+        //   } else if (dd.id == d.source) {
+        //     source = dd;
+        //   }
+        // });
+        // // var dx = x(data[d.target].x) - x(data[d.source].x);
+        // // var dy = y(data[d.target].y) - y(data[d.source].y);
+        // var dx = x(target.x) - x(source.x);
+        // var dy = y(target.y) - y(source.y);
+        // var dr = Math.sqrt(dx * dx + dy * dy);
+        // var unevenCorrection = d.sameUneven ? 0 : 0.5;
+        // var arc =
+        //   (dr * d.maxSameHalf) / (d.sameIndexCorrected - unevenCorrection);
+
+        // if (d.sameMiddleLink) {
+        //   arc = 0;
+        // }
+
+        // return (
+        //   "M" +
+        //   x(source.x) +
+        //   "," +
+        //   y(source.y) +
+        //   "A" +
+        //   arc +
+        //   "," +
+        //   arc +
+        //   " 0 0," +
+        //   d.sameArcDirection +
+        //   " " +
+        //   x(target.x) +
+        //   "," +
+        //   y(target.y)
+        // );
       }
       // addLegend();
 
       function dodge(text, iterations = 300) {
         const nodes = text.nodes();
-        const left = () =>
-          text.attr("text-anchor", "middle").attr("dy", "1em");
+        const left = () => text.attr("text-anchor", "middle").attr("dy", "1em");
         const right = () =>
           text.attr("text-anchor", "middle").attr("dy", "1em");
-        const top = () =>
-          text.attr("text-anchor", "middle").attr("dy", "1em");
+        const top = () => text.attr("text-anchor", "middle").attr("dy", "1em");
         const bottom = () =>
           text.attr("text-anchor", "middle").attr("dy", "1em");
         const points = nodes.map(node => ({
@@ -1164,19 +1217,31 @@ export default {
         })
         .attr("fill", function(d, i) {
           if (d.group == 2) {
-            return "#FF0000";
+            return "#fc5454";
           } else if (d.group == 1.5) {
-            return "#2ca02c";
+            return "#02c58d";
+            // return "#ccc"
           } else {
-            return "#1f77b4";
+            return "#fcbe2d";
           }
         });
       // 文字
       gs.append("text")
         .attr("text-anchor", "middle")
-        .attr("font-size", "12px")
+        // .attr("font-size", "14px")
         .attr("dominant-baseline", "middle")
-        .attr("fill", "#000")
+        .attr("fill", function(d) {
+          if (problem.names !== undefined) {
+            return "#000";
+          }
+          return "#fff";
+        })
+        .attr("font-size", function(d) {
+          if (problem.names !== undefined) {
+            return "12px";
+          }
+          return "16px";
+        })
         .text(function(d) {
           if (problem.names !== undefined) {
             return problem.names[d.name];

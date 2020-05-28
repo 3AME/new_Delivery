@@ -4,7 +4,10 @@
       <el-button-group>
         <el-col :span="3.2">
           <el-upload :before-upload="handleUpload" action="default">
-            <el-button class="btn-upload" style="border-top-right-radius: 0px;border-bottom-right-radius: 0px;">
+            <el-button
+              class="btn-upload"
+              style="border-top-right-radius: 0px;border-bottom-right-radius: 0px;"
+            >
               打开
               <!-- <i class="el-icon-upload el-icon--right"></i> -->
             </el-button>
@@ -23,17 +26,18 @@
           <!-- <i class="el-icon-download el-icon--right"></i> -->
         </el-button>
         <el-button @click="refresh" class="btn-dark">刷新</el-button>
-        <el-button class="btn-primary" @click="dialog = true">设置算法参数</el-button>
-        <el-drawer
+        <el-button class="btn-primary" @click="drawerValue.drawerShow = true">设置算法参数</el-button>
+        <!-- <el-drawer
           :before-close="handleClose"
           :visible.sync="dialog"
           direction="rtl"
           custom-class="demo-drawer"
           ref="drawer"
+          :with-header="false"
         >
           <div class="demo-drawer__content">
-            <el-form :model="form">
-              <el-card>
+            <el-form>
+              <el-card style="margin: 10px;">
                 <el-form-item label="距离优先参数" :label-width="formLabelWidth">
                   <el-input
                     size="mini"
@@ -80,7 +84,7 @@
                   </el-select>
                 </el-form-item>
               </el-card>
-              <el-card>
+              <el-card style="margin: 10px;">
                 <el-form-item>
                   1.&nbsp;&nbsp;&nbsp;&nbsp;距离优先参数范围:0-100
                   <br />2.&nbsp;时间优先参数范围:0-100
@@ -89,17 +93,13 @@
                 </el-form-item>
               </el-card>
             </el-form>
-            <div class="demo-drawer__footer">
-              <el-button style="float: left;margin-left:40px;" @click="cancelForm">取 消</el-button>
-              <el-button
-                class="btn-success"
-                @click="$refs.drawer.closeDrawer()"
-                :loading="loading"
-                style="float: left;margin-left:70px;"
-              >{{ loading ? '提交中 ...' : '确 定' }}</el-button>
+            <div class="demo-drawer__footer" style="text-align: center;">
+              <el-button style="margin-right:40px;" @click="$refs.drawer.closeDrawer()">取 消</el-button>
+              <el-button class="btn-success" @click="closeDrawer" style="margin-left:40px;">确 定</el-button>
             </div>
           </div>
-        </el-drawer>
+        </el-drawer>-->
+        <drawer v-model="drawerValue" />
       </el-button-group>
       <el-collapse @change="handleChange" class="yaoqiu">
         <el-collapse-item name="1">
@@ -162,37 +162,42 @@ import { ipcRenderer } from "electron";
 import Vue from "vue";
 import pluginImport from "@d2-projects/vue-table-import";
 import pluginExport from "@d2-projects/vue-table-export";
+import drawer from "../drawer/";
 Vue.use(pluginExport);
 Vue.use(pluginImport);
 var outdata;
-var form;
-var distancePrior;
-var timePrior;
-var loadPrior;
-var speed;
 export default {
   inject: ["reload"], //注入依赖
+  components: {
+    drawer
+  },
   data() {
     return {
-      dialog: false,
-      loading: false,
-      distancePrior: "", //距离优先
-      timePrior: "", //时间优先
-      loadPrior: "", //满载率优先
-      form: {},
-      formLabelWidth: "110px",
-      timer: null,
-      vehicles_speed: [
-        {
-          speed_value: 10,
-          label: 10
-        },
-        {
-          speed_value: 60,
-          label: 60
-        }
-      ],
-      speed_value: [],
+      // saveConfig: false,
+      // dialog: false,
+      // distancePrior: 5, //距离优先
+      // timePrior: 1, //时间优先
+      // loadPrior: 4, //满载率优先
+      // speed_value: 10,
+      drawerValue: {
+        drawerShow: false,
+        distancePrior: 5, //距离优先
+        timePrior: 1, //时间优先
+        loadPrior: 4, //满载率优先
+        speedValue: 10
+      },
+      // formLabelWidth: "110px",
+      // timer: null,
+      // vehicles_speed: [
+      //   {
+      //     speed_value: 10,
+      //     label: 10
+      //   },
+      //   {
+      //     speed_value: 60,
+      //     label: 60
+      //   }
+      // ],
       table: {
         columns: [],
         data: [],
@@ -222,48 +227,39 @@ export default {
     ];
   },
   methods: {
-    handleClose(done) {
-      if (this.loading) {
-        return;
-      }
-      this.$confirm("确定要提交表单吗？")
-        .then(_ => {
-          this.loading = true;
-          // console.log(this.distancePrior); //获取输入的值
-          // console.log(this.timePrior); //获取输入的值
-          // console.log(this.loadPrior); //获取输入的值
-          // console.log(this.speed_value);
-          if (this.distancePrior == "") {
-            this.distancePrior = 5;
-          }
-          if (this.timePrior == "") {
-            this.timePrior = 1;
-          }
-          if (this.loadPrior == "") {
-            this.loadPrior = 4;
-          }
-          if (this.speed_value == "") {
-            this.speed_value = 60;
-          }
-          console.log(this.distancePrior);
-          console.log(this.timePrior);
-          console.log(this.loadPrior);
-          console.log(this.speed_value);
-          this.timer = setTimeout(() => {
-            done();
-            // 动画关闭需要一定的时间
-            setTimeout(() => {
-              this.loading = false;
-            }, 400);
-          }, 2000);
-        })
-        .catch(_ => {});
-    },
-    cancelForm() {
-      this.loading = false;
-      this.dialog = false;
-      clearTimeout(this.timer);
-    },
+    // closeDrawer() {
+    //   this.saveConfig = true;
+    //   this.$refs.drawer.closeDrawer();
+    // },
+    // handleClose(done) {
+    //   if (!this.saveConfig) {
+    //     done();
+    //     return;
+    //   }
+    //   this.saveConfig = false;
+    //   if (this.distancePrior == "") {
+    //     this.distancePrior = 5;
+    //   }
+    //   if (this.timePrior == "") {
+    //     this.timePrior = 1;
+    //   }
+    //   if (this.loadPrior == "") {
+    //     this.loadPrior = 4;
+    //   }
+    //   if (this.speed_value == "") {
+    //     this.speed_value = 60;
+    //   }
+    //   console.log(this.distancePrior);
+    //   console.log(this.timePrior);
+    //   console.log(this.loadPrior);
+    //   console.log(this.speed_value);
+    //   done();
+    //   this.$notify({
+    //     title: "成功",
+    //     message: "参数设置成功",
+    //     type: "success"
+    //   });
+    // },
     refresh() {
       this.reload();
       // this.$router.replace( this.$router)
@@ -309,14 +305,14 @@ export default {
     },
     inquery() {
       if (outdata == null) {
-        this.$confirm("还未选择文件上传哦", "温馨提示", {
+        this.$confirm("还未选择文件打开哦", "温馨提示", {
           confirmButtonText: "确定",
           showCancelButton: false,
           type: "warning"
         }).catch(() => {
           this.$notify.info({
             title: "消息",
-            message: "文件未上传"
+            message: "未选择文件打开"
           });
         });
         return false;
@@ -379,10 +375,10 @@ export default {
           nodes: new_nodes,
           edges: newproblem_edges,
           vehicles: new_vehicles,
-          distancePrior: this.distancePrior,
-          timePrior: this.timePrior,
-          loadPrior: this.loadPrior,
-          speed: this.speed_value
+          distancePrior: this.drawerValue.distancePrior,
+          timePrior: this.drawerValue.timePrior,
+          loadPrior: this.drawerValue.loadPrior,
+          speed: this.drawerValue.speedValue
         };
 
         console.log("problem:" + JSON.stringify(newproblem_edges));
@@ -417,12 +413,14 @@ export default {
       //   columns
       // });
 
-      var table = []
-      table.push(this.stdcolumns.map(item => {
-        return item.label
-      }))
+      var table = [];
+      table.push(
+        this.stdcolumns.map(item => {
+          return item.label;
+        })
+      );
 
-       // 创建book
+      // 创建book
       var wb = xlsx.utils.book_new();
       // json转sheet
       var ws = xlsx.utils.aoa_to_sheet(table);

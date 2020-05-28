@@ -32,13 +32,13 @@ const frameIn = [
         component: _import('demo/page_coordinate')
       },
       {
-        path: 'page2',
-        name: 'page2',
+        path: 'page_route',
+        name: 'page_route',
         meta: {
           title: '路线查询',
           auth: true
         },
-        component: _import('demo/page2')
+        component: _import('demo/page_route')
       },
       {
         path: 'page_map',
