@@ -1,6 +1,5 @@
 <template>
   <d2-container>
-    <!-- <template slot="header">微逻辑配送</template> -->
     <div class="row">
       <div class="col-lg-12">
         <div class="card">
@@ -26,7 +25,7 @@
                         <p class="description text-muted">
                           队长：刘安芳
                           <br />副队长：江良伟
-                          <br />队员：王凯槟、张彭俊、舒广辰
+                          <br />队员：王凯槟、张彭俊
                         </p>
                       </div>
                     </div>
@@ -83,13 +82,6 @@
         </div>
       </div>
     </div>
-    <!-- <template slot="footer">
-      <div class="alert alert-primary alert-dismissible fade show" role="alert">
-        如果你对此项目感兴趣
-        请加入我们的爱好者团队群
-        <strong>822843622</strong>
-      </div>
-    </template> -->
     <d2-module-index-banner slot="footer" v-bind="banner"/>
   </d2-container>
 </template>

@@ -76,12 +76,6 @@
 <script>
 export default {
   props: {
-      // step: Number,
-      // distancePrior: Number, //距离优先
-      // timePrior: Number, //时间优先
-      // loadPrior: Number, //满载率优先
-      // speedValue: Number,
-      // drawerShow: Boolean,
       value: {
         type: Object
       }
@@ -89,11 +83,6 @@ export default {
   data() {
     return {
       saveConfig: false,
-      // show: false,
-      // distancePrior: 5, //距离优先
-      // timePrior: 1, //时间优先
-      // loadPrior: 4, //满载率优先
-      // speed_value: 10,
       formLabelWidth: "110px",
       vehicles_speed: [
         {
