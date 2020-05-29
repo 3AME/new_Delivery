@@ -200,82 +200,6 @@
         </baidu-map>
       </div>
     </el-container>
-    <!-- <el-drawer
-      :before-close="handleDrawerClose"
-      :visible.sync="dialog"
-      direction="rtl"
-      custom-class="demo-drawer"
-      ref="drawer"
-      :with-header="false"
-    >
-      <div class="demo-drawer__content">
-        <el-form>
-          <el-card style="margin: 10px;">
-            <el-form-item label="距离优先参数" :label-width="formLabelWidth">
-              <el-input
-                size="mini"
-                v-model="distancePrior"
-                autocomplete="off"
-                clearable
-                placeholder="5"
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="时间优先参数" :label-width="formLabelWidth">
-              <el-input
-                size="mini"
-                v-model="timePrior"
-                autocomplete="off"
-                clearable
-                placeholder="1"
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="满载率优先参数" :label-width="formLabelWidth">
-              <el-input
-                size="mini"
-                v-model="loadPrior"
-                autocomplete="off"
-                clearable
-                placeholder="4"
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="车辆速度(km/h)" :label-width="formLabelWidth">
-              <el-select
-                size="medium"
-                v-model="speed_value"
-                filterable
-                allow-create
-                style="font-size:12px"
-                placeholder="60"
-                clearable
-              >
-                <el-option
-                  v-for="item in vehicles_speed"
-                  :key="item.speed_value"
-                  :label="item.label"
-                  :value="item.speed_value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-card>
-          <el-card style="margin: 10px;">
-            <el-form-item>
-              1.&nbsp;&nbsp;&nbsp;&nbsp;距离优先参数范围:0-100
-              <br />2.&nbsp;时间优先参数范围:0-100
-              <br />3.&nbsp;满载率优先参数范围:0-100
-              <br />4.&nbsp;车辆速度范围：1-120(单位：km/h)
-            </el-form-item>
-          </el-card>
-        </el-form>
-        <div class="demo-drawer__footer" style="text-align: center;">
-          <el-button style="margin-right:40px;" @click="$refs.drawer.closeDrawer()">取 消</el-button>
-          <el-button
-            class="btn-success"
-            @click="closeDrawer"
-            style="margin-left:40px;"
-          >确 定</el-button>
-        </div>
-      </div>
-    </el-drawer> -->
     <drawer v-model="drawerValue" />
   </el-container>
 </template>
@@ -302,23 +226,6 @@ export default {
   },
   data() {
     return {
-      // saveConfig: false,
-      // distancePrior: 5, //距离优先
-      // timePrior: 1, //时间优先
-      // loadPrior: 4, //满载率优先
-      // speed_value: 10,
-      // vehicles_speed: [
-      //   {
-      //     speed_value: 10,
-      //     label: 10
-      //   },
-      //   {
-      //     speed_value: 60,
-      //     label: 60
-      //   }
-      // ],
-      // formLabelWidth: "110px",
-      // dialog: false,
       drawerValue: {
         drawerShow: false,
         distancePrior: 5, //距离优先
@@ -396,39 +303,6 @@ export default {
     }
   },
   methods: {
-    // closeDrawer() {
-    //   this.saveConfig = true;
-    //   this.$refs.drawer.closeDrawer();
-    // },
-    // handleDrawerClose(done) {
-    //   if (!this.saveConfig) {
-    //     done();
-    //     return;
-    //   }
-    //   this.saveConfig = false;
-    //   if (this.distancePrior == "") {
-    //     this.distancePrior = 5;
-    //   }
-    //   if (this.timePrior == "") {
-    //     this.timePrior = 1;
-    //   }
-    //   if (this.loadPrior == "") {
-    //     this.loadPrior = 4;
-    //   }
-    //   if (this.speed_value == "") {
-    //     this.speed_value = 60;
-    //   }
-    //   console.log(this.distancePrior);
-    //   console.log(this.timePrior);
-    //   console.log(this.loadPrior);
-    //   console.log(this.speed_value);
-    //   done();
-    //   this.$notify({
-    //     title: "成功",
-    //     message: "参数设置成功",
-    //     type: "success"
-    //   });
-    // },
     refresh() {
       // this.reload();
       window.location.reload();
@@ -456,24 +330,13 @@ export default {
       var problem = {
         routeMode: true,
         names: names,
-        // num_node: names.length, // 节点个数
         nodes: [],
         edges: [],
-        // vehicles: [
-        //   { id: 1, depot: 0, load: 2, mileage: 35, count: 1 },
-        //   { id: 2, depot: 0, load: 2, mileage: 35, count: 1 },
-        //   { id: 3, depot: 0, load: 2, mileage: 35, count: 1 },
-        //   { id: 4, depot: 0, load: 5, mileage: 35, count: 1 },
-        //   { id: 5, depot: 0, load: 5, mileage: 35, count: 1 }
-        // ],
         vehicles: this.vehicles,
-        // distancePrior: 5, // 路程加权
-        // timePrior: 1, // 用时加权
-        // loadPrior: 4 // 满载率加权
         distancePrior: this.drawerValue.distancePrior,
         timePrior: this.drawerValue.timePrior,
         loadPrior: this.drawerValue.loadPrior,
-        speed: this.drawerValue.speed_value
+        speed: this.drawerValue.speedValue
       };
       console.log("drivingPath=" + JSON.stringify(this.drivingPath));
       this.drivingPath.forEach(function(path, i) {
@@ -623,6 +486,19 @@ export default {
         res.item.value.streetNumber;
       // var name = res.item.value.business
       console.log("name=" + name);
+      console.log("length=" + this.polylinePath.length);
+      let len = this.polylinePath.filter(path => {
+        return path.name == name
+      }).length
+       console.log("len=" + len);
+      if (len > 0) {
+        this.$notify({
+          title: "警告",
+          message: "地点已存在",
+          type: "warning"
+        });
+        return
+      }
 
       // 创建地址解析器实例
       // eslint-disable-next-line no-undef
@@ -679,40 +555,6 @@ export default {
       );
     },
     searchComplete(r) {
-      // var moreResultsUrl = r.moreResultsUrl
-      // console.log('moreResultsUrl=' + moreResultsUrl)
-      // var origin
-      // var destination
-      // moreResultsUrl.split('&').forEach(function (text) {
-      //   console.log('text=' + text)
-      //   if (text.indexOf('origin=') === 0) {
-      //     origin = text
-      //       .substring(7)
-      //       .replace('2$$$$$$', '')
-      //       .replace('$$0$$$$', '')
-      //   } else if (text.indexOf('destination=') === 0) {
-      //     destination = text
-      //       .substring(12)
-      //       .replace('2$$$$$$', '')
-      //       .replace('$$0$$$$', '')
-      //   }
-      // })
-      // console.log('origin=' + origin + ' destination=' + destination)
-      // console.log(
-      //   'searchComplete drivingPath=' + JSON.stringify(this.drivingPath)
-      // )
-      // console.log('r.taxiFare=' + JSON.stringify(r.taxiFare))
-      // for (var i = 0; i < this.drivingPath.length; i++) {
-      //   var path = this.drivingPath[i]
-      //   console.log('path=' + JSON.stringify(path))
-      //   if (
-      //     (path.start === origin && path.end === destination) ||
-      //     (path.start === destination && path.end === origin)
-      //   ) {
-      //     path.len = r.taxiFare.distance
-      //     break
-      //   }
-      // }
       this.drivingPath[this.drivingPath.length - 1].len = r.taxiFare.distance;
       // this.tempDrivingPath[0].len = r.taxiFare.distance
       this.tempDrivingPath.splice(0, 1);
@@ -759,34 +601,6 @@ export default {
     onTagClick(path) {
       this.center = path.name;
     },
-    // 添加Tag
-    // addTag (res) {
-    //   if (res && res.point) {
-    //     console.log('address=' + res.address)
-    //     console.log('value=' + res.value)
-    //     console.log('res=' + Object.keys(res))
-    //     this.center = res.point
-    //     let me = this
-    //     this.polylinePath.forEach(function (item) {
-    //       me.drivingPath.push({
-    //         start: res.value,
-    //         end: item.name
-    //       })
-    //     })
-    //     this.polylinePath.push({
-    //       name: res.value,
-    //       lng: res.point.lng,
-    //       lat: res.point.lat
-    //     })
-    //     this.$emit('input', {
-    //       address: this.searchValue,
-    //       lat: res.point.lat,
-    //       lng: res.point.lng
-    //     })
-    //     this.inputVisible = false
-    //     this.searchValue = ''
-    //   }
-    // },
     clearTags() {
       this.polylinePath.splice(0, this.polylinePath.length);
       this.drivingPath.splice(0, this.drivingPath.length);

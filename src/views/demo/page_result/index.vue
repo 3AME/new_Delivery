@@ -69,7 +69,7 @@
               </label>
               <span
                 :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-              >车辆{{ route.id }}：</span>
+              >车辆{{ route.id }}</span>
             </div>
             <div
               @click="toggleVisible(route, index)"
@@ -103,7 +103,11 @@
               <div
                 :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
                 :fill="route.color"
-              >车辆{{ route.id }}：{{route.text}}</div>
+              >车辆{{ route.id }}</div>
+              <div
+                :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+                :fill="route.color"
+              >路线：{{route.text}}</div>
               <!-- <span
             :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
             :fill="route.color"
@@ -444,12 +448,23 @@ export default {
 
       var legendTexts = [];
       // let vid = 0
+      let vids = []
       plan.plan.forEach(function(item) {
-        let same = legendTexts.filter(t => {
-          return t.id.indexOf(item.vid + "-") == 0;
+        // let same = legendTexts.filter(t => {
+        //   return t.id.indexOf(item.vid + "-") == 0;
+        // });
+        let same = vids.filter(v => {
+          return item.vid == v
         });
+        vids.push(item.vid)
         item.trips.forEach(function(trip, index) {
-          let id = item.vid + "-" + (index + same.length);
+          // let id = item.vid + "：" + same.length + "-" + index;
+          let id;
+          if (item.trips.length > 1) {
+            id = item.vid + "：" + (same.length + 1) + "-" + index;
+          } else {
+            id = item.vid + "：" + (same.length + 1);
+          }
           // let text = id + " : ";
           let text = "";
           var tempRoute = 0;
@@ -621,7 +636,8 @@ export default {
           //   return problem.names[d.name];
           // }
           // return d.name;
-          return "节点" + d.id + ":(" + d.x + ", " + d.y + ")";
+          // return "节点" + d.id + ":(" + d.x + ", " + d.y + ")";
+          return d.id + "(" + d.x + ", " + d.y + ")";
         })
         .call(dodge);
 
@@ -919,12 +935,22 @@ export default {
       });
 
       var legendTexts = [];
+      let vids = []
       plan.plan.forEach(function(item) {
-        let same = legendTexts.filter(t => {
-          return t.id.indexOf(item.vid + "-") == 0;
+        // let same = legendTexts.filter(t => {
+        //   return t.id.indexOf(item.vid + "-") == 0;
+        // });
+        let same = vids.filter(v => {
+          return item.vid == v
         });
+        vids.push(item.vid)
         item.trips.forEach(function(trip, index) {
-          let id = item.vid + "-" + (index + same.length);
+          let id;
+          if (item.trips.length > 1) {
+            id = item.vid + "：" + (same.length + 1) + "-" + index;
+          } else {
+            id = item.vid + "：" + (same.length + 1);
+          }
           // let text = id + " : ";
           let text = "";
           var tempRoute = 0;

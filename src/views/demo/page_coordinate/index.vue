@@ -27,78 +27,6 @@
         </el-button>
         <el-button @click="refresh" class="btn-dark">刷新</el-button>
         <el-button class="btn-primary" @click="drawerValue.drawerShow = true">设置算法参数</el-button>
-        <!-- <el-drawer
-          :before-close="handleClose"
-          :visible.sync="dialog"
-          direction="rtl"
-          custom-class="demo-drawer"
-          ref="drawer"
-          :with-header="false"
-        >
-          <div class="demo-drawer__content">
-            <el-form>
-              <el-card style="margin: 10px;">
-                <el-form-item label="距离优先参数" :label-width="formLabelWidth">
-                  <el-input
-                    size="mini"
-                    v-model="distancePrior"
-                    autocomplete="off"
-                    clearable
-                    placeholder="5"
-                  ></el-input>
-                </el-form-item>
-                <el-form-item label="时间优先参数" :label-width="formLabelWidth">
-                  <el-input
-                    size="mini"
-                    v-model="timePrior"
-                    autocomplete="off"
-                    clearable
-                    placeholder="1"
-                  ></el-input>
-                </el-form-item>
-                <el-form-item label="满载率优先参数" :label-width="formLabelWidth">
-                  <el-input
-                    size="mini"
-                    v-model="loadPrior"
-                    autocomplete="off"
-                    clearable
-                    placeholder="4"
-                  ></el-input>
-                </el-form-item>
-                <el-form-item label="车辆速度(km/h)" :label-width="formLabelWidth">
-                  <el-select
-                    size="medium"
-                    v-model="speed_value"
-                    filterable
-                    allow-create
-                    style="font-size:12px"
-                    placeholder="60"
-                    clearable
-                  >
-                    <el-option
-                      v-for="item in vehicles_speed"
-                      :key="item.speed_value"
-                      :label="item.label"
-                      :value="item.speed_value"
-                    ></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-card>
-              <el-card style="margin: 10px;">
-                <el-form-item>
-                  1.&nbsp;&nbsp;&nbsp;&nbsp;距离优先参数范围:0-100
-                  <br />2.&nbsp;时间优先参数范围:0-100
-                  <br />3.&nbsp;满载率优先参数范围:0-100
-                  <br />4.&nbsp;车辆速度范围：1-120(单位：km/h)
-                </el-form-item>
-              </el-card>
-            </el-form>
-            <div class="demo-drawer__footer" style="text-align: center;">
-              <el-button style="margin-right:40px;" @click="$refs.drawer.closeDrawer()">取 消</el-button>
-              <el-button class="btn-success" @click="closeDrawer" style="margin-left:40px;">确 定</el-button>
-            </div>
-          </div>
-        </el-drawer>-->
         <drawer v-model="drawerValue" />
       </el-button-group>
       <el-collapse @change="handleChange" class="yaoqiu">
@@ -173,12 +101,6 @@ export default {
   },
   data() {
     return {
-      // saveConfig: false,
-      // dialog: false,
-      // distancePrior: 5, //距离优先
-      // timePrior: 1, //时间优先
-      // loadPrior: 4, //满载率优先
-      // speed_value: 10,
       drawerValue: {
         drawerShow: false,
         distancePrior: 5, //距离优先
@@ -186,18 +108,6 @@ export default {
         loadPrior: 4, //满载率优先
         speedValue: 10
       },
-      // formLabelWidth: "110px",
-      // timer: null,
-      // vehicles_speed: [
-      //   {
-      //     speed_value: 10,
-      //     label: 10
-      //   },
-      //   {
-      //     speed_value: 60,
-      //     label: 60
-      //   }
-      // ],
       table: {
         columns: [],
         data: [],
@@ -227,39 +137,6 @@ export default {
     ];
   },
   methods: {
-    // closeDrawer() {
-    //   this.saveConfig = true;
-    //   this.$refs.drawer.closeDrawer();
-    // },
-    // handleClose(done) {
-    //   if (!this.saveConfig) {
-    //     done();
-    //     return;
-    //   }
-    //   this.saveConfig = false;
-    //   if (this.distancePrior == "") {
-    //     this.distancePrior = 5;
-    //   }
-    //   if (this.timePrior == "") {
-    //     this.timePrior = 1;
-    //   }
-    //   if (this.loadPrior == "") {
-    //     this.loadPrior = 4;
-    //   }
-    //   if (this.speed_value == "") {
-    //     this.speed_value = 60;
-    //   }
-    //   console.log(this.distancePrior);
-    //   console.log(this.timePrior);
-    //   console.log(this.loadPrior);
-    //   console.log(this.speed_value);
-    //   done();
-    //   this.$notify({
-    //     title: "成功",
-    //     message: "参数设置成功",
-    //     type: "success"
-    //   });
-    // },
     refresh() {
       this.reload();
       // this.$router.replace( this.$router)
@@ -400,19 +277,6 @@ export default {
       console.log(val);
     },
     handleDownload() {
-      // var columns = [];
-      // for (var i in this.stdcolumns) {
-      //   columns.push({
-      //     label: this.stdcolumns[i].label,
-      //     prop: this.stdcolumns[i].prop
-      //   });
-      // }
-
-      // this.$export.excel({
-      //   title: "坐标查询文件",
-      //   columns
-      // });
-
       var table = [];
       table.push(
         this.stdcolumns.map(item => {
