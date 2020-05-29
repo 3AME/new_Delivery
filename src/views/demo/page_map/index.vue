@@ -3,11 +3,11 @@
     <!-- v-loading="loading" -->
     <el-aside width="250px" class="aside" style="overflow:scroll;overflow-x: hidden !important;">
       <el-card style="margin: 5px;text-align: center;">
-        <el-button-group style="margin: 13px;">
-          <el-button @click="refresh" class="btn-dark">刷新</el-button>
-          <el-button class="btn-success" @click="test()">查询</el-button>
+        <el-button-group>
+          <el-button size="mini" @click="refresh" class="btn-dark">刷新</el-button>
+          <el-button size="mini" class="btn-success" @click="test()">查询</el-button>
+          <el-button size="mini" class="btn-blue-grey" @click="drawerValue.drawerShow = true">设置</el-button>
         </el-button-group>
-        <el-button class="btn-primary" @click="drawerValue.drawerShow = true">设置算法参数</el-button>
         <el-collapse
           id="collapse_nodes"
           v-model="activeName"
@@ -879,5 +879,10 @@ export default {
   background-color: #30419b;
   border: 1px solid #30419b;
   color: #ffffff;
+}
+.btn-blue-grey {
+    background-color: #607d8b;
+    border          : 1px solid #607d8b;
+    color           : #ffffff;
 }
 </style>

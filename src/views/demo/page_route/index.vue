@@ -26,8 +26,7 @@
           <!-- <i class="el-icon-download el-icon--right"></i> -->
         </el-button>
         <el-button @click="refresh" class="btn-dark">刷新</el-button>
-        <el-button class="btn-primary" @click="drawerValue.drawerShow = true">设置算法参数</el-button>
-        <drawer v-model="drawerValue" />
+        <el-button class="btn-blue-grey" @click="drawerValue.drawerShow = true">设置算法参数</el-button>
       </el-button-group>
       <el-collapse @change="handleChange" class="yaoqiu">
         <el-collapse-item name="1">
@@ -96,6 +95,7 @@
         ></el-table-column>
       </el-table>
     </div>
+    <drawer v-model="drawerValue" />
   </d2-container>
 </template>
 

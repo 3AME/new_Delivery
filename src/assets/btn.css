@@ -54,3 +54,10 @@
     color           : #ffffff;
     border-radius   : 6%;
 }
+
+.btn-blue-grey {
+    background-color: #607d8b;
+    border          : 1px solid #607d8b;
+    color           : #ffffff;
+    border-radius   : 6%;
+}
