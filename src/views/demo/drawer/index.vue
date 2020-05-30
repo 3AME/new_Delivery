@@ -1,95 +1,96 @@
 <template>
   <el-drawer
-          :before-close="handleClose"
-          :visible.sync="value.drawerShow"
-          direction="rtl"
-          custom-class="demo-drawer"
-          ref="drawer"
-          :with-header="false"
-        >
-          <div class="demo-drawer__content">
-            <el-form>
-              <el-card style="margin: 10px;">
-                <el-form-item label="迭代次数" :label-width="formLabelWidth">
-                  <el-input
-                    size="mini"
-                    v-model="value.maxIter"
-                    autocomplete="off"
-                    clearable
-                    placeholder="200"
-                  ></el-input>
-                </el-form-item>
-                <el-form-item label="距离优先参数" :label-width="formLabelWidth">
-                  <el-input
-                    size="mini"
-                    v-model="value.distancePrior"
-                    autocomplete="off"
-                    clearable
-                    placeholder="5"
-                  ></el-input>
-                </el-form-item>
-                <el-form-item label="时间优先参数" :label-width="formLabelWidth">
-                  <el-input
-                    size="mini"
-                    v-model="value.timePrior"
-                    autocomplete="off"
-                    clearable
-                    placeholder="1"
-                  ></el-input>
-                </el-form-item>
-                <el-form-item label="满载率优先参数" :label-width="formLabelWidth">
-                  <el-input
-                    size="mini"
-                    v-model="value.loadPrior"
-                    autocomplete="off"
-                    clearable
-                    placeholder="4"
-                  ></el-input>
-                </el-form-item>
-                <el-form-item label="车辆速度(km/h)" :label-width="formLabelWidth">
-                  <el-select
-                    size="medium"
-                    v-model="value.speedValue"
-                    filterable
-                    allow-create
-                    style="font-size:12px"
-                    placeholder="10"
-                    clearable
-                  >
-                    <el-option
-                      v-for="item in vehicles_speed"
-                      :key="item.speed_value"
-                      :label="item.label"
-                      :value="item.speed_value"
-                    ></el-option>
-                  </el-select>
-                </el-form-item>
-                
-              </el-card>
-              <el-card style="margin: 10px;">
-                <el-form-item>
-                  1.&nbsp;&nbsp;&nbsp;&nbsp;距离优先参数范围:0-100
-                  <br />2.&nbsp;时间优先参数范围:0-100
-                  <br />3.&nbsp;满载率优先参数范围:0-100
-                  <br />4.&nbsp;车辆速度范围：1-120(单位：km/h)
-                  <br />5.&nbsp;算法迭代次数：1-20000
-                </el-form-item>
-              </el-card>
-            </el-form>
-            <div class="demo-drawer__footer" style="text-align: center;">
-              <el-button style="margin-right:40px;" @click="$refs.drawer.closeDrawer()">取 消</el-button>
-              <el-button class="btn-success" @click="closeDrawer" style="margin-left:40px;">确 定</el-button>
-            </div>
-          </div>
-        </el-drawer>
+    :before-close="handleClose"
+    :visible.sync="value.drawerShow"
+    direction="rtl"
+    custom-class="demo-drawer"
+    ref="drawer"
+    :with-header="false"
+  >
+    <d2-container>
+      <div class="demo-drawer__content">
+        <el-form>
+          <el-card style="margin: 10px;">
+            <el-form-item label="迭代次数" :label-width="formLabelWidth">
+              <el-input
+                size="mini"
+                v-model="value.maxIter"
+                autocomplete="off"
+                clearable
+                placeholder="200"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="距离优先参数" :label-width="formLabelWidth">
+              <el-input
+                size="mini"
+                v-model="value.distancePrior"
+                autocomplete="off"
+                clearable
+                placeholder="5"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="时间优先参数" :label-width="formLabelWidth">
+              <el-input
+                size="mini"
+                v-model="value.timePrior"
+                autocomplete="off"
+                clearable
+                placeholder="1"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="满载率优先参数" :label-width="formLabelWidth">
+              <el-input
+                size="mini"
+                v-model="value.loadPrior"
+                autocomplete="off"
+                clearable
+                placeholder="4"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="车辆速度(km/h)" :label-width="formLabelWidth">
+              <el-select
+                size="medium"
+                v-model="value.speedValue"
+                filterable
+                allow-create
+                style="font-size:12px"
+                placeholder="10"
+                clearable
+              >
+                <el-option
+                  v-for="item in vehicles_speed"
+                  :key="item.speed_value"
+                  :label="item.label"
+                  :value="item.speed_value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-card>
+          <el-card style="margin: 10px;">
+            <el-form-item>
+              1.&nbsp;&nbsp;&nbsp;&nbsp;距离优先参数范围:0-100
+              <br />2.&nbsp;时间优先参数范围:0-100
+              <br />3.&nbsp;满载率优先参数范围:0-100
+              <br />4.&nbsp;车辆速度范围：1-120(单位：km/h)
+              <br />5.&nbsp;算法迭代次数：1-20000
+            </el-form-item>
+          </el-card>
+        </el-form>
+        <div class="demo-drawer__footer" style="text-align: center;">
+          <el-button style="margin-right:40px;" @click="$refs.drawer.closeDrawer()">取 消</el-button>
+          <el-button class="btn-success" @click="closeDrawer" style="margin-left:40px;">确 定</el-button>
+        </div>
+      </div>
+    </d2-container>
+  </el-drawer>
 </template>
 
 <script>
 export default {
   props: {
-      value: {
-        type: Object
-      }
+    value: {
+      type: Object
+    }
   },
   data() {
     return {
@@ -104,7 +105,7 @@ export default {
           speed_value: 60,
           label: 60
         }
-      ],
+      ]
     };
   },
   methods: {
