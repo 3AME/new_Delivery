@@ -2,11 +2,11 @@
   <el-container class="container" style="background: #fff;" v-loading="loading">
     <!-- v-loading="loading" -->
     <el-aside width="250px" class="aside" style="overflow:scroll;overflow-x: hidden !important;">
-      <el-card style="margin: 5px;text-align: center;">
-        <el-button-group>
-          <el-button size="mini" @click="refresh" class="btn-dark">刷新</el-button>
-          <el-button size="mini" class="btn-success" @click="test()">查询</el-button>
-          <el-button size="mini" class="btn-blue-grey" @click="drawerValue.drawerShow = true">设置</el-button>
+      <el-card style="margin: 10px;text-align: center;">
+        <el-button-group style="margin-bottom: 10px">
+          <el-button size="small" @click="refresh" class="btn-dark">刷新</el-button>
+          <el-button size="small" class="btn-success" @click="test()">查询</el-button>
+          <el-button size="small" class="btn-blue-grey" @click="drawerValue.drawerShow = true">设置</el-button>
         </el-button-group>
         <el-collapse
           id="collapse_nodes"
@@ -231,7 +231,8 @@ export default {
         distancePrior: 5, //距离优先
         timePrior: 1, //时间优先
         loadPrior: 4, //满载率优先
-        speedValue: 10
+        speedValue: 10,
+        maxIter: 200,
       },
       dialogVisible: true,
       center: "成都市",
@@ -336,7 +337,8 @@ export default {
         distancePrior: this.drawerValue.distancePrior,
         timePrior: this.drawerValue.timePrior,
         loadPrior: this.drawerValue.loadPrior,
-        speed: this.drawerValue.speedValue
+        speed: this.drawerValue.speedValue,
+        maxiter: this.drawerValue.maxIter
       };
       console.log("drivingPath=" + JSON.stringify(this.drivingPath));
       this.drivingPath.forEach(function(path, i) {

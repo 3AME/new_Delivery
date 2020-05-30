@@ -106,7 +106,8 @@ export default {
         distancePrior: 5, //距离优先
         timePrior: 1, //时间优先
         loadPrior: 4, //满载率优先
-        speedValue: 10
+        speedValue: 10,
+        maxIter: 200,
       },
       table: {
         columns: [],
@@ -255,7 +256,8 @@ export default {
           distancePrior: this.drawerValue.distancePrior,
           timePrior: this.drawerValue.timePrior,
           loadPrior: this.drawerValue.loadPrior,
-          speed: this.drawerValue.speedValue
+          speed: this.drawerValue.speedValue,
+          maxiter: this.drawerValue.maxIter
         };
 
         console.log("problem:" + JSON.stringify(newproblem_edges));
@@ -266,11 +268,12 @@ export default {
           }
         });
         //刷新四个参数的值
-        this.distancePrior = "";
-        this.timePrior = "";
-        this.loadPrior = "";
-        this.speed_value = "";
-        console.log(this.distancePrior);
+        // this.distancePrior = "";
+        // this.timePrior = "";
+        // this.loadPrior = "";
+        // this.speed_value = "";
+        // this.speed_value = "";
+        // console.log(this.distancePrior);
       }
     },
     handleChange(val) {

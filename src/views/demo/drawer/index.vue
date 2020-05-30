@@ -10,6 +10,15 @@
           <div class="demo-drawer__content">
             <el-form>
               <el-card style="margin: 10px;">
+                <el-form-item label="迭代次数" :label-width="formLabelWidth">
+                  <el-input
+                    size="mini"
+                    v-model="value.maxIter"
+                    autocomplete="off"
+                    clearable
+                    placeholder="200"
+                  ></el-input>
+                </el-form-item>
                 <el-form-item label="距离优先参数" :label-width="formLabelWidth">
                   <el-input
                     size="mini"
@@ -55,6 +64,7 @@
                     ></el-option>
                   </el-select>
                 </el-form-item>
+                
               </el-card>
               <el-card style="margin: 10px;">
                 <el-form-item>
@@ -62,6 +72,7 @@
                   <br />2.&nbsp;时间优先参数范围:0-100
                   <br />3.&nbsp;满载率优先参数范围:0-100
                   <br />4.&nbsp;车辆速度范围：1-120(单位：km/h)
+                  <br />5.&nbsp;算法迭代次数：1-20000
                 </el-form-item>
               </el-card>
             </el-form>
@@ -118,6 +129,9 @@ export default {
       }
       if (this.value.speedValue == "") {
         this.value.speedValue = 10;
+      }
+      if (this.value.maxIter == "") {
+        this.value.maxIter = 200;
       }
       console.log(this.value.distancePrior);
       console.log(this.value.timePrior);

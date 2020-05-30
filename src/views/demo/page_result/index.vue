@@ -305,6 +305,7 @@ export default {
       pipe(problem.vehicles.length);
       var speed = problem.speed || 10;
       var work_time = problem.work_time || -1;
+      // var iter=problem.maxiter;
       pipe(speed, work_time);
       for (var i in problem.vehicles) {
         var veh = problem.vehicles[i];
@@ -316,7 +317,7 @@ export default {
       }
 
       pipe(problem.distancePrior, problem.timePrior, problem.loadPrior);
-      pipe(npop, popsize, maxiter);
+      pipe(npop, popsize, problem.maxiter);
       let out = "";
       solver.stdout.on("data", buffer => {
         console.log("dddddddddddddddddd=" + buffer.toString());

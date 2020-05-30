@@ -121,7 +121,8 @@ export default {
         distancePrior: 5, //距离优先
         timePrior: 1, //时间优先
         loadPrior: 4, //满载率优先
-        speedValue: 10
+        speedValue: 10,
+        maxIter: 200,
       },
       table: {
         columns: [],
@@ -311,7 +312,8 @@ export default {
           distancePrior: this.drawerValue.distancePrior,
           timePrior: this.drawerValue.timePrior,
           loadPrior: this.drawerValue.loadPrior,
-          speed: this.drawerValue.speedValue
+          speed: this.drawerValue.speedValue,
+          maxiter: this.drawerValue.maxIter
         };
         console.log(new_problem);
         this.$router.push({
