@@ -96,6 +96,7 @@
       </el-table>
     </div>
     <drawer v-model="drawerValue" />
+    <query-dialog v-model="queryValue"></query-dialog>
   </d2-container>
 </template>
 
@@ -106,13 +107,15 @@ import Vue from "vue";
 import pluginImport from "@d2-projects/vue-table-import";
 import pluginExport from "@d2-projects/vue-table-export";
 import drawer from "../drawer/";
+import QueryDialog from "../dialog/query-dialog";
 Vue.use(pluginExport);
 Vue.use(pluginImport);
 var outdata;
 export default {
   inject: ["reload"], //注入依赖
   components: {
-    drawer
+    drawer,
+    QueryDialog
   },
   data() {
     return {
@@ -123,6 +126,13 @@ export default {
         loadPrior: 4, //满载率优先
         speedValue: 10,
         maxIter: 200,
+      },
+      queryValue: {
+        show: false,
+        name: '', //距离优先
+        problem: {},
+        time: '',
+        isHistory: false
       },
       table: {
         columns: [],
@@ -316,12 +326,14 @@ export default {
           maxiter: this.drawerValue.maxIter
         };
         console.log(new_problem);
-        this.$router.push({
-          name: "page_result",
-          query: {
-            problem: new_problem
-          }
-        });
+        // this.$router.push({
+        //   name: "page_result",
+        //   query: {
+        //     problem: new_problem
+        //   }
+        // });
+        this.queryValue.problem = new_problem;
+        this.queryValue.show = true;
         //刷新四个参数的值
         this.distancePrior = "";
         this.timePrior = "";

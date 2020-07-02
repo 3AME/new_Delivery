@@ -24,7 +24,7 @@ export const menuHeader = supplementPath([
       { path: '/page_coordinate', icon: 'object-ungroup', title: '坐标查询' },
       { path: '/page_route', icon: 'road',title:  '路线查询' },
       { path: '/page_map',icon: 'crosshairs',  title: '地图选择' },
-      { path: '/page_history', icon: 'history', title: '查询历史' }
+      { path: '/page_history', icon: 'history', title: '任务列表' }
     ]
   },
   {
@@ -47,7 +47,7 @@ export const menuAside = supplementPath([
       { path: '/page_coordinate', icon: 'object-ungroup', title: '坐标查询' },
       { path: '/page_route', icon: 'road',title:  '路线查询' },
       { path: '/page_map',icon: 'crosshairs',  title: '地图选择' },
-      { path: '/page_history', icon: 'history', title: '查询历史' }
+      { path: '/page_history', icon: 'history', title: '任务列表' }
     ]
   },
   {

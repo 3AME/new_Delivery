@@ -2,17 +2,17 @@
   <d2-container>
     <el-table :data="querys" style="width: 100%">
       <!-- <el-table-column type="selection" width="55"></el-table-column> -->
-      <el-table-column prop="title" label="标题" width="250px">
+      <el-table-column prop="title" label="标题" align="center">
         <template slot-scope="scope">
           <span style="width: 140px;" class="line-1 hover">{{scope.row.title}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="time" label="时间" width="250px">
+      <el-table-column prop="time" label="时间" align="center">
         <template slot-scope="scope">
           <span style="width: 190px;" class="line-1 hover">{{scope.row.time}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <el-tooltip class="item" effect="dark" content="查询" placement="bottom">
             <el-button
@@ -35,7 +35,7 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column align="right">
+      <el-table-column align="center">
         <template slot="header">
           <el-button
           size="mini" class="btn-danger" style="margin: 10px;" @click="deleteAll()">
@@ -74,7 +74,7 @@ export default {
   },
   methods: {
     deleteAll() {
-      this.$confirm("此操作将删除全部历史记录, 是否继续?", "警告", {
+      this.$confirm("此操作将删除全部查询任务, 是否继续?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -104,10 +104,16 @@ export default {
       // })
     },
     queryProblem(index, row) {
+      let queryValue = {
+        name: row.title, //距离优先
+        problem: row.problem,
+        time: row.time,
+        isHistory: true
+      }
       this.$router.push({
         name: "page_result",
         query: {
-          problem: row.problem
+          queryValue: queryValue
         }
       });
     },

@@ -140,6 +140,7 @@ export default {
       myChart: undefined,
       result: undefined,
       problem: undefined,
+      problemName: undefined,
       hideRoute: false,
       routes: [],
       loading: true,
@@ -169,9 +170,11 @@ export default {
     // console.log('==============' + (this.problem === this.$route.query.problem))
     let svgChildren = d3.selectAll("svg#graph_svg > *");
     console.log("d3.selectAll()=" + svgChildren.size());
+    let queryValue = this.$route.query.queryValue;
     if (
       svgChildren.size() > 0 &&
-      JSON.stringify(this.problem) === JSON.stringify(this.$route.query.problem)
+      this.problemName === queryValue.name
+      // JSON.stringify(this.problem) === JSON.stringify(queryValue.problem)
     ) {
       this.loading = false;
       return;
@@ -182,9 +185,9 @@ export default {
     // console.log("activated");
     // this.problem = this.$route.query.problem;
     this.hideRoute = false;
-    this.problem = this.$route.query.problem;
-    console.log("tttttttttt=" + typeof this.problem);
-    this.solve(this.problem);
+    this.problem = queryValue.problem;
+    // console.log("tttttttttt=" + typeof this.problem);
+    this.solve(queryValue);
   },
   deactivated() {},
   methods: {
@@ -192,12 +195,13 @@ export default {
       this.$router.go(-1);
     },
     solve(
-      problem, // VRP问题描述
+      queryValue, // VRP问题描述
       npop = 2,
       popsize = 100, // 种群大小
       maxiter = 100 // 迭代次数
     ) {
-      var isRouteMode = this.problem.routeMode;
+      let problem = queryValue.problem
+      var isRouteMode = problem.routeMode;
 
       console.log("function solve run");
       console.log("problem=", problem);
@@ -373,7 +377,9 @@ export default {
             this.$router.go(-1);
           });
         } else {
-          this.$store.dispatch("d2admin/addQuery", problem);
+          if (!queryValue.isHistory) {
+            this.$store.dispatch("d2admin/addQuery", queryValue);
+          }
           console.log("out=" + out);
           this.result = eval("(" + out + ")");
           this.loading = false;

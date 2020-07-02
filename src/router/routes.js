@@ -64,7 +64,7 @@ const frameIn = [
         path: 'page_history',
         name: 'page_history',
         meta: {
-          title: '历史记录',
+          title: '任务列表',
           auth: true,
           keepAlive: true
         },

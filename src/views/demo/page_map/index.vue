@@ -201,6 +201,7 @@
       </div>
     </el-container>
     <drawer v-model="drawerValue" />
+    <query-dialog v-model="queryValue"></query-dialog>
   </el-container>
 </template>
 
@@ -212,6 +213,7 @@ import BmNavigation from "vue-baidu-map/components/controls/Navigation";
 import BmGeolocation from "vue-baidu-map/components/controls/Geolocation";
 import BmMarker from "vue-baidu-map/components/overlays/Marker";
 import drawer from "../drawer/";
+import QueryDialog from "../dialog/query-dialog";
 export default {
   inject: ["reload"], //注入依赖
   name: "ele-form-bmap",
@@ -222,7 +224,8 @@ export default {
     BmLocalSearch,
     BmGeolocation,
     BmMarker,
-    drawer
+    drawer,
+    QueryDialog
   },
   data() {
     return {
@@ -233,6 +236,13 @@ export default {
         loadPrior: 4, //满载率优先
         speedValue: 10,
         maxIter: 200,
+      },
+      queryValue: {
+        show: false,
+        name: '', //距离优先
+        problem: {},
+        time: '',
+        isHistory: false
       },
       dialogVisible: true,
       center: "成都市",
@@ -363,12 +373,14 @@ export default {
 
       console.log("test problem=" + JSON.stringify(problem));
 
-      this.$router.push({
-        name: "page_result",
-        query: {
-          problem: problem
-        }
-      });
+      // this.$router.push({
+      //   name: "page_result",
+      //   query: {
+      //     problem: problem
+      //   }
+      // });
+      this.queryValue.problem = problem;
+      this.queryValue.show = true;
     },
     // 地图加载成功
     handleMapLoaded() {
