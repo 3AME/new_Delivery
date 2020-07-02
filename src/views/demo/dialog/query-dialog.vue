@@ -56,20 +56,6 @@ export default {
         }
       });
       this.value.show = false
-
-      // this.$refs.elForm.validate(valid => {
-      //   console.log("validate")
-      //   if (valid) {
-
-      //   } else {
-      //     this.$notify({
-      //       title: "警告",
-      //       message: "情输入正确的用户名",
-      //       type: "warning"
-      //     });
-      //   }
-      // })
-
     },
     onOpen() {
       let fmt = 'yyyy-MM-dd HH-mm-ss'

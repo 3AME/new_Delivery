@@ -498,7 +498,7 @@ dt {
 }
 
 .m-b-30 {
-  margin-bottom: 30px;
+  margin-bottom: 0px;
 }
 
 .m-b-40 {
@@ -1955,7 +1955,7 @@ button:focus {
 ===================*/
 .card {
   border: none;
-  margin-bottom: 30px;
+  margin-bottom: 0px;
   background: #222437;
 }
 

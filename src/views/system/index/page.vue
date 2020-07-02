@@ -1,7 +1,7 @@
 <template>
   <d2-container>
-    <div class="card m-b-30">
-        <div class="card-body">
+    <div class="card m-b-30" style="height: 100%; width: 100%">
+        <div class="card-body" style="height: 100%; width: 100%">
             <div class="myimg">
             <img class="rounded-circle" style="width: 300px;height: 300px;margin-top: 5%;" alt="200x200" src="./image/all.png" >
             </div>

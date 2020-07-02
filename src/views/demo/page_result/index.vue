@@ -1,8 +1,8 @@
 <template>
-  <d2-container>
+  <d2-container style="padding: 0px 0px;">
     <el-container
       class="container"
-      style="margin: 10px;background: #fff;"
+      style="background: #fff;"
       v-loading="loading"
       element-loading-text="拼命加载中"
       element-loading-spinner="el-icon-loading"
@@ -79,11 +79,16 @@
           </div>
         </el-card>
       </el-aside>
-      <!-- <div style="height:100%; width: 100%;background-color: #f9f9f9"> -->
       <el-main style="background-color: #f9f9f9">
         <svg id="graph_svg" style="height:100%; width: 100%;background-color: #f9f9f9" ref="svg" />
-        <!-- </div>
-        -->
+        <!-- <el-card class="box-card">
+
+        </el-card>-->
+        <svg
+          id="test_svg"
+          style="height:50%; width: 100%;background-color: #f9f9f9"
+          ref="test_svg"
+        />
       </el-main>
       <el-drawer title="路线详情" :visible.sync="drawer" :with-header="false" direction="rtl">
         <d2-container>
@@ -131,6 +136,7 @@
 <script>
 import * as d3 from "d3";
 const { spawn } = require("child_process");
+const os = require("os");
 
 export default {
   data() {
@@ -144,7 +150,9 @@ export default {
       hideRoute: false,
       routes: [],
       loading: true,
-      checked: true
+      checked: true,
+      msgs: [],
+      maxiter: 200 // 迭代次数
     };
   },
   mounted() {
@@ -169,6 +177,7 @@ export default {
     // console.log('this.$route.query.problem=' + JSON.stringify(this.$route.query.problem))
     // console.log('==============' + (this.problem === this.$route.query.problem))
     let svgChildren = d3.selectAll("svg#graph_svg > *");
+    let testSvg = d3.selectAll("svg#test_svg > *");
     console.log("d3.selectAll()=" + svgChildren.size());
     let queryValue = this.$route.query.queryValue;
     if (
@@ -182,11 +191,13 @@ export default {
     this.checked = true;
     this.loading = true;
     svgChildren.remove();
+    testSvg.remove();
+    this.msgs.splice(0, this.msgs.length);
     // console.log("activated");
     // this.problem = this.$route.query.problem;
     this.hideRoute = false;
     this.problem = queryValue.problem;
-    // console.log("tttttttttt=" + typeof this.problem);
+    console.log("tttttttttt=" + JSON.stringify(this.problem));
     this.solve(queryValue);
   },
   deactivated() {},
@@ -200,7 +211,9 @@ export default {
       popsize = 100, // 种群大小
       maxiter = 100 // 迭代次数
     ) {
-      let problem = queryValue.problem
+
+      let problem = queryValue.problem;
+      this.maxiter = problem.maxiter;
       var isRouteMode = problem.routeMode;
 
       console.log("function solve run");
@@ -325,21 +338,43 @@ export default {
       let out = "";
       solver.stdout.on("data", buffer => {
         console.log("dddddddddddddddddd=" + buffer.toString());
-        // eslint-disable-next-line no-eval
-        // var solution = eval('(' + buffer.toString() + ')')
-        // console.log(solution)
-
-        // eslint-disable-next-line no-eval
-        // this.result = eval("(" + buffer.toString() + ")");
 
         out += buffer.toString();
 
-        // if (isRouteMode) {
-        //   this.showGraph();
-        // } else {
-        //   this.showScatterGraph();
-        // }
-        // this.loading = false;
+        while (true) {
+          let eol = out.indexOf(os.EOL);
+          if (eol == -1) {
+            break;
+          }
+          let data = out.substr(0, eol);
+          let [flag, payload] = data.split(" ");
+          console.log("flag=" + flag);
+          console.log("payload=" + payload);
+          payload = eval("(" + payload + ")");
+
+          switch (flag) {
+            case "msg":
+              // onMessageReceived(payload);
+              console.log("msg");
+              console.log(payload);
+              this.msgs.push(payload);
+              break;
+            case "fin":
+              // onFinReceived(payload);
+              console.log("fin");
+              console.log(payload);
+              break;
+            case "sol":
+              // onSolReceived(payload);
+              console.log("sol");
+              console.log(payload);
+              this.result = payload;
+              break;
+            default:
+              throw "unknown flag";
+          }
+          out = out.substr(eol + os.EOL.length);
+        }
       });
 
       let exitCode = 0;
@@ -347,24 +382,6 @@ export default {
       solver.on("exit", code => {
         console.log(`child process exit，code = ${code}`);
         exitCode = code;
-        // if (code > 0) {
-        //   this.$confirm("出现了错误，请重试一遍", "错误", {
-        //     confirmButtonText: "确定",
-        //     showCancelButton: false,
-        //     type: "error"
-        //   });
-        //   return false;
-        //   //路由返回？
-        // } else {
-        //   console.log('out=' + out)
-        //   this.result = eval("(" + out + ")");
-        //   if (isRouteMode) {
-        //     this.showGraph();
-        //   } else {
-        //     this.showScatterGraph();
-        //   }
-        //   this.loading = false;
-        // }
       });
 
       solver.on("close", () => {
@@ -381,13 +398,15 @@ export default {
             this.$store.dispatch("d2admin/addQuery", queryValue);
           }
           console.log("out=" + out);
-          this.result = eval("(" + out + ")");
+          // this.result = eval("(" + out + ")");
+          // this.result = out
           this.loading = false;
           if (isRouteMode) {
             this.showGraph();
           } else {
             this.showScatterGraph();
           }
+          this.showCurveGraph();
         }
       });
     },
@@ -455,15 +474,15 @@ export default {
 
       var legendTexts = [];
       // let vid = 0
-      let vids = []
+      let vids = [];
       plan.plan.forEach(function(item) {
         // let same = legendTexts.filter(t => {
         //   return t.id.indexOf(item.vid + "-") == 0;
         // });
         let same = vids.filter(v => {
-          return item.vid == v
+          return item.vid == v;
         });
-        vids.push(item.vid)
+        vids.push(item.vid);
         item.trips.forEach(function(trip, index) {
           // let id = item.vid + "：" + same.length + "-" + index;
           let id;
@@ -942,15 +961,15 @@ export default {
       });
 
       var legendTexts = [];
-      let vids = []
+      let vids = [];
       plan.plan.forEach(function(item) {
         // let same = legendTexts.filter(t => {
         //   return t.id.indexOf(item.vid + "-") == 0;
         // });
         let same = vids.filter(v => {
-          return item.vid == v
+          return item.vid == v;
         });
-        vids.push(item.vid)
+        vids.push(item.vid);
         item.trips.forEach(function(trip, index) {
           let id;
           if (item.trips.length > 1) {
@@ -1404,6 +1423,222 @@ export default {
             return legendColors(i);
           });
       }
+    },
+    showCurveGraph() {
+      // this.msgs = [
+      //   {
+      //     step: 0,
+      //     penalty: 0,
+      //     cost: 71.3765,
+      //     distance: 76,
+      //     time: 3.45,
+      //     loadFactor: 0.847059
+      //   },
+      //   {
+      //     step: 15,
+      //     penalty: 0,
+      //     cost: 71.3765,
+      //     distance: 76,
+      //     time: 3.45,
+      //     loadFactor: 0.847059
+      //   },
+      //   {
+      //     step: 30,
+      //     penalty: 0,
+      //     cost: 51.49,
+      //     distance: 74,
+      //     time: 3.55,
+      //     loadFactor: 0.96
+      //   },
+      //   {
+      //     step: 45,
+      //     penalty: 0,
+      //     cost: 49.49,
+      //     distance: 70,
+      //     time: 3.55,
+      //     loadFactor: 0.96
+      //   },
+      //   {
+      //     step: 60,
+      //     penalty: 0,
+      //     cost: 49.49,
+      //     distance: 70,
+      //     time: 3.55,
+      //     loadFactor: 0.96
+      //   },
+      //   {
+      //     step: 75,
+      //     penalty: 0,
+      //     cost: 48.69,
+      //     distance: 69,
+      //     time: 3.45,
+      //     loadFactor: 0.96
+      //   },
+      //   {
+      //     step: 90,
+      //     penalty: 0,
+      //     cost: 48.69,
+      //     distance: 69,
+      //     time: 3.45,
+      //     loadFactor: 0.96
+      //   },
+      //   {
+      //     step: 105,
+      //     penalty: 0,
+      //     cost: 48.69,
+      //     distance: 69,
+      //     time: 3.45,
+      //     loadFactor: 0.96
+      //   },
+      //   {
+      //     step: 120,
+      //     penalty: 0,
+      //     cost: 48.69,
+      //     distance: 69,
+      //     time: 3.45,
+      //     loadFactor: 0.96
+      //   },
+      //   {
+      //     step: 135,
+      //     penalty: 0,
+      //     cost: 48.69,
+      //     distance: 69,
+      //     time: 3.45,
+      //     loadFactor: 0.96
+      //   },
+      //   {
+      //     step: 150,
+      //     penalty: 0,
+      //     cost: 48.69,
+      //     distance: 69,
+      //     time: 3.45,
+      //     loadFactor: 0.96
+      //   },
+      //   {
+      //     step: 165,
+      //     penalty: 0,
+      //     cost: 48.69,
+      //     distance: 69,
+      //     time: 3.45,
+      //     loadFactor: 0.96
+      //   },
+      //   {
+      //     step: 180,
+      //     penalty: 0,
+      //     cost: 48.69,
+      //     distance: 69,
+      //     time: 3.45,
+      //     loadFactor: 0.96
+      //   },
+      //   {
+      //     step: 195,
+      //     penalty: 0,
+      //     cost: 48.69,
+      //     distance: 69,
+      //     time: 3.45,
+      //     loadFactor: 0.96
+      //   },
+      //   {
+      //     step: 200,
+      //     penalty: 0,
+      //     cost: 48.69,
+      //     distance: 69,
+      //     time: 3.45,
+      //     loadFactor: 0.96
+      //   }
+      // ];
+
+      console.log("msgs=" + JSON.stringify(this.msgs));
+      let width = this.$refs["test_svg"].clientWidth;
+      let height = this.$refs["test_svg"].clientHeight;
+      const margin = { top: 30, right: 60, bottom: 60, left: 60 };
+
+      let svg = d3
+        .select("svg#test_svg")
+        .attr("preserveAspectRatio", "xMidYMid meet")
+        .attr("viewBox", "0 0 " + width + " " + height);
+
+      // var data = [1, 3, 5, 7, 8, 4, 3, 7];
+      let costs = this.msgs.map(msg => {
+        return msg.cost
+      })
+
+      // 比例尺
+      const xScale = d3
+        .scaleLinear()
+        // .domain([0, data.length-1])
+        .domain([0, this.maxiter])
+        .nice()
+        .range([margin.left, width - margin.right]);
+      const yScale = d3
+        .scaleLinear()
+        // .domain([0, d3.max(data)])
+        // Math.floor(this.msgs[0].cost), Math.ceil(this.msgs[this.msgs.length - 1].cost)
+        .domain([d3.min(costs), d3.max(costs)])
+        // .domain([Math.floor(this.msgs[this.msgs.length - 1].cost), Math.ceil(this.msgs[0].cost)])
+        .nice()
+        .range([height - margin.bottom, margin.top]);
+
+      svg
+        .append("g")
+        .attr("transform", `translate(0,${height - margin.bottom})`)
+        .call(d3.axisBottom(xScale))
+        .append("text")
+        .attr("text-anchor", "start")
+        .attr("stroke", "red")
+        .style("font-size", "12px")
+        .style("font-style", "宋体")
+        .attr("x", width - margin.right)
+        .attr("y", 5)
+        .text(d => "迭代次数");
+
+
+      // y轴
+      svg
+        .append("g")
+        .attr("transform", `translate(${margin.left},0)`)
+        .call(d3.axisLeft(yScale))
+        .append("text")
+        .attr("text-anchor", "start")
+        .attr("stroke", "red")
+        .style("font-size", "12px")
+        .style("font-style", "宋体")
+        .attr("x", 10)
+        .attr("y", 30)
+        .text(d => "纵坐标");
+
+      // const pathLine = d3
+      //   .line()
+      //   .curve(d3.curveBasis) // 如果没有这一行则是折线，有则为曲线
+      //   .x((d, i) => xScale(i))
+      //   // .y(d => height - margin.bottom - (yScale(0) - yScale(d)));
+      //   .y((d, i) => yScale(d));
+
+      const pathLine = d3
+        .line()
+        .curve(d3.curveBasis) // 如果没有这一行则是折线，有则为曲线
+        .x((d, i) => xScale(d.step))
+        .y((d, i) => yScale(d.cost));
+
+      // [1,2,3,4,5,6,7,8]
+      svg
+        .append("path")
+        .attr("d", pathLine(this.msgs)) // data
+        .attr("stroke", "red")
+        .attr("stroke-width", "1px")
+        .attr("fill", "none");
+      // .attr("transform", `translate(${(margin.left)*2},0)`);
+      const header = ["算法收敛曲线"];
+      const headers = svg.append("g");
+      headers
+        .selectAll("text")
+        .data(header)
+        .enter()
+        .append("text")
+        .attr("stroke", "black")
+        .attr("transform", `translate(${width / 3},${margin.top})`)
+        .style("font-size", "25px")
+        .text(d => d);
     }
   }
 };
