@@ -79,16 +79,54 @@
           </div>
         </el-card>
       </el-aside>
-      <el-main style="background-color: #f9f9f9">
-        <svg id="graph_svg" style="height:100%; width: 100%;background-color: #f9f9f9" ref="svg" />
-        <!-- <el-card class="box-card">
+      <el-main style="background-color: white">
+        <svg id="graph_svg" style="height:100%; width: 100%;" ref="svg" />
+        <el-row style="height:50%; width: 100%;">
+          <el-col :span="12" style="height:100%; padding: 20px">
+            <el-card class="svg_card"  style="height:100%; width: 100%;">
+              <div slot="header" class="clearfix" style="height:20%; width: 100%;">
+                <span>算法收敛曲线</span>
+                <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
+              </div>
+              <svg
+                id="test_svg"
+                style="height:80%; width: 100%;"
+                ref="test_svg"
+              />
+            </el-card>
+          </el-col>
+          <el-col :span="12" style="height:100%;padding: 20px">
+            <el-card class="svg_card"  style="height:100%; width: 100%;">
+              <div slot="header" class="clearfix" style="height:20%; width: 100%;">
+                <span>车辆载重柱状图</span>
+                <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
+              </div>
+              <svg
+                id="histogram_load"
+                style="height:80%; width: 100%;"
+                ref="histogram_load"
+              />
+            </el-card>
+          </el-col>
+        </el-row>
+        <el-row style="height:50%; width: 100%;">
+          <el-col :span="24" style="height:100%;padding: 20px">
+              <el-card class="svg_card"  style="height:100%; width: 100%;">
+                <div slot="header" class="clearfix" style="height:20%; width: 100%;">
+                  <span>车辆路程柱状图</span>
+                  <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
+                </div>
+                <svg
+                  id="histogram_distance"
+                  style="height:80%; width: 100%;"
+                  ref="histogram_distance"
+                  />
+              </el-card>
+          </el-col>
+        </el-row>
 
-        </el-card>-->
-        <svg
-          id="test_svg"
-          style="height:50%; width: 100%;background-color: #f9f9f9"
-          ref="test_svg"
-        />
+
+
       </el-main>
       <el-drawer title="路线详情" :visible.sync="drawer" :with-header="false" direction="rtl">
         <d2-container>
@@ -178,6 +216,8 @@ export default {
     // console.log('==============' + (this.problem === this.$route.query.problem))
     let svgChildren = d3.selectAll("svg#graph_svg > *");
     let testSvg = d3.selectAll("svg#test_svg > *");
+    let loadHistogram = d3.select("svg#histogram_load > *");
+    let distanceHistogram = d3.select("svg#histogram_distance > *");
     console.log("d3.selectAll()=" + svgChildren.size());
     let queryValue = this.$route.query.queryValue;
     if (
@@ -192,7 +232,10 @@ export default {
     this.loading = true;
     svgChildren.remove();
     testSvg.remove();
+    loadHistogram.remove();
+    distanceHistogram.remove();
     this.msgs.splice(0, this.msgs.length);
+    this.routes.splice(0, this.routes.length);
     // console.log("activated");
     // this.problem = this.$route.query.problem;
     this.hideRoute = false;
@@ -407,6 +450,8 @@ export default {
             this.showScatterGraph();
           }
           this.showCurveGraph();
+          this.showLoadHistogram();
+          this.showDistanceHistogram();
         }
       });
     },
@@ -519,7 +564,9 @@ export default {
             checked: true,
             distance: trip.distance,
             time: trip.time,
-            serve: trip.serve
+            serve: trip.serve,
+            load: trip.load,
+            distance: trip.distance
           });
           // this.routes.push(text);
           // vid++
@@ -1012,7 +1059,9 @@ export default {
             checked: true,
             distance: trip.distance,
             time: trip.time,
-            serve: trip.serve
+            serve: trip.serve,
+            load: trip.load,
+            distance: trip.distance
           });
         });
       });
@@ -1425,133 +1474,10 @@ export default {
       }
     },
     showCurveGraph() {
-      // this.msgs = [
-      //   {
-      //     step: 0,
-      //     penalty: 0,
-      //     cost: 71.3765,
-      //     distance: 76,
-      //     time: 3.45,
-      //     loadFactor: 0.847059
-      //   },
-      //   {
-      //     step: 15,
-      //     penalty: 0,
-      //     cost: 71.3765,
-      //     distance: 76,
-      //     time: 3.45,
-      //     loadFactor: 0.847059
-      //   },
-      //   {
-      //     step: 30,
-      //     penalty: 0,
-      //     cost: 51.49,
-      //     distance: 74,
-      //     time: 3.55,
-      //     loadFactor: 0.96
-      //   },
-      //   {
-      //     step: 45,
-      //     penalty: 0,
-      //     cost: 49.49,
-      //     distance: 70,
-      //     time: 3.55,
-      //     loadFactor: 0.96
-      //   },
-      //   {
-      //     step: 60,
-      //     penalty: 0,
-      //     cost: 49.49,
-      //     distance: 70,
-      //     time: 3.55,
-      //     loadFactor: 0.96
-      //   },
-      //   {
-      //     step: 75,
-      //     penalty: 0,
-      //     cost: 48.69,
-      //     distance: 69,
-      //     time: 3.45,
-      //     loadFactor: 0.96
-      //   },
-      //   {
-      //     step: 90,
-      //     penalty: 0,
-      //     cost: 48.69,
-      //     distance: 69,
-      //     time: 3.45,
-      //     loadFactor: 0.96
-      //   },
-      //   {
-      //     step: 105,
-      //     penalty: 0,
-      //     cost: 48.69,
-      //     distance: 69,
-      //     time: 3.45,
-      //     loadFactor: 0.96
-      //   },
-      //   {
-      //     step: 120,
-      //     penalty: 0,
-      //     cost: 48.69,
-      //     distance: 69,
-      //     time: 3.45,
-      //     loadFactor: 0.96
-      //   },
-      //   {
-      //     step: 135,
-      //     penalty: 0,
-      //     cost: 48.69,
-      //     distance: 69,
-      //     time: 3.45,
-      //     loadFactor: 0.96
-      //   },
-      //   {
-      //     step: 150,
-      //     penalty: 0,
-      //     cost: 48.69,
-      //     distance: 69,
-      //     time: 3.45,
-      //     loadFactor: 0.96
-      //   },
-      //   {
-      //     step: 165,
-      //     penalty: 0,
-      //     cost: 48.69,
-      //     distance: 69,
-      //     time: 3.45,
-      //     loadFactor: 0.96
-      //   },
-      //   {
-      //     step: 180,
-      //     penalty: 0,
-      //     cost: 48.69,
-      //     distance: 69,
-      //     time: 3.45,
-      //     loadFactor: 0.96
-      //   },
-      //   {
-      //     step: 195,
-      //     penalty: 0,
-      //     cost: 48.69,
-      //     distance: 69,
-      //     time: 3.45,
-      //     loadFactor: 0.96
-      //   },
-      //   {
-      //     step: 200,
-      //     penalty: 0,
-      //     cost: 48.69,
-      //     distance: 69,
-      //     time: 3.45,
-      //     loadFactor: 0.96
-      //   }
-      // ];
-
       console.log("msgs=" + JSON.stringify(this.msgs));
       let width = this.$refs["test_svg"].clientWidth;
       let height = this.$refs["test_svg"].clientHeight;
-      const margin = { top: 30, right: 60, bottom: 60, left: 60 };
+      const margin = { top: 40, right: 40, bottom: 40, left: 40 };
 
       let svg = d3
         .select("svg#test_svg")
@@ -1585,11 +1511,11 @@ export default {
         .call(d3.axisBottom(xScale))
         .append("text")
         .attr("text-anchor", "start")
-        .attr("stroke", "red")
+        .attr("stroke", "black")
         .style("font-size", "12px")
         .style("font-style", "宋体")
-        .attr("x", width - margin.right)
-        .attr("y", 5)
+        .attr("x", width - margin.right - 20)
+        .attr("y", 30)
         .text(d => "迭代次数");
 
 
@@ -1600,10 +1526,10 @@ export default {
         .call(d3.axisLeft(yScale))
         .append("text")
         .attr("text-anchor", "start")
-        .attr("stroke", "red")
+        .attr("stroke", "black")
         .style("font-size", "12px")
         .style("font-style", "宋体")
-        .attr("x", 10)
+        .attr("x", 0)
         .attr("y", 30)
         .text(d => "纵坐标");
 
@@ -1627,18 +1553,236 @@ export default {
         .attr("stroke", "red")
         .attr("stroke-width", "1px")
         .attr("fill", "none");
-      // .attr("transform", `translate(${(margin.left)*2},0)`);
-      const header = ["算法收敛曲线"];
-      const headers = svg.append("g");
-      headers
-        .selectAll("text")
-        .data(header)
-        .enter()
-        .append("text")
+
+      // const header = ["算法收敛曲线"];
+      // const headers = svg.append("g");
+      // headers
+      //   .selectAll("text")
+      //   .data(header)
+      //   .enter()
+      //   .append("text")
+      //   .attr("stroke", "black")
+      //   .attr("transform", `translate(${width / 3},${margin.top})`) // margin.top
+      //   .style("font-size", "14px")
+      //   .text(d => d);
+    },
+    showLoadHistogram() {
+      let width = this.$refs["histogram_load"].clientWidth;
+      let height = this.$refs["histogram_load"].clientHeight;
+      const margin = { top: 40, right: 40, bottom: 60, left: 40 };
+
+      let svg = d3
+        .select("svg#histogram_load")
+        .attr("preserveAspectRatio", "xMidYMid meet")
+        .attr("viewBox", "0 0 " + width + " " + height);
+
+      // var data = [1, 3, 5, 7, 8, 4, 3, 7];
+      let costs = this.routes.map(msg => {
+        return msg.load
+      })
+
+      // 比例尺
+      const xScale = d3
+        .scaleBand()
+        // .domain([0, data.length-1])
+        .domain(this.routes.map(d=>d.id))
+        .range([margin.left, width - margin.right]);
+      const yScale = d3
+        .scaleLinear()
+        // .domain([0, d3.max(data)])
+        // Math.floor(this.msgs[0].cost), Math.ceil(this.msgs[this.msgs.length - 1].cost)
+        .domain([d3.min(costs), d3.max(costs)])
+        // .domain([Math.floor(this.msgs[this.msgs.length - 1].cost), Math.ceil(this.msgs[0].cost)])
+        .nice()
+        .range([height - margin.bottom, margin.top]);
+
+      let test = svg
+        .append("g")
+        .attr("transform", `translate(0,${height - margin.bottom})`)
+        .call(d3.axisBottom(xScale))
+
+      test.selectAll("text")
+        // .style("font-size", "8px")
+        .style("text-anchor", "start")
+        // .attr("stroke", "black")
+        .attr("transform", "rotate(45, -10, 10)");
+      test.append("text")
+        .attr("text-anchor", "start")
         .attr("stroke", "black")
-        .attr("transform", `translate(${width / 3},${margin.top})`)
-        .style("font-size", "25px")
-        .text(d => d);
+        .style("font-size", "12px")
+        .style("font-style", "宋体")
+        .attr("x", width - margin.right + 5)
+        .attr("y", 5)
+        .text(d => "车辆")
+
+
+
+      // y轴
+      svg
+        .append("g")
+        .attr("transform", `translate(${margin.left},0)`)
+        .call(d3.axisLeft(yScale))
+        .append("text")
+        .attr("text-anchor", "start")
+        .attr("stroke", "black")
+        .style("font-size", "12px")
+        .style("font-style", "宋体")
+        .attr("x", -15)
+        .attr("y", 30)
+        .text(d => "载重");
+
+      var gs = svg.selectAll("rect")
+        .data(this.routes)
+        .enter()
+        .append("g");
+
+      // svg.selectAll("rect")
+      //   .data(this.routes)
+      //   .enter()
+      gs.append("rect")
+        .attr("x",d=>xScale(d.id) + xScale.bandwidth()/4)
+        .attr("y",d=>yScale(d.load))
+        .attr("width",  xScale.bandwidth()/2) // xScale.bandwidth()
+        .attr("height",d=>height- 60 - yScale(d.load))
+        .attr("class","myrect")
+        .attr("fill", "#02c58d")
+
+      gs.append("text")
+        .attr("x",d=>xScale(d.id)) //  + xScale.bandwidth()/4
+        .attr("y",d=>yScale(d.load) - 2)
+        .attr("dx", xScale.step()/4)
+        .attr("dy",0)
+        .style("font-size", "8px")
+        .text(function(d){
+          return d.load;
+        })
+
+      // const header = ["车辆载重柱状图"];
+      // const headers = svg.append("g");
+      // headers
+      //   .selectAll("text")
+      //   .data(header)
+      //   .enter()
+      //   .append("text")
+      //   .attr("stroke", "black")
+      //   .attr("transform", `translate(${width / 3},${margin.top})`) // margin.top
+      //   .style("font-size", "14px")
+      //   .text(d => d);
+    },
+    showDistanceHistogram() {
+      let width = this.$refs["histogram_distance"].clientWidth;
+      let height = this.$refs["histogram_distance"].clientHeight;
+      const margin = { top: 40, right: 40, bottom: 60, left: 40 };
+
+      let svg = d3
+        .select("svg#histogram_distance")
+        .attr("preserveAspectRatio", "xMidYMid meet")
+        .attr("viewBox", "0 0 " + width + " " + height);
+
+      // var data = [1, 3, 5, 7, 8, 4, 3, 7];
+      let costs = this.routes.map(msg => {
+        return msg.distance
+      })
+
+      // 比例尺
+      const xScale = d3
+        .scaleBand()
+        // .domain([0, data.length-1])
+        .domain(this.routes.map(d=>d.id))
+        .range([margin.left, width - margin.right]);
+      const yScale = d3
+        .scaleLinear()
+        // .domain([0, d3.max(data)])
+        // Math.floor(this.msgs[0].cost), Math.ceil(this.msgs[this.msgs.length - 1].cost)
+        .domain([d3.min(costs), d3.max(costs)])
+        // .domain([Math.floor(this.msgs[this.msgs.length - 1].cost), Math.ceil(this.msgs[0].cost)])
+        .nice()
+        .range([height - margin.bottom, margin.top]);
+
+      // svg
+      //   .append("g")
+      //   .attr("transform", `translate(0,${height - margin.bottom})`)
+      //   .call(d3.axisBottom(xScale))
+      //   .append("text")
+      //   .attr("text-anchor", "start")
+      //   .attr("stroke", "#409EFF")
+      //   .style("font-size", "14px")
+      //   .style("font-style", "宋体")
+      //   .attr("x", width - margin.right - 20)
+      //   .attr("y", 30)
+      //   .text(d => "车辆");
+
+      let test = svg
+        .append("g")
+        .attr("transform", `translate(0,${height - margin.bottom})`)
+        .call(d3.axisBottom(xScale))
+
+      test.selectAll("text")
+        // .style("font-size", "8px")
+        .style("text-anchor", "start")
+        .attr("transform", "rotate(45, -10, 10)");
+      test.append("text")
+        .attr("text-anchor", "start")
+        .attr("stroke", "black")
+        .style("font-size", "12px")
+        .style("font-style", "宋体")
+        .attr("x", width - margin.right + 5)
+        .attr("y", 5)
+        .text(d => "车辆")
+
+
+      // y轴
+      svg
+        .append("g")
+        .attr("transform", `translate(${margin.left},0)`)
+        .call(d3.axisLeft(yScale))
+        .append("text")
+        .attr("text-anchor", "start")
+        .attr("stroke", "black")
+        .style("font-size", "14px")
+        .style("font-style", "宋体")
+        .attr("x", -15)
+        .attr("y", 30)
+        .text(d => "路程");
+
+
+      var gs = svg.selectAll("rect")
+        .data(this.routes)
+        .enter()
+        .append("g");
+
+      // svg.selectAll("rect")
+      //   .data(this.routes)
+      //   .enter()
+      gs.append("rect")
+        .attr("x",d=>xScale(d.id) + xScale.bandwidth()/4)
+        .attr("y",d=>yScale(d.distance))
+        .attr("width",  xScale.bandwidth()/2) // xScale.bandwidth()
+        .attr("height",d=>height- 60 - yScale(d.distance))
+        .attr("class","myrect")
+        .attr("fill", "#409EFF")
+
+      gs.append("text")
+        .attr("x",d=>xScale(d.id)) //  + xScale.bandwidth()/4
+        .attr("y",d=>yScale(d.distance) - 5)
+        .attr("dx", xScale.step()/4) // xScale.step()/2
+        .attr("dy", 0)
+        .style("font-size", "10px")
+        .text(function(d){
+          return d.distance;
+        })
+
+      // const header = ["车辆路程柱状图"];
+      // const headers = svg.append("g");
+      // headers
+      //   .selectAll("text")
+      //   .data(header)
+      //   .enter()
+      //   .append("text")
+      //   .attr("stroke", "black")
+      //   .attr("transform", `translate(${width / 3},${margin.top})`) // margin.top
+      //   .style("font-size", "14px")
+      //   .text(d => d);
     }
   }
 };
@@ -1667,5 +1811,12 @@ export default {
   flex-shrink: 0;
   border-radius: 5px;
 }
+
+.svg_card .el-card__body {
+  padding: 0px;
+  height: 100%;
+  width: 100%;
+}
+
 </style>
 <style src="../../../assets/btn.css" scoped></style>
