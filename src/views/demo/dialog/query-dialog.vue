@@ -78,7 +78,15 @@ export default {
       var time = fmt
       console.log('time=' + time)
       this.value.time = time
-      this.value.name = '查询记录' + time
+      let name;
+      if (this.value.type === 'coordinate') {
+        name = '坐标查询';
+      } else if (this.value.type === 'map') {
+        name = '地图查询';
+      } else {
+        name = '路线查询';
+      }
+      this.value.name = name + time
       // this.formData.push(this.value)
     }
   }

@@ -97,6 +97,15 @@ const frameIn = [
         },
         component: () => import('../views/guan/use')
       },
+      {
+        path: 'version',
+        name: 'version',
+        meta: {
+          title: '历史版本',
+          auth: true
+        },
+        component: _import('demo/page_version')
+      },
       // 系统 前端日志
       {
         path: 'log',

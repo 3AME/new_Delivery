@@ -85,23 +85,66 @@ $theme-header-item-background-color-active: rgba(#000, .03);
 // $theme-aside-menu-empty-text-color-hover: #FFF;
 // $theme-aside-menu-empty-background-color-hover: #30419B;
 
-$theme-aside-item-color: rgb(184, 186, 196);
-$theme-aside-item-background-color: #30419B;
-$theme-aside-menu-background-color:#30419B;
+
+// $theme-aside-item-color: rgb(184, 186, 196);
+// $theme-aside-item-background-color: #30419B;
+// $theme-aside-menu-background-color:#30419B;
+// // 侧边栏上的项目在 hover 时
+// $theme-aside-item-color-hover: #FFF;
+// $theme-aside-item-background-color-hover: #30419B;
+// // 侧边栏上的项目在 focus 时
+// $theme-aside-item-color-focus: #FFF;
+// $theme-aside-item-background-color-focus: #30419B;
+// // 侧边栏上的项目在 active 时
+// $theme-aside-item-color-active: #FFF;
+// $theme-aside-item-background-color-active: #3345A5;
+
+// // 侧边栏菜单为空的时候显示的元素
+// $theme-aside-menu-empty-icon-color: #FFF;
+// $theme-aside-menu-empty-text-color: #FFF;
+// $theme-aside-menu-empty-background-color: #30419B;
+// $theme-aside-menu-empty-icon-color-hover: #FFF;
+// $theme-aside-menu-empty-text-color-hover: #FFF;
+// $theme-aside-menu-empty-background-color-hover: #30419B;
+
+$theme-aside-item-color: #e0e0e0;
+$theme-aside-item-background-color: #6777FF;
+$theme-aside-menu-background-color:#6777FF;
 // 侧边栏上的项目在 hover 时
 $theme-aside-item-color-hover: #FFF;
-$theme-aside-item-background-color-hover: #30419B;
+$theme-aside-item-background-color-hover: #6777FF;
 // 侧边栏上的项目在 focus 时
 $theme-aside-item-color-focus: #FFF;
-$theme-aside-item-background-color-focus: #30419B;
+$theme-aside-item-background-color-focus: #6777FF;
 // 侧边栏上的项目在 active 时
 $theme-aside-item-color-active: #FFF;
-$theme-aside-item-background-color-active: #3345A5;
+$theme-aside-item-background-color-active: #6777FF;
 
 // 侧边栏菜单为空的时候显示的元素
 $theme-aside-menu-empty-icon-color: #FFF;
 $theme-aside-menu-empty-text-color: #FFF;
-$theme-aside-menu-empty-background-color: #30419B;
+$theme-aside-menu-empty-background-color: #6777FF;
 $theme-aside-menu-empty-icon-color-hover: #FFF;
 $theme-aside-menu-empty-text-color-hover: #FFF;
-$theme-aside-menu-empty-background-color-hover: #30419B;
+$theme-aside-menu-empty-background-color-hover: #6777FF;
+
+// $theme-aside-item-color: #000;
+// $theme-aside-item-background-color: #FFF;
+// $theme-aside-menu-background-color:#FFF;
+// // 侧边栏上的项目在 hover 时
+// $theme-aside-item-color-hover: #409EFF;
+// $theme-aside-item-background-color-hover: #FFF;
+// // 侧边栏上的项目在 focus 时
+// $theme-aside-item-color-focus: #409EFF;
+// $theme-aside-item-background-color-focus: #FFF;
+// // 侧边栏上的项目在 active 时
+// $theme-aside-item-color-active: #409EFF;
+// $theme-aside-item-background-color-active: #FFF;
+
+// // 侧边栏菜单为空的时候显示的元素
+// $theme-aside-menu-empty-icon-color: #409EFF;
+// $theme-aside-menu-empty-text-color: #409EFF;
+// $theme-aside-menu-empty-background-color: #FFF;
+// $theme-aside-menu-empty-icon-color-hover: #409EFF;
+// $theme-aside-menu-empty-text-color-hover: #409EFF;
+// $theme-aside-menu-empty-background-color-hover: #FFF;

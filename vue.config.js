@@ -178,7 +178,7 @@ module.exports = {
           'to': './',
           'filter': ['VehicleRouting.exe']
         },
-        productName: 'Micrologic',
+        productName: '川流配送',
         nsis: {
           'oneClick': false, // 不使用一键安装，允许用户自定义
           'allowToChangeInstallationDirectory': true, // 允许用户修改安装路径

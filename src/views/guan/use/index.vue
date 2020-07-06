@@ -10,7 +10,7 @@
             <div class="media m-b-30">
               <img
                 class="d-flex mr-3 rounded-circle"
-                src="../../../assets/images/small/1.jpg"
+                src="../../../assets/images/small/1.png"
                 alt
                 height="250"
               />

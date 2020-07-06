@@ -242,7 +242,8 @@ export default {
         name: '', //距离优先
         problem: {},
         time: '',
-        isHistory: false
+        isHistory: false,
+        type: 'map'
       },
       dialogVisible: true,
       center: "成都市",

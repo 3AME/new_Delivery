@@ -128,22 +128,12 @@ export default {
     saveQuery(index, row) {
       var problem = row.problem;
       var table = [];
-      // var edges = problem.edges;
 
       let depots = problem.nodes.filter(node => {
         return node.type == "depot"
       });
 
       if (!problem.routeMode) {
-        // problem.nodes.forEach(node => {
-        //   if (node.type == "depot") {
-        //     let row0 = ["物流中心" + node.id + "(" + node.x + ", " + node.y + ")"];
-        //     table.push(row0);
-        //   }
-        // })
-        // let row0 = ["物流中心(" + edges[0].x + ", " + edges[0].y + ")"];
-        // table.push(row0);
-
         depots.forEach(node => {
           let row0 = ["物流中心" + node.id + "(" + node.x + ", " + node.y + ")"];
           table.push(row0);
@@ -177,24 +167,7 @@ export default {
         problem.nodes.forEach(node => {
           header1.push(node.id);
         });
-        // for (let i = 0; i < problem.num_node; i++) {
-        //   header1.push(i)
-        // }
         table.push(header1);
-
-        // init table
-        // for (let i = 0; i < problem.nodes.length; i++) {
-        //   let row = [];
-        //   row.push(i);
-        //   for (let j = 0; j < problem.nodes.length; j++) {
-        //     if (i === j) {
-        //       row.push(0);
-        //     } else {
-        //       row.push("");
-        //     }
-        //   }
-        //   table.push(row);
-        // }
 
         problem.nodes.forEach((node, i) => {
           let row = [];
@@ -219,27 +192,11 @@ export default {
           });
         });
 
-        // for (let i = 0; i < problem.nodes.length; i++) {
-        //   let row = table[i + 2];
-        //   problem.nodes.forEach(function(item) {
-        //     if (item.u === i) {
-        //       row[item.v + 1] = item.w;
-        //       table[item.v + 2][item.u + 1] = item.w;
-        //     }
-        //   });
-        // }
-
         table.push([]);
 
         table.push(["各配送点需求量（T）"]);
         var row1 = ["配送点"];
         var row2 = ["需求量（T)"];
-        // for (let i = 0; i < problem.nodes.length; i++) {
-        //   if (problem.nodes[i] === 'customer') {
-        //     row1.push(problem.nodes[i].id)
-        //     row2.push(problem.nodes[i].demand)
-        //   }
-        // }
         problem.nodes.forEach((node, i) => {
           if (node.type === "customer") {
             row1.push(node.id);

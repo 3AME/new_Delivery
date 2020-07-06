@@ -1,64 +1,124 @@
 <template>
   <d2-container style="padding: 0px 0px;">
-    <el-container
-      class="container"
-      style="background: #fff;"
-      v-loading="loading"
-      element-loading-text="拼命加载中"
-      element-loading-spinner="el-icon-loading"
-    >
-      <el-aside width="230px" class="aside">
-        <el-card class="box-card">
-          <div slot="header" class="clearfix">
-            <span>最优结果</span>
-            <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
-          </div>
-          <div class="text-item" v-if="result">总路程: {{ result.distance.toFixed(2) }} 公里</div>
-          <div class="text-item" v-if="result">总时间: {{ result.time.toFixed(2) }} 小时</div>
-          <div class="text-item" v-if="result">平均满载率: {{ (result.loadFactor * 100).toFixed(2) }} %</div>
-        </el-card>
+    <div ref="div_test">
+      <el-container
+        class="container"
+        style="background: #fff;"
+        v-loading="loading"
+        element-loading-text="拼命加载中"
+        element-loading-spinner="el-icon-loading"
+      >
+        <el-aside width="280px" class="aside">
+          <el-card class="box-card">
+            <div slot="header" class="clearfix">
+              <span>最优结果</span>
+              <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
+              <el-popover
+                placement="top-start"
+                title="保存结果"
+                width="200"
+                trigger="hover"
+                content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。"
+              >
+                <!-- <el-button slot="reference">hover 激活</el-button> -->
+                <div style="text-align: center; margin-top: 40px;margin-bottom: 40px;">
+                  <el-button type="primary" @click="saveResult(true)">保存为Excel文件</el-button>
+                </div>
+                <div style="text-align: center; margin-top: 40px;margin-bottom: 40px;">
+                  <el-button class="btn-success" @click="saveResult(false)">保存为Html文件</el-button>
+                </div>
+                <!-- @click="saveResult"  -->
+                <el-button slot="reference" id="btn-save-result" class="btn-success btn-save-result" size="mini" style="float: right;">保存</el-button>
+              </el-popover>
+            </div>
+            <div class="text-item" v-if="result">总路程: {{ result.distance.toFixed(2) }} 公里</div>
+            <div class="text-item" v-if="result">总时间: {{ result.time.toFixed(2) }} 小时</div>
+            <div class="text-item" v-if="result">平均满载率: {{ (result.loadFactor * 100).toFixed(2) }} %</div>
+          </el-card>
 
-        <el-card class="box-card">
-          <div slot="header" class="clearfix">
-            <span>最优路线</span>
+          <el-card class="box-card">
+            <!-- <div slot="header" class="clearfix">
+              <span>最优路线</span>
+              <el-checkbox
+                v-model="checked"
+                style="float: right; padding: 3px 0"
+                @change="onCheckboxChange"
+              ></el-checkbox>
+            </div>-->
+            <span>路线详情</span>
             <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
             <el-checkbox
               v-model="checked"
               style="float: right; padding: 3px 0"
               @change="onCheckboxChange"
+              class="checkbox-route"
             ></el-checkbox>
-          </div>
-          <div style="text-align: center; margin-bottom: 20px;">
-            <el-button class="btn-success" size="mini" @click="drawer = true">路线详情</el-button>
-            <!-- <el-button class="btn-success">test</el-button> -->
-          </div>
-          <div style="text-align: center; margin-bottom: 20px;">
-            <el-switch
-              v-model="hideRoute"
-              @change="toggleRoute()"
-              :active-text="problem.routeMode ? '隐藏无关路线' : '隐藏坐标文字'"
-            ></el-switch>
-          </div>
-          <div
+            <!-- <div style="text-align: center; margin-bottom: 20px;">
+              <el-button class="btn-success" size="mini" @click="drawer = true">路线详情</el-button>
+            </div>-->
+
+            <!-- <div style="text-align: center; margin-bottom: 20px;">
+              <el-button class="btn-success" size="mini" @click="saveResult">保存结果</el-button>
+            </div>-->
+
+            <!-- <div style="text-align: center; margin-bottom: 20px;">
+              <el-switch
+                v-model="hideRoute"
+                @change="toggleRoute()"
+                :active-text="problem.routeMode ? '隐藏无关路线' : '隐藏坐标文字'"
+              ></el-switch>
+            </div>-->
+
+            <!-- <div
+              v-for="(route, index) in routes"
+              :key="index"
+              style="padding-top: 4px; padding-bottom: 4px;"
+            >
+              <div @click="toggleVisible(route, index)">
+                <label class="el-checkbox is-checked" style="margin-right: 4px;">
+                  <span class="el-checkbox__input is-checked">
+                    <span
+                      class="el-checkbox__inner"
+                      :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
+                    ></span>
+                    <input
+                      @click="toggleVisible(route, index)"
+                      type="checkbox"
+                      aria-hidden="false"
+                      class="el-checkbox__original"
+                      :value="route.checked"
+                      :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
+                    />
+                  </span>
+                </label>
+                <span
+                  :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+                >车辆{{ route.id }}</span>
+              </div>
+              <div
+                @click="toggleVisible(route, index)"
+                :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+                :fill="route.color"
+              >{{ route.text }}</div>
+            </div>-->
+          </el-card>
+
+          <el-card
+            class="box-card"
+            style="margin-top: 10px;"
             v-for="(route, index) in routes"
             :key="index"
-            style="padding-top: 4px; padding-bottom: 4px;"
+            @click.native.prevent="toggleVisible(route, index)"
           >
-            <!-- @change="onCheckedChange(route, index)" -->
-            <!-- <el-checkbox
-            v-model="route.checked"
-            :style="'margin-right: 4px;color:' + route.color"
-            @change="onCheckedChange(route, index)"
-            ></el-checkbox>-->
-            <div @click="toggleVisible(route, index)">
-              <label class="el-checkbox is-checked" style="margin-right: 4px;">
+            <div slot="header" class="clearfix">
+              <span>车辆{{ route.id }}</span>
+              <label class="el-checkbox is-checked checkbox-route" style="margin-right: 4px; float: right">
                 <span class="el-checkbox__input is-checked">
                   <span
                     class="el-checkbox__inner"
                     :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
                   ></span>
                   <input
-                    @click="toggleVisible(route, index)"
                     type="checkbox"
                     aria-hidden="false"
                     class="el-checkbox__original"
@@ -67,119 +127,184 @@
                   />
                 </span>
               </label>
-              <span
-                :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-              >车辆{{ route.id }}</span>
             </div>
-            <div
-              @click="toggleVisible(route, index)"
+            <!-- <div
               :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
               :fill="route.color"
-            >{{ route.text }}</div>
-          </div>
-        </el-card>
-      </el-aside>
-      <el-main style="background-color: white">
-        <svg id="graph_svg" style="height:100%; width: 100%;" ref="svg" />
-        <el-row style="height:50%; width: 100%;">
-          <el-col :span="12" style="height:100%; padding: 20px">
-            <el-card class="svg_card"  style="height:100%; width: 100%;">
-              <div slot="header" class="clearfix" style="height:20%; width: 100%;">
-                <span>算法收敛曲线</span>
-                <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
-              </div>
-              <svg
-                id="test_svg"
-                style="height:80%; width: 100%;"
-                ref="test_svg"
-              />
-            </el-card>
-          </el-col>
-          <el-col :span="12" style="height:100%;padding: 20px">
-            <el-card class="svg_card"  style="height:100%; width: 100%;">
-              <div slot="header" class="clearfix" style="height:20%; width: 100%;">
-                <span>车辆载重柱状图</span>
-                <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
-              </div>
-              <svg
-                id="histogram_load"
-                style="height:80%; width: 100%;"
-                ref="histogram_load"
-              />
-            </el-card>
-          </el-col>
-        </el-row>
-        <el-row style="height:50%; width: 100%;">
-          <el-col :span="24" style="height:100%;padding: 20px">
-              <el-card class="svg_card"  style="height:100%; width: 100%;">
-                <div slot="header" class="clearfix" style="height:20%; width: 100%;">
+            >车辆{{ route.id }}</div>-->
+            <div
+              :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+              :fill="route.color"
+            >路线：{{route.text}}</div>
+            <div
+              :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+              :fill="route.color"
+            >路程：{{ route.distance.toFixed(2) }}公里</div>
+            <div
+              :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+              :fill="route.color"
+            >时间：{{ route.time.toFixed(2) }}小时</div>
+          </el-card>
+        </el-aside>
+        <el-main style="background-color: white">
+          <el-row style="height:100%; width: 100%;">
+            <el-col :span="24" style="height:100%;padding: 20px">
+              <el-card class="svg_card" style="height:100%; width: 100%;">
+                <div slot="header" class="clearfix">
+                  <span>最优配送路线</span>
+                  <div style="text-align: center; margin-bottom: 20px; float: right">
+                    <el-switch
+                      v-model="hideRoute"
+                      @change="toggleRoute()"
+                      :active-text="problem.routeMode ? '隐藏无关路线' : '隐藏坐标文字'"
+                      class="switch-toggle-route"
+                    ></el-switch>
+                  </div>
+                </div>
+                <svg id="graph_svg" style="height:90%; width: 100%;" ref="svg" />
+              </el-card>
+            </el-col>
+          </el-row>
+          <!-- <el-row :gutter="24" class="mt-10">
+            <el-col
+              :span="6"
+              v-for="(route, index) in routes"
+              :key="index"
+              @click.native.prevent="toggleVisible(route, index)"
+            >
+              <el-card style="margin-top: 10px;">
+                <div slot="header" class="clearfix">
+                  <span>车辆{{ route.id }}</span>
+                  <label class="el-checkbox is-checked" style="margin-right: 4px; float: right">
+                    <span class="el-checkbox__input is-checked">
+                      <span
+                        class="el-checkbox__inner"
+                        :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
+                      ></span>
+                      <input
+                        type="checkbox"
+                        aria-hidden="false"
+                        class="el-checkbox__original"
+                        :value="route.checked"
+                        :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
+                      />
+                    </span>
+                  </label>
+                </div>
+                <div
+                  :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+                  :fill="route.color"
+                >车辆{{ route.id }}</div>
+                <div
+                  :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+                  :fill="route.color"
+                >路线：{{route.text}}</div>
+                <div
+                  :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+                  :fill="route.color"
+                >路程：{{ route.distance.toFixed(2) }}公里</div>
+                <div
+                  :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+                  :fill="route.color"
+                >时间：{{ route.time.toFixed(2) }}小时</div>
+              </el-card>
+            </el-col>
+          </el-row>-->
+          <el-row style="height:50%; width: 100%;">
+            <el-col :span="12" style="height:100%; padding: 20px">
+              <el-card class="svg_card" style="height:100%; width: 100%;">
+                <!-- style="height:10%; width: 100%;" -->
+                <div slot="header" class="clearfix">
+                  <span>算法收敛曲线</span>
+                  <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
+                </div>
+                <svg id="test_svg" style="height:80%; width: 100%;" ref="test_svg" />
+              </el-card>
+            </el-col>
+            <el-col :span="12" style="height:100%;padding: 20px">
+              <el-card class="svg_card" style="height:100%; width: 100%;">
+                <!-- style="height:10%; width: 100%;" -->
+                <div slot="header" class="clearfix">
+                  <span>车辆载重柱状图</span>
+                  <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
+                </div>
+                <svg id="histogram_load" style="height:80%; width: 100%;" ref="histogram_load" />
+              </el-card>
+            </el-col>
+          </el-row>
+          <el-row style="height:50%; width: 100%;">
+            <el-col :span="24" style="height:100%;padding: 20px">
+              <el-card class="svg_card" style="height:100%; width: 100%;">
+                <!-- style="height:10%; width: 100%;" -->
+                <div slot="header" class="clearfix">
                   <span>车辆路程柱状图</span>
-                  <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
+                  <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
                 </div>
                 <svg
                   id="histogram_distance"
                   style="height:80%; width: 100%;"
                   ref="histogram_distance"
-                  />
+                />
               </el-card>
-          </el-col>
-        </el-row>
-
-
-
-      </el-main>
-      <el-drawer title="路线详情" :visible.sync="drawer" :with-header="false" direction="rtl">
-        <d2-container>
-          <el-card class="box-card">
-            <div class="clearfix">
-              <span>路线详情</span>
-              <el-button style="float: right; padding: 3px 0" type="text" @click="drawer = false">关闭</el-button>
-            </div>
-          </el-card>
-          <div>
-            <el-card
-              class="box-card"
-              v-for="(route, index) in routes"
-              :key="index"
-              style="padding-top: 4px; padding-bottom: 4px;"
-            >
-              <div
-                :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-                :fill="route.color"
-              >车辆{{ route.id }}</div>
-              <div
-                :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-                :fill="route.color"
-              >路线：{{route.text}}</div>
-              <!-- <span
-            :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-            :fill="route.color"
-              >车辆{{ route.id }}：路程：{{ route.distance.toFixed(2) }}公里 | 时间：{{ route.time.toFixed(2) }}小时</span>-->
-              <div
-                :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-                :fill="route.color"
-              >路程：{{ route.distance.toFixed(2) }}公里</div>
-              <div
-                :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-                :fill="route.color"
-              >时间：{{ route.time.toFixed(2) }}小时</div>
+            </el-col>
+          </el-row>
+        </el-main>
+        <!-- <el-drawer title="路线详情" :visible.sync="drawer" :with-header="false" direction="rtl">
+          <d2-container>
+            <el-card class="box-card">
+              <div class="clearfix">
+                <span>路线详情</span>
+                <el-button
+                  style="float: right; padding: 3px 0"
+                  type="text"
+                  @click="drawer = false"
+                >关闭</el-button>
+              </div>
             </el-card>
-          </div>
-        </d2-container>
-      </el-drawer>
-    </el-container>
+            <div>
+              <el-card
+                class="box-card"
+                v-for="(route, index) in routes"
+                :key="index"
+                style="padding-top: 4px; padding-bottom: 4px;"
+              >
+                <div
+                  :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+                  :fill="route.color"
+                >车辆{{ route.id }}</div>
+                <div
+                  :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+                  :fill="route.color"
+                >路线：{{route.text}}</div>
+                <div
+                  :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+                  :fill="route.color"
+                >路程：{{ route.distance.toFixed(2) }}公里</div>
+                <div
+                  :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+                  :fill="route.color"
+                >时间：{{ route.time.toFixed(2) }}小时</div>
+              </el-card>
+            </div>
+          </d2-container>
+        </el-drawer> -->
+      </el-container>
+    </div>
   </d2-container>
 </template>
 
 <script>
 import * as d3 from "d3";
+import * as xlsx from "xlsx";
+import { ipcRenderer } from "electron";
+import html2canvas from "html2canvas";
 const { spawn } = require("child_process");
 const os = require("os");
 
 export default {
   data() {
     return {
-      drawer: false,
+      // drawer: false,
       forceSimulation: undefined,
       myChart: undefined,
       result: undefined,
@@ -216,8 +341,8 @@ export default {
     // console.log('==============' + (this.problem === this.$route.query.problem))
     let svgChildren = d3.selectAll("svg#graph_svg > *");
     let testSvg = d3.selectAll("svg#test_svg > *");
-    let loadHistogram = d3.select("svg#histogram_load > *");
-    let distanceHistogram = d3.select("svg#histogram_distance > *");
+    let loadHistogram = d3.selectAll("svg#histogram_load > *");
+    let distanceHistogram = d3.selectAll("svg#histogram_distance > *");
     console.log("d3.selectAll()=" + svgChildren.size());
     let queryValue = this.$route.query.queryValue;
     if (
@@ -240,6 +365,7 @@ export default {
     // this.problem = this.$route.query.problem;
     this.hideRoute = false;
     this.problem = queryValue.problem;
+    this.problemName = queryValue.name;
     console.log("tttttttttt=" + JSON.stringify(this.problem));
     this.solve(queryValue);
   },
@@ -254,7 +380,6 @@ export default {
       popsize = 100, // 种群大小
       maxiter = 100 // 迭代次数
     ) {
-
       let problem = queryValue.problem;
       this.maxiter = problem.maxiter;
       var isRouteMode = problem.routeMode;
@@ -498,6 +623,191 @@ export default {
       this.routes.forEach((route, i) => {
         route.checked = checked;
         this.onCheckedChange(route, i);
+      });
+    },
+    saveProblem() {
+      var problem = this.problem;
+      var table = [];
+
+      let depots = problem.nodes.filter(node => {
+        return node.type == "depot";
+      });
+
+      if (!problem.routeMode) {
+        depots.forEach(node => {
+          let row0 = [
+            "物流中心" + node.id + "(" + node.x + ", " + node.y + ")"
+          ];
+          table.push(row0);
+        });
+
+        var header1 = ["配送节点", "横坐标x(km)", "纵坐标y(km)", "需求量q(t)"];
+
+        table.push(header1);
+
+        problem.nodes.forEach((node, i) => {
+          if (node.type === "customer") {
+            let row = [];
+            row.push(node.id);
+            row.push(node.x);
+            row.push(node.y);
+            row.push(node.demand);
+            table.push(row);
+          }
+        });
+      } else {
+        depots.forEach(node => {
+          let row0 = [
+            "物流中心" + node.id + "(" + node.x + ", " + node.y + ")"
+          ];
+          table.push(row0);
+        });
+
+        let row0 = ["各配送点与配送中心的距离（/KM）"];
+        table.push(row0);
+
+        let header1 = ["配送节点"];
+        problem.nodes.forEach(node => {
+          header1.push(node.id);
+        });
+        table.push(header1);
+
+        problem.nodes.forEach((node, i) => {
+          let row = [];
+          row.push(node.id);
+          for (let j = 0; j < problem.nodes.length; j++) {
+            if (i === j) {
+              row.push(0);
+            } else {
+              row.push("");
+            }
+          }
+          table.push(row);
+        });
+
+        problem.nodes.forEach((node, i) => {
+          let row = table[i + 2];
+          problem.edges.forEach((item, j) => {
+            if (item.u === node.id) {
+              row[item.v + 1] = item.w;
+              table[item.v + 2][item.u + 1] = item.w;
+            }
+          });
+        });
+
+        table.push([]);
+
+        table.push(["各配送点需求量（T）"]);
+        var row1 = ["配送点"];
+        var row2 = ["需求量（T)"];
+        problem.nodes.forEach((node, i) => {
+          if (node.type === "customer") {
+            row1.push(node.id);
+            row2.push(node.demand);
+          }
+        });
+        table.push(row1);
+        table.push(row2);
+      }
+
+      table.push([]);
+      let header4 = ["车辆", "路线", "路程(公里)", "时间(小时)", "载重"];
+      table.push(header4);
+      this.routes.forEach(route => {
+        let row = [];
+        row.push(route.id);
+        row.push(route.text);
+        row.push(route.distance);
+        row.push(route.time);
+        row.push(route.load);
+        table.push(row);
+      });
+
+      // 创建book
+      var wb = xlsx.utils.book_new();
+      // json转sheet
+      var ws = xlsx.utils.aoa_to_sheet(table);
+      // sheet写入book
+      xlsx.utils.book_append_sheet(wb, ws, "query");
+
+      return wb;
+      // // 输出
+      // ipcRenderer.send("open-save-dialog", row.title);
+      // ipcRenderer.once("selectedItem", function(e, path) {
+      //   if (path != null) {
+      //     xlsx.writeFile(wb, path);
+      //   }
+      // });
+    },
+    saveResult(isExcel) {
+      let fileName;
+      let sourse = null;
+      if (isExcel) {
+        let wb = this.saveProblem();
+        fileName = this.problemName + ".xlsx";
+        sourse = wb;
+      } else {
+        console.log(this.$el);
+        let ht = this.$root;
+        var test = document.getElementsByTagName("html")[0].innerHTML;
+        let html = document.createElement("html");
+        html.innerHTML = test;
+
+        let body = html.getElementsByTagName("body")[0];
+        let children = body.childNodes;
+        for (var i = children.length - 1; i >= 0; i--) {
+          body.removeChild(children[i]);
+        }
+        body.innerHTML = this.$el.outerHTML;
+
+        let scripts = html.getElementsByTagName("script");
+        for (var i = 0; i < scripts.length; i++) {
+          console.log("src" + i + ": " + scripts[i].src);
+        }
+        html.getElementsByClassName('btn-save-result')[0].style.display = 'none';
+        html.getElementsByClassName('switch-toggle-route')[0].style.display = 'none';
+        let checkboxs = html.getElementsByClassName('checkbox-route');
+        for (let i = 0; i < checkboxs.length; i++) {
+          checkboxs[i].style.display = 'none';
+        }
+        console.log("html=" + html.outerHTML);
+        fileName = this.problemName + ".html";
+        sourse = html.outerHTML;
+      }
+
+      let me = this;
+
+      ipcRenderer.send("open-save-dialog", fileName);
+      // let jsonObj = JSON.stringify(this.result);
+      ipcRenderer.once("selectedItem", function(e, path) {
+        if (path != null) {
+          if (isExcel) {
+            xlsx.writeFile(sourse, path);
+            me.$notify({
+              title: "成功",
+              message: "保存成功",
+              type: "success"
+            });
+          } else {
+            let fs = require("fs");
+            fs.writeFile(path, sourse, function(err) {
+              if (err) {
+                console.log(err);
+                me.$notify.error({
+                  title: "错误",
+                  message: "保存失败：" + err
+                });
+              } else {
+                console.log("file success！！！");
+                me.$notify({
+                  title: "成功",
+                  message: "保存成功",
+                  type: "success"
+                });
+              }
+            });
+          }
+        }
       });
     },
     // 散点图
@@ -1486,8 +1796,8 @@ export default {
 
       // var data = [1, 3, 5, 7, 8, 4, 3, 7];
       let costs = this.msgs.map(msg => {
-        return msg.cost
-      })
+        return msg.cost;
+      });
 
       // 比例尺
       const xScale = d3
@@ -1518,7 +1828,6 @@ export default {
         .attr("y", 30)
         .text(d => "迭代次数");
 
-
       // y轴
       svg
         .append("g")
@@ -1531,7 +1840,7 @@ export default {
         .style("font-style", "宋体")
         .attr("x", 0)
         .attr("y", 30)
-        .text(d => "纵坐标");
+        .text(d => "加权损失");
 
       // const pathLine = d3
       //   .line()
@@ -1578,20 +1887,28 @@ export default {
 
       // var data = [1, 3, 5, 7, 8, 4, 3, 7];
       let costs = this.routes.map(msg => {
-        return msg.load
-      })
+        return msg.load;
+      });
 
       // 比例尺
       const xScale = d3
         .scaleBand()
         // .domain([0, data.length-1])
-        .domain(this.routes.map(d=>d.id))
+        .domain(this.routes.map(d => d.id))
         .range([margin.left, width - margin.right]);
+      let min = d3.min(costs);
+      if (min <= 5) {
+        min = 0;
+      } else if (min <= 10) {
+        min = 5;
+      } else {
+        min = min - 5;
+      }
       const yScale = d3
         .scaleLinear()
         // .domain([0, d3.max(data)])
         // Math.floor(this.msgs[0].cost), Math.ceil(this.msgs[this.msgs.length - 1].cost)
-        .domain([d3.min(costs), d3.max(costs)])
+        .domain([min, d3.max(costs)])
         // .domain([Math.floor(this.msgs[this.msgs.length - 1].cost), Math.ceil(this.msgs[0].cost)])
         .nice()
         .range([height - margin.bottom, margin.top]);
@@ -1599,23 +1916,23 @@ export default {
       let test = svg
         .append("g")
         .attr("transform", `translate(0,${height - margin.bottom})`)
-        .call(d3.axisBottom(xScale))
+        .call(d3.axisBottom(xScale));
 
-      test.selectAll("text")
+      test
+        .selectAll("text")
         // .style("font-size", "8px")
         .style("text-anchor", "start")
         // .attr("stroke", "black")
         .attr("transform", "rotate(45, -10, 10)");
-      test.append("text")
+      test
+        .append("text")
         .attr("text-anchor", "start")
         .attr("stroke", "black")
         .style("font-size", "12px")
         .style("font-style", "宋体")
         .attr("x", width - margin.right + 5)
         .attr("y", 5)
-        .text(d => "车辆")
-
-
+        .text(d => "车辆");
 
       // y轴
       svg
@@ -1631,7 +1948,8 @@ export default {
         .attr("y", 30)
         .text(d => "载重");
 
-      var gs = svg.selectAll("rect")
+      var gs = svg
+        .selectAll("rect")
         .data(this.routes)
         .enter()
         .append("g");
@@ -1640,22 +1958,22 @@ export default {
       //   .data(this.routes)
       //   .enter()
       gs.append("rect")
-        .attr("x",d=>xScale(d.id) + xScale.bandwidth()/4)
-        .attr("y",d=>yScale(d.load))
-        .attr("width",  xScale.bandwidth()/2) // xScale.bandwidth()
-        .attr("height",d=>height- 60 - yScale(d.load))
-        .attr("class","myrect")
-        .attr("fill", "#02c58d")
+        .attr("x", d => xScale(d.id) + xScale.bandwidth() / 4)
+        .attr("y", d => yScale(d.load))
+        .attr("width", xScale.bandwidth() / 2) // xScale.bandwidth()
+        .attr("height", d => height - 60 - yScale(d.load))
+        .attr("class", "myrect")
+        .attr("fill", "#02c58d");
 
       gs.append("text")
-        .attr("x",d=>xScale(d.id)) //  + xScale.bandwidth()/4
-        .attr("y",d=>yScale(d.load) - 2)
-        .attr("dx", xScale.step()/4)
-        .attr("dy",0)
-        .style("font-size", "8px")
-        .text(function(d){
+        .attr("x", d => xScale(d.id)) //  + xScale.bandwidth()/4
+        .attr("y", d => yScale(d.load) - 2)
+        .attr("dx", xScale.step() / 4)
+        .attr("dy", 0)
+        .style("font-size", "10px")
+        .text(function(d) {
           return d.load;
-        })
+        });
 
       // const header = ["车辆载重柱状图"];
       // const headers = svg.append("g");
@@ -1681,20 +1999,26 @@ export default {
 
       // var data = [1, 3, 5, 7, 8, 4, 3, 7];
       let costs = this.routes.map(msg => {
-        return msg.distance
-      })
+        return msg.distance;
+      });
 
       // 比例尺
       const xScale = d3
         .scaleBand()
         // .domain([0, data.length-1])
-        .domain(this.routes.map(d=>d.id))
+        .domain(this.routes.map(d => d.id))
         .range([margin.left, width - margin.right]);
+      let min = d3.min(costs);
+      if (min <= 10) {
+        min = 0;
+      } else {
+        min = min - 10;
+      }
       const yScale = d3
         .scaleLinear()
         // .domain([0, d3.max(data)])
         // Math.floor(this.msgs[0].cost), Math.ceil(this.msgs[this.msgs.length - 1].cost)
-        .domain([d3.min(costs), d3.max(costs)])
+        .domain([min, d3.max(costs)])
         // .domain([Math.floor(this.msgs[this.msgs.length - 1].cost), Math.ceil(this.msgs[0].cost)])
         .nice()
         .range([height - margin.bottom, margin.top]);
@@ -1715,21 +2039,22 @@ export default {
       let test = svg
         .append("g")
         .attr("transform", `translate(0,${height - margin.bottom})`)
-        .call(d3.axisBottom(xScale))
+        .call(d3.axisBottom(xScale));
 
-      test.selectAll("text")
+      test
+        .selectAll("text")
         // .style("font-size", "8px")
         .style("text-anchor", "start")
         .attr("transform", "rotate(45, -10, 10)");
-      test.append("text")
+      test
+        .append("text")
         .attr("text-anchor", "start")
         .attr("stroke", "black")
         .style("font-size", "12px")
         .style("font-style", "宋体")
         .attr("x", width - margin.right + 5)
         .attr("y", 5)
-        .text(d => "车辆")
-
+        .text(d => "车辆");
 
       // y轴
       svg
@@ -1743,10 +2068,10 @@ export default {
         .style("font-style", "宋体")
         .attr("x", -15)
         .attr("y", 30)
-        .text(d => "路程");
+        .text(d => "路程(公里)");
 
-
-      var gs = svg.selectAll("rect")
+      var gs = svg
+        .selectAll("rect")
         .data(this.routes)
         .enter()
         .append("g");
@@ -1755,22 +2080,22 @@ export default {
       //   .data(this.routes)
       //   .enter()
       gs.append("rect")
-        .attr("x",d=>xScale(d.id) + xScale.bandwidth()/4)
-        .attr("y",d=>yScale(d.distance))
-        .attr("width",  xScale.bandwidth()/2) // xScale.bandwidth()
-        .attr("height",d=>height- 60 - yScale(d.distance))
-        .attr("class","myrect")
-        .attr("fill", "#409EFF")
+        .attr("x", d => xScale(d.id) + xScale.bandwidth() / 4)
+        .attr("y", d => yScale(d.distance))
+        .attr("width", xScale.bandwidth() / 2) // xScale.bandwidth()
+        .attr("height", d => height - 60 - yScale(d.distance))
+        .attr("class", "myrect")
+        .attr("fill", "#409EFF");
 
       gs.append("text")
-        .attr("x",d=>xScale(d.id)) //  + xScale.bandwidth()/4
-        .attr("y",d=>yScale(d.distance) - 5)
-        .attr("dx", xScale.step()/4) // xScale.step()/2
+        .attr("x", d => xScale(d.id)) //  + xScale.bandwidth()/4
+        .attr("y", d => yScale(d.distance) - 5)
+        .attr("dx", xScale.step() / 4) // xScale.step()/2
         .attr("dy", 0)
-        .style("font-size", "10px")
-        .text(function(d){
-          return d.distance;
-        })
+        .style("font-size", "12px")
+        .text(function(d) {
+          return d.distance.toFixed(1);
+        });
 
       // const header = ["车辆路程柱状图"];
       // const headers = svg.append("g");
@@ -1817,6 +2142,5 @@ export default {
   height: 100%;
   width: 100%;
 }
-
 </style>
 <style src="../../../assets/btn.css" scoped></style>

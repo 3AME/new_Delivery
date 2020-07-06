@@ -1,13 +1,13 @@
 <template>
   <d2-container>
     <!-- <template slot="header">常见的一些问题</template> -->
-    <div class="row">
+    <div class="row" style="margin-right: 0px; margin-left: 0px;">
       <div class="col-lg-12">
         <div class="card">
           <div class="row justify-content-center">
             <div class="col-md-6">
               <div class="text-center">
-                <h5>常见的一些问题</h5>
+                <h5>常见问题</h5>
                 <p class="text-muted">这部分总结用户遇到的问题，集中展示，方便后续用户自助解决问题</p>
               </div>
             </div>
@@ -131,3 +131,20 @@ export default {
 <style src="../../../assets/style/bootstrap/css/bootstrap.min.css" scoped></style>
 <style src="../../../assets/style/bootstrap/css/icons.css" scoped></style>
 <style src="../../../assets/style/bootstrap/css/style.css" scoped></style>
+<style>
+.d2-layout-header-aside-group .d2-layout-header-aside-content .d2-theme-container .d2-theme-container-main .d2-theme-container-main-body .container-component .d2-container-full {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    overflow: hidden;
+}
+</style>

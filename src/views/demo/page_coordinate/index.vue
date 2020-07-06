@@ -1,5 +1,5 @@
 <template>
-  <d2-container type="card">
+  <d2-container type="card" style="background: #fff;">
     <template slot="header">
       <el-button-group>
         <el-col :span="3.2">
@@ -117,7 +117,8 @@ export default {
         name: '', //距离优先
         problem: {},
         time: '',
-        isHistory: false
+        isHistory: false,
+        type: 'coordinate'
       },
       table: {
         columns: [],
@@ -316,4 +317,33 @@ export default {
   }
 };
 </script>
+<style>
+.d2-layout-header-aside-group
+  .d2-layout-header-aside-content
+  .d2-theme-container
+  .d2-theme-container-main
+  .d2-theme-container-main-body
+  .container-component
+  .d2-container-card
+  .d2-container-card__header {
+  padding: 20px;
+  background: #fff;
+}
+.d2-layout-header-aside-group
+  .d2-layout-header-aside-content
+  .d2-theme-container
+  .d2-theme-container-main
+  .d2-theme-container-main-body
+  .container-component
+  .d2-container-card
+  .d2-container-card__body
+  .d2-container-card__body-card {
+  position: relative;
+  margin-bottom: 20px;
+  padding: 20px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  background: #fff;
+}
+</style>
 <style src="../../../assets/btn.css" scoped></style>
