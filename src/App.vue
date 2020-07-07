@@ -65,4 +65,9 @@ export default {
 ::-webkit-scrollbar-thumb:hover {
   background-color: #919191;
 }
+
+.theme-line .d2-theme-container .d2-theme-container-main .d2-theme-container-main-header .d2-multiple-page-control .el-tabs__nav .el-tabs__item {
+    color: black;
+    background-color: #FFF;
+}
 </style>
