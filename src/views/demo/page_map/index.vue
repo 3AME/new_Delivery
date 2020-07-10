@@ -12,7 +12,6 @@
           id="collapse_nodes"
           v-model="activeName"
           accordion
-          style="border:1px solid #f7f7f7;background-color: #f5f5f5;"
         >
           <el-collapse-item title="车辆列表" name="0" class="list" style>
             <div class="side-bk" style="text-align: center;">
@@ -49,8 +48,8 @@
                   <el-input-number
                     v-model="vehicle.mileage"
                     :step="5"
-                    :min="20"
-                    :max="50"
+                    :min="70"
+                    :max="200"
                     label="车辆里程"
                     size="mini"
                   ></el-input-number>
@@ -260,11 +259,7 @@ export default {
       value: "成都市",
       polylinePath: [],
       vehicles: [
-        { id: 1, depot: 0, load: 2, mileage: 35, count: 1 },
-        { id: 2, depot: 0, load: 2, mileage: 35, count: 1 },
-        { id: 3, depot: 0, load: 2, mileage: 35, count: 1 },
-        { id: 4, depot: 0, load: 5, mileage: 35, count: 1 },
-        { id: 5, depot: 0, load: 5, mileage: 35, count: 1 }
+        { id: 1, depot: 0, load: 2, mileage: 80, count: 5 }
       ],
       drivingPath: [
         // {
@@ -626,9 +621,9 @@ export default {
       this.vehicles.push({
         id: this.vehicles.length + 1,
         depot: 0,
-        load: 5,
-        mileage: 35,
-        count: 1
+        load: 2,
+        mileage: 80,
+        count: 5
       });
     },
     // 打印一个对象所有属性的值
@@ -755,9 +750,9 @@ export default {
 
   color: #000;
 }
-.side-bk {
+/* .side-bk {
   background-color: #f1eeee;
-}
+} */
 .container {
   height: 100%;
   width: 100%;
@@ -872,9 +867,9 @@ export default {
   transition: border-bottom-color 0.3s;
   outline: 0;
 }
-#collapse_nodes .el-collapse-item__wrap {
+/* #collapse_nodes .el-collapse-item__wrap {
   background-color: #f5f5f5;
-}
+} */
 .btn-success {
   background-color: #02c58d;
   border: 1px solid #02c58d;

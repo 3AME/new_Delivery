@@ -34,7 +34,7 @@ export const menuHeader = supplementPath([
       { path: '/about', icon: 'users', title: '关于我们' },
       { path: '/faq',icon: 'question',  title: '常见问题' },
       { path: '/use',icon: 'book', title: '使用手册' },
-      { path: '/version',icon: 'book', title: '历史版本' }
+      { path: '/version',icon: 'cube', title: '历史版本' }
     ]
   }
 ])
@@ -58,7 +58,7 @@ export const menuAside = supplementPath([
       { path: '/about', icon: 'users', title: '关于我们' },
       { path: '/faq',icon: 'question',  title: '常见问题' },
       { path: '/use',icon: 'book', title: '使用手册' },
-      { path: '/version',icon: 'book', title: '历史版本' }
+      { path: '/version',icon: 'cube', title: '历史版本' }
     ]
   }
 ])

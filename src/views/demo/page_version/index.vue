@@ -119,7 +119,7 @@ export default {
         },
         {
           versionName: '2.0.4',
-          timestamp: '2020/5/28',
+          timestamp: '2020/5/27',
           contents: [
             '1. 新增显示算法收敛曲线',
             '2. 新增显示车辆载重柱状图和车辆路程柱状图'
@@ -127,10 +127,19 @@ export default {
         },
         {
           versionName: '2.0.5',
-          timestamp: '2020/5/30',
+          timestamp: '2020/5/29',
           contents: [
             '1. 新增历史版本界面',
             '2. 更新软件图标'
+          ]
+        },
+        {
+          versionName: '2.0.6',
+          timestamp: '2020/5/30',
+          contents: [
+            '1. 首页图标和文字垂直居中',
+            '2. 地图选择细节优化',
+            '3. 优化软件体验'
           ]
         }
       ]
