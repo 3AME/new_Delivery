@@ -7,8 +7,8 @@
           <div class="row justify-content-center">
             <div class="col-md-6">
               <div class="text-center">
-                <h5>常见问题</h5>
-                <p class="text-muted">这部分总结用户遇到的问题，集中展示，方便后续用户自助解决问题</p>
+                <h5>常见问题FAQ</h5>
+                <p class="text-muted">热点问题快速解答</p>
               </div>
             </div>
           </div>

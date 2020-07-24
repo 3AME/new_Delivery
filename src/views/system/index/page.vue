@@ -11,7 +11,7 @@
           />
           <h3 class="mt-0 font-600">川流配送</h3>
           <h3 class="mt-0 header-title">微逻辑智能物流系统</h3>
-          <p >基于Node.js + Vue.js + Electron开发, GA智能优化算法提供支持</p>
+          <p >基于Node.js + Vue.js + Electron开发, HGA智能优化算法提供支持</p>
         </div>
       </div>
     </div>

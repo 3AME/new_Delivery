@@ -13,10 +13,17 @@
                       <span class="year">part 1</span>
                       <div class="timeline-content">
                         <h3 class="title">团队名称</h3>
-                        <p class="description text-muted">微逻辑</p>
                         <p
                           class="description text-muted"
-                        >我们是微逻辑开发团队，“微逻辑”这个名字与该系统的功能相关，该系统致力于查询物流配送最优方案，涉及到算法求解，算法与逻辑思维相关，而我们能做的仅仅至少一小部分，对于解决实际问题还存在着差距，故取名微逻辑。</p>
+                        >团队取名“微逻辑”，与产品的定位与愿景息息相关。</p>
+                        <p
+                          class="description text-muted"
+                        >
+                        产品致力于物流配送方案的优化，在提供技术支持的同时希望全方位服务用户。</p>
+                        <br />
+                        <p
+                          class="description text-muted">
+                        考虑到使用的算法约束十分复杂，隐藏背后的算法逻辑，同时给用户提供简单实用的操作逻辑，是“微逻辑”的不懈追求。</p>
                       </div>
                     </div>
 
