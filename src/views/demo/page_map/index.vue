@@ -38,7 +38,7 @@
                   <el-input-number
                     v-model="vehicle.load"
                     :min="1"
-                    :max="5"
+                    :max="10"
                     label="车辆载重"
                     size="mini"
                   ></el-input-number>
@@ -48,8 +48,8 @@
                   <el-input-number
                     v-model="vehicle.mileage"
                     :step="5"
-                    :min="70"
-                    :max="200"
+                    :min="10"
+                    :max="120"
                     label="车辆里程"
                     size="mini"
                   ></el-input-number>
@@ -259,7 +259,7 @@ export default {
       value: "成都市",
       polylinePath: [],
       vehicles: [
-        { id: 1, depot: 0, load: 2, mileage: 80, count: 5 }
+        { id: 1, depot: 0, load: 2, mileage: 50, count: 5 }
       ],
       drivingPath: [
         // {

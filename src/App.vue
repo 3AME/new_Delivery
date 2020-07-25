@@ -13,16 +13,16 @@ export default {
   name: "app",
   provide() {
     return {
-      reload: this.reload
+      reload: this.reload,
     };
   },
   data() {
     return {
-      isRouterAlive: true
+      isRouterAlive: true,
     };
   },
   watch: {
-    "$i18n.locale": "i18nHandle"
+    "$i18n.locale": "i18nHandle",
   },
   created() {
     this.i18nHandle(this.$i18n.locale);
@@ -34,16 +34,28 @@ export default {
     },
     reload() {
       this.isRouterAlive = false; //控制router-view的显示或隐藏
-      this.$nextTick(function() {
+      this.$nextTick(function () {
         this.isRouterAlive = true;
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style lang="scss">
 @import "~@/assets/style/public-class.scss";
+
+// body {
+//   background-color: rgba(0, 0, 0, 0);
+// }
+
+// #app {
+//   text-align: center;
+//   background-color: #000;
+//   border-radius: 30px;
+//   box-shadow: 8px 8px 10px grey;
+//   -webkit-app-region: drag;
+// }
 
 ::-webkit-scrollbar {
   width: 8px;
@@ -66,8 +78,14 @@ export default {
   background-color: #919191;
 }
 
-.theme-line .d2-theme-container .d2-theme-container-main .d2-theme-container-main-header .d2-multiple-page-control .el-tabs__nav .el-tabs__item {
-    color: black;
-    background-color: #FFF;
+.theme-line
+  .d2-theme-container
+  .d2-theme-container-main
+  .d2-theme-container-main-header
+  .d2-multiple-page-control
+  .el-tabs__nav
+  .el-tabs__item {
+  color: black;
+  background-color: #fff;
 }
 </style>

@@ -36,14 +36,14 @@ export default {
       versions: [
         {
           versionName: '1.0.0',
-          timestamp: '2020/5/1',
+          timestamp: '2020/3/5',
           contents: [
             '1. 初始化项目模板'
           ]
         },
         {
           versionName: '1.0.1',
-          timestamp: '2020/5/3',
+          timestamp: '2020/3/12',
           contents: [
             '1. 实现路线查询UI',
             '2. 实现坐标查询UI'
@@ -51,7 +51,7 @@ export default {
         },
         {
           versionName: '1.0.2',
-          timestamp: '2020/5/6',
+          timestamp: '2020/3/18',
           contents: [
             '1. 实现历史记录UI',
             '2. 支持地图查看',
@@ -59,7 +59,7 @@ export default {
         },
         {
           versionName: '1.0.3',
-          timestamp: '2020/5/10',
+          timestamp: '2020/3/24',
           contents: [
             '1. 对接后端算法',
             '2. 坐标形式查询出文字结果',
@@ -68,14 +68,14 @@ export default {
         },
         {
           versionName: '1.0.4',
-          timestamp: '2020/5/12',
+          timestamp: '2020/4/1',
           contents: [
             '1. 实现历史记录持久化'
           ]
         },
         {
           versionName: '1.0.5',
-          timestamp: '2020/5/15',
+          timestamp: '2020/4/7',
           contents: [
             '1. 支持地图地点选择',
             '2. 完善路线查询和坐标查询',
@@ -84,7 +84,7 @@ export default {
         },
         {
           versionName: '2.0.0',
-          timestamp: '2020/5/18',
+          timestamp: '2020/4/14',
           contents: [
             '1. 查询结果界面以图表的形式显示结果，支持查看路线详情',
             '2. 优化地图查询',
@@ -94,7 +94,7 @@ export default {
         },
         {
           versionName: '2.0.1',
-          timestamp: '2020/5/20',
+          timestamp: '2020/4/20',
           contents: [
             '1. 新增页面刷新功能',
             '2. 添加关于我们界面',
@@ -102,7 +102,7 @@ export default {
         },
         {
           versionName: '2.0.2',
-          timestamp: '2020/5/22',
+          timestamp: '2020/4/26',
           contents: [
             '1. 新增常见问题界面',
             '2. 新增使用手册界面'
@@ -110,7 +110,7 @@ export default {
         },
         {
           versionName: '2.0.3',
-          timestamp: '2020/5/25',
+          timestamp: '2020/5/1',
           contents: [
             '1. 新增测试数据',
             '2. 解决一些bug',
@@ -119,7 +119,7 @@ export default {
         },
         {
           versionName: '2.0.4',
-          timestamp: '2020/5/27',
+          timestamp: '2020/5/10',
           contents: [
             '1. 新增显示算法收敛曲线',
             '2. 新增显示车辆载重柱状图和车辆路程柱状图'
@@ -127,7 +127,7 @@ export default {
         },
         {
           versionName: '2.0.5',
-          timestamp: '2020/5/29',
+          timestamp: '2020/5/18',
           contents: [
             '1. 新增历史版本界面',
             '2. 更新软件图标'
@@ -135,7 +135,7 @@ export default {
         },
         {
           versionName: '2.0.6',
-          timestamp: '2020/5/30',
+          timestamp: '2020/5/25',
           contents: [
             '1. 首页图标和文字垂直居中',
             '2. 地图选择细节优化',

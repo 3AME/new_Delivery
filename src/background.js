@@ -23,7 +23,9 @@ function createWindow () {
     webPreferences: {
       nodeIntegration: true
     },
-    show: false
+    show: false,
+    // transparent: true,
+    // frame: false,
   })
   win.maximize()
   win.show()
