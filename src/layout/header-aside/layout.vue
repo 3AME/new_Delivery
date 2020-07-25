@@ -6,6 +6,7 @@
     <div class="d2-layout-header-aside-content" flex="dir:left">
       <!-- 下面 主体 -->
       <div class="d2-theme-container" flex-box="1" flex>
+        <div style="height:50px;background-color:red;"></div>
         <!-- 主体 侧边栏 -->
         <div
           flex-box="0"
