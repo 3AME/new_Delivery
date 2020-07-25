@@ -142,25 +142,25 @@ $theme-header-item-background-color-active: rgba(#000, .03);
 
 
 $theme-aside-item-color: #e0e0e0;
-$theme-aside-item-background-color: #5363ba;
-$theme-aside-menu-background-color:#5363ba;
+$theme-aside-item-background-color: linear-gradient(to right,#667db6, #0082c8,#0082c8,#667db6);
+$theme-aside-menu-background-color:linear-gradient(to right,#667db6, #0082c8,#0082c8,#667db6);
 // 侧边栏上的项目在 hover 时
 $theme-aside-item-color-hover: #FFF;
-$theme-aside-item-background-color-hover: #5363ba;
+$theme-aside-item-background-color-hover: linear-gradient(to right,#667db6, #0082c8,#0082c8,#667db6);
 // 侧边栏上的项目在 focus 时
 $theme-aside-item-color-focus: #FFF;
-$theme-aside-item-background-color-focus: #5363ba;
+$theme-aside-item-background-color-focus: linear-gradient(to right,#667db6, #0082c8,#0082c8,#667db6);
 // 侧边栏上的项目在 active 时
 $theme-aside-item-color-active: #FFF;
-$theme-aside-item-background-color-active: #384bb6;
+$theme-aside-item-background-color-active: #667db6;
 
 // 侧边栏菜单为空的时候显示的元素
 $theme-aside-menu-empty-icon-color: #FFF;
 $theme-aside-menu-empty-text-color: #FFF;
-$theme-aside-menu-empty-background-color: #5363ba;
+$theme-aside-menu-empty-background-color: linear-gradient(to right,#667db6, #0082c8,#0082c8,#667db6);
 $theme-aside-menu-empty-icon-color-hover: #FFF;
 $theme-aside-menu-empty-text-color-hover: #FFF;
-$theme-aside-menu-empty-background-color-hover: #5363ba;
+$theme-aside-menu-empty-background-color-hover:linear-gradient(to right,#667db6, #0082c8,#0082c8,#667db6);
 
 
 // $theme-aside-item-color: #000;

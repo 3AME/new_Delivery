@@ -31,10 +31,14 @@
       <el-collapse @change="handleChange" class="yaoqiu">
         <el-collapse-item name="1">
           <template slot="title">
-            <div class="s">路线查询文件内容要求</div>
+            <div style="background-image:linear-gradient(to right,#667db6, #0082c8,#0082c8,#667db6);width:100%;text-align:center;color:white;">
+              <b>路线查询文件内容要求</b>
+              </div>
           </template>
           <span class="s">
-            进入路线形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序可任意：
+             <div style="color:red;text-align:center;">
+               <b>进入路线形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序可任意：</b>
+             </div>
             <br />
             <table border="1px" style="border-collapse:collapse;margin-left:1%">
               <tr>
@@ -62,17 +66,17 @@
               </tr>
             </table>
             <div class="s">
-              type：点的类型，depot——配送中心，customer——客户点，other——其他类型的点
-              <br />name_a：点的数字编号
-              <br />demand：客户的需求量，配送中心也可以写，这不影响路线的计算
-              <br />serviceTime：自定义该点的服务时间（默认：5min)
-              <br />beginTime：客户点接受配送到达的最早时间（单位默认：min)
-              <br />endTime：客户点接受配送到达的最迟时间（单位默认：min)
-              <br />Vehicle_load：车辆载重（单位默认：t)
-              <br />Vehicle_number：该车辆类型的数量，可不做配置
-              <br />Vehicle_mileage：车辆里程，（默认：35km)
-              <br />Center_name：Center_name：车辆所在配送中心的名字，对应type="depot"类型点的的编号
-              <br />0、1、2对应的字段为name_a
+              <b>type</b>：点的类型，depot——配送中心，customer——客户点，other——其他类型的点
+              <br /><b>name_a</b>：点的数字编号
+              <br /><b>demand</b>：客户的需求量，配送中心也可以写，这不影响路线的计算
+              <br /><b>serviceTime</b>：自定义该点的服务时间（默认：5min)
+              <br /><b>beginTime</b>：客户点接受配送到达的最早时间（单位默认：min)
+              <br /><b>endTime</b>：客户点接受配送到达的最迟时间（单位默认：min)
+              <br /><b>Vehicle_load</b>：车辆载重（单位默认：t)
+              <br /><b>Vehicle_number</b>：该车辆类型的数量，可不做配置
+              <br /><b>Vehicle_mileage</b>：车辆里程，（默认：35km)
+              <br /><b>Center_name</b>：车辆所在配送中心的名字，对应type="depot"类型点的的编号
+              <br /><b>0、1、2对应的字段为name_a</b>
             </div>
           </span>
         </el-collapse-item>
@@ -86,7 +90,7 @@
     </el-upload>-->
     <!-- </div> -->
     <div contenteditable="true">
-      <el-table v-bind="table">
+      <el-table :header-cell-style="{background:'#e4e5e6'}" v-bind="table" height="550">
         <el-table-column
           v-for="(item, index) in table.columns"
           :key="index"
