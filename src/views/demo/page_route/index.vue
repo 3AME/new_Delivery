@@ -184,6 +184,9 @@ export default {
       { label: "Vehicle_type", prop: "Vehicle_type" },
       { label: "Vehicle_load", prop: "Vehicle_load" },
       { label: "Vehicle_number", prop: "Vehicle_number" },
+      // { label: "Use_cost", prop: "Use_cost" },
+      // { label: "Driving_cost", prop: "Driving_cost" },
+      // { label: "Waiting_cost", prop: "Waiting_cost" },
       { label: "Vehicle_mileage", prop: "Vehicle_mileage" },
       { label: "Center_name", prop: "Center_name" },
     ];
@@ -252,7 +255,8 @@ export default {
       } else {
         console.log(outdata);
         let problem = [];
-        outdata.map((v) => {
+        var costModeFlag = false;
+        outdata.map(v => {
           // let i = num_node
           let obj = {};
           obj.nodes = {
@@ -270,9 +274,15 @@ export default {
             depot: v["Center_name"],
             load: v["Vehicle_load"],
             count: v["Vehicle_number"],
-            mileage: v["Vehicle_mileage"],
+            useCost: v["Use_cost"],
+            drivingCost: v["Driving_cost"],
+            waitingCost: v["Waiting_cost"],
+            mileage: v["Vehicle_mileage"]
             // count: 5
           };
+          if (v["Use_cost"] || v["Driving_cost"] ||v["Waiting_cost"]) {
+            costModeFlag =true;
+          }
           obj.distancePrior = 5;
           obj.timePrior = 1;
           obj.loadPrior = 4;
@@ -344,6 +354,7 @@ export default {
         // var new_problem;
         var new_problem = {
           routeMode: true,
+          costMode: costModeFlag,
           nodes: new_nodes,
           edges: new_outdata,
           vehicles: new_vehicles,

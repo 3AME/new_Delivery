@@ -247,7 +247,8 @@ export default {
         return false;
       } else {
         let problem = [];
-        outdata.map((v) => {
+        var costModeFlag = false;
+        outdata.map(v => {
           let obj = {};
           obj.nodes = {
             type: v["type"],
@@ -266,7 +267,13 @@ export default {
             load: v["Vehicle_load"],
             count: v["Vehicle_number"],
             mileage: v["Vehicle_mileage"],
+            useCost: v["Use_cost"],
+            drivingCost: v["Driving_cost"],
+            waitingCost: v["Waiting_cost"]
           };
+          if (v["Use_cost"] || v["Driving_cost"] ||v["Waiting_cost"]) {
+            costModeFlag =true;
+          }
           problem.push(obj);
         });
         // eslint-disable-next-line camelcase
@@ -301,6 +308,7 @@ export default {
 
         newproblem_edges = {
           routeMode: false,
+          costMode: costModeFlag,
           nodes: new_nodes,
           edges: newproblem_edges,
           vehicles: new_vehicles,
