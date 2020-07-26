@@ -69,6 +69,9 @@
               <br /><b>Vehicle_load</b>：车辆载重
               <br /><b>Vehicle_number</b>：该车辆类型的数量
               <br /><b>Vehicle_mileage</b>：车辆里程
+             <br /><b>Use_cost</b>：车辆每次使用成本 （默认：200元每次) 
+              <br /><b>Driving_cost</b>：车辆每小时行驶成本  （默认：100元每小时) 
+              <br /><b>Waiting_cost</b>：车辆每小时空闲等待成本 （默认：24元每小时) 
               <br /><b>Center_name</b>：车辆所在配送中心的名字，对应type=depot的name值
             </div>
           </span>
@@ -148,6 +151,9 @@ export default {
       { label: "Vehicle_load", prop: "Vehicle_load" },
       { label: "Vehicle_number", prop: "Vehicle_number" },
       { label: "Vehicle_mileage", prop: "Vehicle_mileage" },
+      // { label: "Use_cost", prop: "Use_cost" },
+      // { label: "Driving_cost", prop: "Driving_cost" },
+      // { label: "Waiting_cost", prop: "Waiting_cost" },
       { label: "Center_name", prop: "Center_name" }
     ];
   },
@@ -210,6 +216,7 @@ export default {
         return false;
       } else {
         let problem = [];
+        var costModeFlag = false;
         outdata.map(v => {
           let obj = {};
           obj.nodes = {
@@ -228,8 +235,14 @@ export default {
             depot: v["Center_name"],
             load: v["Vehicle_load"],
             count: v["Vehicle_number"],
-            mileage: v["Vehicle_mileage"]
+            mileage: v["Vehicle_mileage"],
+            useCost: v["Use_cost"],
+            drivingCost: v["Driving_cost"],
+            waitingCost: v["Waiting_cost"]
           };
+          if (v["Use_cost"] || v["Driving_cost"] ||v["Waiting_cost"]) {
+            costModeFlag =true;
+          }
           problem.push(obj);
         });
         // eslint-disable-next-line camelcase
@@ -264,6 +277,7 @@ export default {
 
         newproblem_edges = {
           routeMode: false,
+          costMode: costModeFlag,
           nodes: new_nodes,
           edges: newproblem_edges,
           vehicles: new_vehicles,

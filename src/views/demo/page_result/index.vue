@@ -34,6 +34,9 @@
             <div class="text-item" v-if="result">总路程: {{ result.distance.toFixed(2) }} 公里</div>
             <div class="text-item" v-if="result">总时间: {{ result.time.toFixed(2) }} 小时</div>
             <div class="text-item" v-if="result">平均满载率: {{ (result.loadFactor * 100).toFixed(2) }} %</div>
+            <div class="text-item" v-if="result && costMode">预算成本: {{ result.vehicleCost.toFixed(2) }} 元</div>
+            <!-- <div class="text-item" v-if="result">车辆行驶成本: {{ result.time.toFixed(2) }} 小时</div> -->
+            <!-- <div class="text-item" v-if="result">平均满载率: {{ (result.loadFactor * 100).toFixed(2) }} %</div> -->
           </el-card>
 
           <el-card class="box-card">
@@ -248,6 +251,22 @@
               </el-card>
             </el-col>
           </el-row>
+          <el-row v-if="costMode" style="height:50%; width: 100%;">
+            <el-col :span="24" style="height:100%;padding: 20px">
+              <el-card class="svg_card" style="height:100%; width: 100%;">
+                <!-- style="height:10%; width: 100%;" -->
+                <div slot="header" class="clearfix">
+                  <span>方案成本预估</span>
+                  <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
+                </div>
+                <svg
+                  id="histogram_cost"
+                  style="height:80%; width: 100%;"
+                  ref="histogram_cost"
+                />
+              </el-card>
+            </el-col>
+          </el-row>
         </el-main>
         <!-- <el-drawer title="路线详情" :visible.sync="drawer" :with-header="false" direction="rtl">
           <d2-container>
@@ -304,7 +323,8 @@ const os = require("os");
 export default {
   data() {
     return {
-      // drawer: false,
+      // drawer: false,'
+      costMode: false,
       forceSimulation: undefined,
       myChart: undefined,
       result: undefined,
@@ -343,6 +363,7 @@ export default {
     let testSvg = d3.selectAll("svg#test_svg > *");
     let loadHistogram = d3.selectAll("svg#histogram_load > *");
     let distanceHistogram = d3.selectAll("svg#histogram_distance > *");
+    let costHistogram = d3.selectAll("svg#histogram_cost > *");
     console.log("d3.selectAll()=" + svgChildren.size());
     let queryValue = this.$route.query.queryValue;
     if (
@@ -359,6 +380,7 @@ export default {
     testSvg.remove();
     loadHistogram.remove();
     distanceHistogram.remove();
+    costHistogram.remove();
     this.msgs.splice(0, this.msgs.length);
     this.routes.splice(0, this.routes.length);
     // console.log("activated");
@@ -383,7 +405,7 @@ export default {
       let problem = queryValue.problem;
       this.maxiter = problem.maxiter;
       var isRouteMode = problem.routeMode;
-
+      this.costMode = problem.costMode || false;
       console.log("function solve run");
       console.log("problem=", problem);
       var solver = spawn("resources/VehicleRouting.exe");
@@ -498,7 +520,11 @@ export default {
         var load = veh.load;
         var mileage = veh.mileage || -1;
         var count = veh.count || -1;
+        var useCost = veh.useCost ||  200;
+        var drivingCost = veh.drivingCost || 100;
+        var waitingCost = veh.waitingCost || 24;
         pipe(veh.id, depot, load, mileage, count);
+        pipe(useCost, drivingCost, waitingCost);
       }
 
       pipe(problem.distancePrior, problem.timePrior, problem.loadPrior);
@@ -577,6 +603,10 @@ export default {
           this.showCurveGraph();
           this.showLoadHistogram();
           this.showDistanceHistogram();
+          if (this.costMode) {
+            this.showCostHistogram();
+          } 
+          
         }
       });
     },
@@ -2108,6 +2138,108 @@ export default {
       //   .attr("transform", `translate(${width / 3},${margin.top})`) // margin.top
       //   .style("font-size", "14px")
       //   .text(d => d);
+    },
+    showCostHistogram() {
+      let width = this.$refs["histogram_cost"].clientWidth;
+      let height = this.$refs["histogram_cost"].clientHeight;
+      const margin = { top: 40, right: 40, bottom: 60, left: 40 };
+      const costData=[
+        {id:'车辆成本',distance:this.result.useCost},
+        {id:'路程成本',distance:this.result.drivingCost},
+        {id:'等待成本',distance:this.result.waitingCost}
+      ]
+      let svg = d3
+        .select("svg#histogram_cost")
+        .attr("preserveAspectRatio", "xMidYMid meet")
+        .attr("viewBox", "0 0 " + width + " " + height);
+
+      // var data = [1, 3, 5, 7, 8, 4, 3, 7];
+      let costs = costData.map(msg => {
+        return msg.distance;
+      });
+
+      // 比例尺
+      const xScale = d3
+        .scaleBand()
+        // .domain([0, data.length-1])
+        .domain(costData.map(d => d.id))
+        .range([margin.left, width - margin.right]);
+      let min = d3.min(costs);
+      if (min <= 10) {
+        min = 0;
+      } else {
+        min = min - 10;
+      }
+      const yScale = d3
+        .scaleLinear()
+        // .domain([0, d3.max(data)])
+        // Math.floor(this.msgs[0].cost), Math.ceil(this.msgs[this.msgs.length - 1].cost)
+        .domain([min, d3.max(costs)])
+        // .domain([Math.floor(this.msgs[this.msgs.length - 1].cost), Math.ceil(this.msgs[0].cost)])
+        .nice()
+        .range([height - margin.bottom, margin.top]);
+
+      let test = svg
+        .append("g")
+        .attr("transform", `translate(0,${height - margin.bottom})`)
+        .call(d3.axisBottom(xScale));
+
+      test
+        .selectAll("text")
+        // .style("font-size", "8px")
+        .style("text-anchor", "start")
+        // .attr("transform", "rotate(45, -10, 10)");
+      test
+        .append("text")
+        .attr("text-anchor", "start")
+        .attr("fill", "grey")
+        // .style("font-size", "12px")
+        // .style("font-style", "宋体")
+        .attr("x", width - margin.right + 5)
+        .attr("y", 5)
+        // .text(d => "各项指标");
+
+      // y轴
+      svg
+        .append("g")
+        .attr("transform", `translate(${margin.left},0)`)
+        .call(d3.axisLeft(yScale))
+        .append("text")
+        .attr("text-anchor", "start")
+        .attr("fill", "grey")
+        // .style("font-size", "14px")
+        // .style("font-style", "宋体")
+        .attr("x", -15)
+        .attr("y", 30)
+        .text(d => "成本(元)");
+
+      var gs = svg
+        .selectAll("rect")
+        .data(costData)
+        .enter()
+        .append("g");
+
+      // svg.selectAll("rect")
+      //   .data(costData)
+      //   .enter()
+      gs.append("rect")
+        .attr("x", d => xScale(d.id) + xScale.bandwidth() / 4)
+        .attr("y", d => yScale(d.distance))
+        .attr("width", xScale.bandwidth() / 2) // xScale.bandwidth()
+        .attr("height", d => height - 60 - yScale(d.distance))
+        .attr("class", "myrect")
+        .attr("fill", "#409EFF");
+
+      gs.append("text")
+        .attr("x", d => xScale(d.id)) //  + xScale.bandwidth()/4
+        .attr("y", d => yScale(d.distance) - 5)
+        .attr("dx", xScale.step() / 4) // xScale.step()/2
+        .attr("dy", 0)
+        .style("font-size", "12px")
+        .text(function(d) {
+          return d.distance.toFixed(1);
+        });
+
     }
   }
 };
