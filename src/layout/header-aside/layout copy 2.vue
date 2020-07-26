@@ -34,14 +34,14 @@
           </div>
           <el-menu
             :default-active="this.$route.fullPath"
+            class="el-menu-vertical-demo"
             :collapse="asideCollapse"
             router
           >
             <!-- @open="handleOpen"
             @close="handleClose"-->
             <el-menu-item v-for="(item, index) in children" :key="index" :index="item.path">
-              <!-- <i :class="'fa fa-' + item.icon"></i> -->
-              <i :class="item.icon"></i>
+              <i :class="'fa fa-' + item.icon"></i>
               <span slot="title">{{ item.title }}</span>
             </el-menu-item>
           </el-menu>
@@ -118,7 +118,7 @@ export default {
     $route(to, from) {
       console.log(to.path);
       console.log(from.path);
-      if (to.path == '/page_map' || to.path == '/page_result') {
+      if (to.path == '/page_map') {
         this.asideCollapse = true;
       } else {
         this.asideCollapse = false;
@@ -133,15 +133,15 @@ export default {
       // [侧边栏宽度] 折叠状态
       asideWidthCollapse: "65px",
       children: [
-        { path: "/index", icon: "el-icon-s-home", title: "主页" },
-        { path: "/page_coordinate", icon: "el-icon-s-data", title: "坐标查询" },
-        { path: "/page_route", icon: "el-icon-position", title: "路线查询" },
-        { path: "/page_map", icon: "el-icon-map-location", title: "地图选择" },
-        { path: "/page_history", icon: "el-icon-time", title: "任务列表" },
-        { path: "/about", icon: "el-icon-info", title: "关于我们" },
-        { path: "/faq", icon: "el-icon-question", title: "常见问题" },
-        { path: "/use", icon: "el-icon-s-management", title: "使用手册" },
-        { path: "/version", icon: "el-icon-date", title: "历史版本" },
+        { path: "/index", icon: "home", title: "主页" },
+        { path: "/page_coordinate", icon: "object-ungroup", title: "坐标查询" },
+        { path: "/page_route", icon: "road", title: "路线查询" },
+        { path: "/page_map", icon: "crosshairs", title: "地图选择" },
+        { path: "/page_history", icon: "history", title: "任务列表" },
+        { path: "/about", icon: "users", title: "关于我们" },
+        { path: "/faq", icon: "question", title: "常见问题" },
+        { path: "/use", icon: "book", title: "使用手册" },
+        { path: "/version", icon: "cube", title: "历史版本" },
       ],
     };
   },

@@ -1,5 +1,5 @@
 <template>
-  <d2-container>
+  <el-container class="content-container" style="overflow:scroll;overflow-x: hidden !important;">
     <!-- <template slot="header">软件使用手册</template> -->
     <el-backtop target=".page-component__scroll .el-scrollbar__wrap" :bottom="100">
       <div
@@ -16,7 +16,8 @@
     </el-backtop>
     <div class="row" style="margin-right: 0px; margin-left: 0px;">
       <div class="col-lg-12">
-        <div class="card">
+        <div>
+          <!-- class="card" -->
           <div class="card-body mt-5">
             <div class="row">
               <div class="col-12">
@@ -145,7 +146,7 @@
                         <br />展示查询出的
                         <strong>最优配送方案</strong>的结果。
                         <br />查询结果主要显示<b>配送距离、配送时间、平均满载率、车辆路线、路线图示（坐标图/力导向图）、路线详情、隐藏坐标文字</b>。
-                       
+
                         <!-- <br />配送距离：所有车辆从配送中心出发，配送完所有客户点并返回到配送中心的距离。
                         <br />配送时间：所有车辆从配送中心出发，配送完所有客户点并返回到配送中心所需的时间。
                         <br />平均满载率：所有需求点的货物和/参与配送的车辆最大载重和。
@@ -409,7 +410,7 @@
     <!-- end row -->
 
     <!-- end row -->
-  </d2-container>
+  </el-container>
 </template>
 <style src="../../../assets/style/bootstrap/css/metismenu.min.css" scoped></style>
 <style src="../../../assets/style/bootstrap/css/bootstrap.min.css" scoped></style>

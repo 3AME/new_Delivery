@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, dialog, ipcMain, Menu } from 'electron'
+import { app, protocol, BrowserWindow, dialog, ipcMain, Menu, screen } from 'electron'
 import {
   createProtocol
   /* installVueDevtools */
@@ -17,17 +17,20 @@ protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: tru
 function createWindow () {
   // Create the browser window.
   Menu.setApplicationMenu(null)
+  let size = screen.getPrimaryDisplay().workAreaSize
+  let width = parseInt(size.width * 0.8)
+  let height = parseInt(size.height * 0.8)
   win = new BrowserWindow({
-    width: 1000,
-    height: 600,
+    width: width,
+    height: height,
     webPreferences: {
       nodeIntegration: true
     },
     show: false,
-    // transparent: true,
-    // frame: false,
+    transparent: true,
+    frame: false,
   })
-  win.maximize()
+  // win.maximize()
   win.show()
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
@@ -43,6 +46,31 @@ function createWindow () {
   win.on('closed', () => {
     win = null
   })
+
+  ipcMain.on('close', e => {
+    win.close()
+  })
+  ipcMain.on('minimize', e => {
+    win.minimize()
+  })
+  ipcMain.on('maximize', e => {
+    // console.log('wisth11=' + width + " height22=" + height)
+    // console.log('getContentSize=' + win.getContentSize() + " width=" + size.width + " height=" + size.height)
+    if (win.getContentSize()[0] == parseInt(size.width) && win.getContentSize()[1] == parseInt(size.height)) {
+      // console.log('1111111111')
+      win.setSize(width, height, true)
+      win.setPosition(parseInt(width / 8), parseInt(height / 8), true)
+    } else {
+      win.setFullScreen(true)
+    }
+
+    // if (width != win.width || height != win.height) {
+    //   win.restore()
+    // } else {
+    //   win.maximize()
+    // }
+  })
+
 
   ipcMain.on('open-save-dialog', (event, fileName) => {
     console.log('event=' + Object.keys(event))

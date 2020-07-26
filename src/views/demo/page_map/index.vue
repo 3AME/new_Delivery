@@ -1,139 +1,178 @@
 <template>
-  <el-container class="container" style="background: #fff;" v-loading="loading">
-    <!-- v-loading="loading" -->
-    <el-aside width="250px" class="aside" style="overflow:scroll;overflow-x: hidden !important;">
-      <el-card style="margin: 10px;text-align: center;">
-        <el-button-group style="margin-bottom: 10px">
-          <el-button size="small" @click="refresh" class="btn-dark">刷新</el-button>
-          <el-button size="small" class="btn-success" @click="test()">查询</el-button>
-          <el-button size="small" class="btn-blue-grey" @click="drawerValue.drawerShow = true">设置</el-button>
+  <el-container class="content-container" v-loading="loading">
+    <el-header height="auto">
+      <div style="text-align: center; padding: 10px">
+        <el-button-group class="card">
+          <el-button
+            class="btn-action"
+            type="text"
+            icon="el-icon-delete"
+            @click="addVehicle"
+            style="color: #fc5454;"
+          >添加车辆</el-button>
+          <el-button
+            class="btn-action"
+            @click="handleDownload"
+            type="text"
+            icon="el-icon-tickets"
+            style="color: #fcbe2d;"
+          >添加地点</el-button>
+          <el-button
+            class="btn-action"
+            @click="drawerValue.drawerShow = true"
+            type="text"
+            icon="el-icon-set-up"
+            style="color: #607d8b;"
+          >设置算法参数</el-button>
+          <el-button
+            class="btn-action"
+            @click="test"
+            type="text"
+            icon="el-icon-search"
+            style="color: #02c58d;"
+          >查询</el-button>
         </el-button-group>
-        <el-collapse
-          id="collapse_nodes"
-          v-model="activeName"
-          accordion
-        >
-          <el-collapse-item title="车辆列表" name="0" class="list" style>
-            <div class="side-bk" style="text-align: center;">
-              <el-button
-                @click="addVehicle()"
+      </div>
+    </el-header>
+    <el-container>
+      <el-aside width="20%" class="aside">
+        <div class="card" style="margin: 10px;text-align: center;">
+          <el-button-group>
+            <el-button
+              @click="addVehicle"
+              class="btn-action"
+              type="text"
+              icon="el-icon-document-add"
+              style="color: #409eff"
+            >添加车辆</el-button>
+          </el-button-group>
+        </div>
+        <div v-if="vehicles.length == 0" class="box-card">
+          <div style="text-align: center;">空空如也</div>
+        </div>
+        <div>
+          <el-popover
+            v-for="(vehicle, index) in vehicles"
+            :key="vehicle.id"
+            title="修改车辆信息"
+            :name="index"
+            trigger="hover"
+            placement="right"
+          >
+            <div style="text-align: center; padding: 10px">
+              车辆载重
+              <el-input-number v-model="vehicle.load" :min="1" :max="10" label="车辆载重" size="mini"></el-input-number>
+            </div>
+            <div style="text-align: center; padding: 10px">
+              车辆里程
+              <el-input-number
+                v-model="vehicle.mileage"
+                :step="5"
+                :min="10"
+                :max="120"
+                label="车辆里程"
                 size="mini"
-                style="margin: 8px;"
-                class="btn-upload"
-              >添加车辆</el-button>
+              ></el-input-number>
             </div>
-            <div v-if="vehicles.length == 0" class="box-card">
-              <div style="text-align: center;">空空如也</div>
+            <div style="text-align: center; padding: 10px">
+              车辆数量
+              <el-input-number v-model="vehicle.count" :min="1" :max="5" label="车辆里程" size="mini"></el-input-number>
             </div>
-            <el-collapse id="collapse_nodes" accordion style>
-              <el-collapse-item
-                v-for="(vehicle, index) in vehicles"
-                :key="vehicle.id"
-                :title="'车辆' + vehicle.id"
-                :name="index"
-                style="margin-left: 8px;margin-right: 8px;"
-              >
-                <div style="text-align: center;">
-                  车辆载重
-                  <el-input-number
-                    v-model="vehicle.load"
-                    :min="1"
-                    :max="10"
-                    label="车辆载重"
-                    size="mini"
-                  ></el-input-number>
-                </div>
-                <div style="text-align: center;">
-                  车辆里程
-                  <el-input-number
-                    v-model="vehicle.mileage"
-                    :step="5"
-                    :min="10"
-                    :max="120"
-                    label="车辆里程"
-                    size="mini"
-                  ></el-input-number>
-                </div>
-                <div style="text-align: center;">
-                  车辆数量
-                  <el-input-number
-                    v-model="vehicle.count"
-                    :min="1"
-                    :max="5"
-                    label="车辆里程"
-                    size="mini"
-                  ></el-input-number>
-                </div>
-                <div style="text-align: center;">
-                  <i
-                    @click="removeVehicle(vehicle)"
-                    class="i-tag el-icon-delete"
-                    style="font-size: 16px;"
-                  ></i>
-                </div>
-              </el-collapse-item>
-            </el-collapse>
-          </el-collapse-item>
-
-          <el-collapse-item title="地点列表" name="1" class="site-list" style>
-            <div v-if="polylinePath.length > 0" style="text-align: center;">
-              <el-button size="mini" class="btn-danger" style="margin: 8px;" @click="clearTags()">清空</el-button>
-            </div>
-            <div v-if="polylinePath.length == 0" class="box-card" style>
-              <!-- <el-divider></el-divider> -->
-              <div style="text-align: center;">空空如也</div>
+            <div style="text-align: center; padding: 10px">
+              <i
+                @click="removeVehicle(vehicle)"
+                class="i-tag el-icon-delete"
+                style="font-size: 18px;"
+              ></i>
             </div>
 
-            <el-collapse
-              id="collapse_nodes"
-              v-else
-              v-model="activeNode"
-              accordion
-              style
-              aria-expanded="true"
-            >
-              <el-collapse-item
-                v-for="(path, index) in polylinePath"
-                :key="path.name"
-                :title="path.name"
-                :name="index"
-                style="margin-left: 8px;margin-right: 8px;"
+            <!-- <div slot="reference" class="card" width="100%" style="padding: 10px;margin: 10px">
+          <el-row>
+          <el-col :span="8">
+            <img width="30%" src="../../../assets/images/small/车辆.png" />
+          </el-col>
+          <el-col :span="8">
+            <div>车辆{{ vehicle.id }}</div>
+          </el-col>
+          <el-col :span="8">
+            <img width="30%" src="../../../assets/images/small/车辆.png" />
+          </el-col>
+        </el-row>
+
+            </div>-->
+            <div slot="reference" class="card" style="padding: 10px; margin: 10px">
+              <!-- <el-button type="text" width="100%" icon="el-icon-search">hover 激活
+              <i class="el-icon-upload el-icon--right"></i>
+              </el-button>-->
+              <button
+                type="button"
+                class="el-button el-button--text el-button--default"
+                width="100%"
               >
-                <div class="div-tag" style="text-align: center;" v-if="index == 0">中心节点</div>
-                <div class="div-tag" style="text-align: center;" v-else>子节点</div>
-                <div style="text-align: center;" v-if="index != 0">
-                  <!-- 需求量 -->
-                  <el-select
-                    v-model="path.need"
-                    filterable
-                    allow-create
-                    default-first-option
-                    placeholder="需求量"
-                    size="mini"
-                  >
-                    <el-option v-for="item in need_options" :key="item" :label="item" :value="item"></el-option>
-                  </el-select>
-                </div>
-                <div style="text-align: center;">
-                  <i
-                    @click="handleClose(path)"
-                    class="i-tag el-icon-delete"
-                    style="font-size: 16px;"
-                  ></i>
-                </div>
-              </el-collapse-item>
-            </el-collapse>
+                <el-row>
+                  <el-col :span="8">
+                    <img width="30%" src="../../../assets/images/small/车辆.png" />
+                  </el-col>
+                  <el-col :span="8">
+                    <div>车辆{{ vehicle.id }}</div>
+                  </el-col>
+                  <el-col :span="8">
+                    <img width="30%" src="../../../assets/images/small/车辆.png" />
+                  </el-col>
+                </el-row>
+              </button>
+              <el-card class="box-card">
+            <div slot="header" class="clearfix">
+              <span>最优结果</span>
+              <el-button slot="reference" id="btn-save-result" class="btn-success btn-save-result" size="mini" style="float: right;">保存</el-button>
+            </div>
+          </el-card>
+            </div>
+          </el-popover>
+        </div>
+        <el-collapse id="collapse_nodes" accordion style>
+          <el-collapse-item
+            v-for="(vehicle, index) in vehicles"
+            :key="vehicle.id"
+            :title="'车辆' + vehicle.id"
+            :name="index"
+            style="margin-left: 8px;margin-right: 8px;"
+          >
+            <div style="text-align: center;">
+              车辆载重
+              <el-input-number v-model="vehicle.load" :min="1" :max="10" label="车辆载重" size="mini"></el-input-number>
+            </div>
+            <div style="text-align: center;">
+              车辆里程
+              <el-input-number
+                v-model="vehicle.mileage"
+                :step="5"
+                :min="10"
+                :max="120"
+                label="车辆里程"
+                size="mini"
+              ></el-input-number>
+            </div>
+            <div style="text-align: center;">
+              车辆数量
+              <el-input-number v-model="vehicle.count" :min="1" :max="5" label="车辆里程" size="mini"></el-input-number>
+            </div>
+            <div style="text-align: center;">
+              <i
+                @click="removeVehicle(vehicle)"
+                class="i-tag el-icon-delete"
+                style="font-size: 16px;"
+              ></i>
+            </div>
           </el-collapse-item>
         </el-collapse>
-      </el-card>
-    </el-aside>
-    <el-container style="background-color: #f9f9f9">
-      <div style="height:100%; width: 98%;background-color: #f9f9f9">
+      </el-aside>
+      <el-main class="card" style="padding: 0px;margin-bottom: 20px">
         <baidu-map
           :ak="ak"
           :center="center"
           :scroll-wheel-zoom="isScrollWheelZoom"
-          style="height:100%;margin-top:10px"
+          style="height:100%;"
           :zoom="12"
           @click="handleChange"
           @load="handleMapLoaded"
@@ -197,7 +236,81 @@
             @searchcomplete="searchComplete"
           />
         </baidu-map>
-      </div>
+      </el-main>
+      <el-aside
+        width="20%"
+        class="aside"
+        style="overflow:scroll;overflow-x: hidden !important; margin: 20px"
+      >
+        <div class="card" style="margin: 10px;text-align: center;">
+          <el-button-group>
+            <el-button
+              @click="refresh"
+              class="btn-action"
+              type="text"
+              icon="el-icon-document-add"
+              style="color: #409eff"
+            >刷新</el-button>
+            <el-button
+              class="btn-action"
+              type="text"
+              icon="el-icon-search"
+              style="color: #02c58d"
+              @click="test()"
+            >查询</el-button>
+            <el-button
+              class="btn-action"
+              type="text"
+              icon="el-icon-set-up"
+              style="color: #607d8b"
+              @click="drawerValue.drawerShow = true"
+            >设置</el-button>
+          </el-button-group>
+        </div>
+        <div v-if="polylinePath.length > 0" style="text-align: center;">
+          <el-button size="mini" class="btn-danger" style="margin: 8px;" @click="clearTags()">清空</el-button>
+        </div>
+        <div v-if="polylinePath.length == 0" class="box-card" style>
+          <!-- <el-divider></el-divider> -->
+          <div style="text-align: center;">空空如也</div>
+        </div>
+
+        <el-collapse
+          id="collapse_nodes"
+          v-else
+          v-model="activeNode"
+          accordion
+          style
+          aria-expanded="true"
+        >
+          <el-collapse-item
+            v-for="(path, index) in polylinePath"
+            :key="path.name"
+            :title="path.name"
+            :name="index"
+            style="margin-left: 8px;margin-right: 8px;"
+          >
+            <div class="div-tag" style="text-align: center;" v-if="index == 0">中心节点</div>
+            <div class="div-tag" style="text-align: center;" v-else>子节点</div>
+            <div style="text-align: center;" v-if="index != 0">
+              <!-- 需求量 -->
+              <el-select
+                v-model="path.need"
+                filterable
+                allow-create
+                default-first-option
+                placeholder="需求量"
+                size="mini"
+              >
+                <el-option v-for="item in need_options" :key="item" :label="item" :value="item"></el-option>
+              </el-select>
+            </div>
+            <div style="text-align: center;">
+              <i @click="handleClose(path)" class="i-tag el-icon-delete" style="font-size: 16px;"></i>
+            </div>
+          </el-collapse-item>
+        </el-collapse>
+      </el-aside>
     </el-container>
     <drawer v-model="drawerValue" />
     <query-dialog v-model="queryValue"></query-dialog>
@@ -224,7 +337,7 @@ export default {
     BmGeolocation,
     BmMarker,
     drawer,
-    QueryDialog
+    QueryDialog,
   },
   data() {
     return {
@@ -238,11 +351,11 @@ export default {
       },
       queryValue: {
         show: false,
-        name: '', //距离优先
+        name: "", //距离优先
         problem: {},
-        time: '',
+        time: "",
         isHistory: false,
-        type: 'map'
+        type: "map",
       },
       dialogVisible: true,
       center: "成都市",
@@ -258,9 +371,7 @@ export default {
       placeholder: "添加地址",
       value: "成都市",
       polylinePath: [],
-      vehicles: [
-        { id: 1, depot: 0, load: 2, mileage: 50, count: 5 }
-      ],
+      vehicles: [{ id: 1, depot: 0, load: 2, mileage: 50, count: 5 }],
       drivingPath: [
         // {
         //   start: "锦江区望江宾馆",
@@ -276,7 +387,7 @@ export default {
       countOptions: [1, 2, 3],
       activeName: "0",
       activeNode: 0,
-      loading: true
+      loading: true,
     };
   },
   activated() {
@@ -296,7 +407,7 @@ export default {
       me.loading = true;
       me.$notify.error({
         title: "错误",
-        message: "网络已断开，请连接网络"
+        message: "网络已断开，请连接网络",
       });
     });
     if (navigator.onLine) {
@@ -305,7 +416,7 @@ export default {
       this.loading = true;
       this.$notify.error({
         title: "错误",
-        message: "网络连接失败，请连接网络"
+        message: "网络连接失败，请连接网络",
       });
     }
   },
@@ -319,7 +430,7 @@ export default {
         this.$notify({
           title: "警告",
           message: "节点过少，请在地图上添加节点！",
-          type: "warning"
+          type: "warning",
         });
         return;
       }
@@ -327,11 +438,11 @@ export default {
         this.$notify({
           title: "警告",
           message: "车辆过少，请添加车辆！",
-          type: "warning"
+          type: "warning",
         });
         return;
       }
-      var names = this.polylinePath.map(x => {
+      var names = this.polylinePath.map((x) => {
         return x.name;
       });
       var problem = {
@@ -344,16 +455,16 @@ export default {
         timePrior: this.drawerValue.timePrior,
         loadPrior: this.drawerValue.loadPrior,
         speed: this.drawerValue.speedValue,
-        maxiter: this.drawerValue.maxIter
+        maxiter: this.drawerValue.maxIter,
       };
       console.log("drivingPath=" + JSON.stringify(this.drivingPath));
-      this.drivingPath.forEach(function(path, i) {
+      this.drivingPath.forEach(function (path, i) {
         var start = names.indexOf(path.start.name);
         var end = names.indexOf(path.end.name);
         problem.edges.push({
           u: start,
           v: end,
-          w: path.len / 1000
+          w: path.len / 1000,
         });
       });
 
@@ -363,7 +474,7 @@ export default {
         problem.nodes.push({
           type: "customer",
           id: i,
-          demand: this.polylinePath[i].need
+          demand: this.polylinePath[i].need,
         });
       }
 
@@ -400,11 +511,11 @@ export default {
     // 搜索结束
     handleSearchEnd(res) {
       if (res && res.Ir && this.cb) {
-        const list = res.Ir.map(pos => {
+        const list = res.Ir.map((pos) => {
           return {
             address: pos.address,
             point: pos.point,
-            value: pos.title
+            value: pos.title,
           };
         });
         this.cb(list);
@@ -424,11 +535,11 @@ export default {
           this.polylinePath.push({
             name: "地点(" + res.point.lng + ", " + res.point.lat + ")",
             lng: res.point.lng,
-            lat: res.point.lat
+            lat: res.point.lat,
           });
           // eslint-disable-next-line no-undef
           let geocoder = new BMap.Geocoder(); // 创建地址解析器的实例
-          geocoder.getLocation(res.point, rs => {
+          geocoder.getLocation(res.point, (rs) => {
             // this.add.site = rs.address;
             // 地址描述(string)=
             console.log(rs.address); // 这里打印可以看到里面的详细地址信息，可以根据需求选择想要的
@@ -446,7 +557,7 @@ export default {
           this.$emit("input", {
             address: this.searchValue,
             lat: res.point.lat,
-            lng: res.point.lng
+            lng: res.point.lng,
           });
         }
       }
@@ -465,7 +576,7 @@ export default {
       var newOne = {
         name: "随机地点" + this.polylinePath.length,
         lng: last.lng,
-        lat: last.lat
+        lat: last.lat,
       };
       newOne.lng += (Math.random() - 0.5) / 10;
       newOne.lat += (Math.random() - 0.5) / 10;
@@ -473,7 +584,7 @@ export default {
       this.$notify({
         title: "成功",
         message: "添加" + newOne.name + "成功",
-        type: "success"
+        type: "success",
       });
     },
     onPolylinesSet(a, b) {
@@ -497,17 +608,17 @@ export default {
       // var name = res.item.value.business
       console.log("name=" + name);
       console.log("length=" + this.polylinePath.length);
-      let len = this.polylinePath.filter(path => {
-        return path.name == name
-      }).length
-       console.log("len=" + len);
+      let len = this.polylinePath.filter((path) => {
+        return path.name == name;
+      }).length;
+      console.log("len=" + len);
       if (len > 0) {
         this.$notify({
           title: "警告",
           message: "地点已存在",
-          type: "warning"
+          type: "warning",
         });
-        return
+        return;
       }
 
       // 创建地址解析器实例
@@ -516,10 +627,10 @@ export default {
       // 将地址解析结果显示在地图上，并调整地图视野
       myGeo.getPoint(
         name,
-        function(point) {
+        function (point) {
           if (point) {
             me.activeName = "1";
-            me.polylinePath.forEach(function(item) {
+            me.polylinePath.forEach(function (item) {
               // me.drivingPath.push({
               //   start: name,
               //   end: item.name
@@ -528,13 +639,13 @@ export default {
                 start: {
                   name: name,
                   lng: point.lng,
-                  lat: point.lat
+                  lat: point.lat,
                 },
                 end: {
                   name: item.name,
                   lng: item.lng,
-                  lat: item.lat
-                }
+                  lat: item.lat,
+                },
               };
               console.log("pppppppppppp=" + JSON.stringify(p));
               // me.drivingPath.push(p)
@@ -550,7 +661,7 @@ export default {
             var path = {
               name: name,
               lng: point.lng,
-              lat: point.lat
+              lat: point.lat,
             };
             if (me.logisticsCenter === undefined) {
               me.logisticsCenter = path;
@@ -592,7 +703,7 @@ export default {
     showInput() {
       this.inputVisible = true;
       this.searchValue = "";
-      this.$nextTick(_ => {
+      this.$nextTick((_) => {
         this.$refs.saveTagInput.$refs.input.focus();
       });
     },
@@ -603,7 +714,7 @@ export default {
         this.logisticsCenter = {
           name: res.value,
           lng: res.point.lng,
-          lat: res.point.lat
+          lat: res.point.lat,
         };
         this.inputVisible = false;
       }
@@ -623,7 +734,7 @@ export default {
         depot: 0,
         load: 2,
         mileage: 80,
-        count: 5
+        count: 5,
       });
     },
     // 打印一个对象所有属性的值
@@ -649,7 +760,7 @@ export default {
           { type: "customer", id: 7, demand: 0.9 },
           { type: "customer", id: 8, demand: 0.3 },
           { type: "customer", id: 9, demand: 1.2 },
-          { type: "other", id: 10, demand: 0 }
+          { type: "other", id: 10, demand: 0 },
         ],
         edges: [
           // 无向道路 连接节点u, v，长度为w
@@ -674,25 +785,25 @@ export default {
           { u: 6, v: 7, w: 4 },
           { u: 6, v: 8, w: 7 },
           { u: 7, v: 8, w: 5 },
-          { u: 8, v: 9, w: 9 }
+          { u: 8, v: 9, w: 9 },
         ],
         vehicles: [
           { id: 1, depot: 0, load: 2, mileage: 35, count: 1 },
           { id: 2, depot: 0, load: 2, mileage: 35, count: 1 },
           { id: 3, depot: 0, load: 2, mileage: 35, count: 1 },
           { id: 4, depot: 0, load: 5, mileage: 35, count: 1 },
-          { id: 5, depot: 0, load: 5, mileage: 35, count: 1 }
+          { id: 5, depot: 0, load: 5, mileage: 35, count: 1 },
         ],
         distancePrior: 5, // 路程加权
         timePrior: 0, // 用时加权
-        loadPrior: 0 // 满载率加权
+        loadPrior: 0, // 满载率加权
       };
       console.log(problem);
       this.$router.push({
         name: "page_result",
         query: {
-          problem: problem
-        }
+          problem: problem,
+        },
       });
     },
     // 测试坐标模式
@@ -710,7 +821,7 @@ export default {
           { x: 10.6, y: 7.6, type: "customer", id: 7, demand: 0.9 },
           { x: 8.6, y: 8.4, type: "customer", id: 8, demand: 0.3 },
           { x: 12.5, y: 2.1, type: "customer", id: 9, demand: 1.2 },
-          { x: 13.8, y: 5.2, type: "other", id: 10, demand: "任意" }
+          { x: 13.8, y: 5.2, type: "other", id: 10, demand: "任意" },
         ],
         edges: "euc2d",
         vehicles: [
@@ -718,21 +829,21 @@ export default {
           { id: "2", depot: 0, load: 2, mileage: 35, count: 1 },
           { id: "3", depot: 0, load: 2, mileage: 35, count: 1 },
           { id: "4", depot: 0, load: 5, mileage: 35, count: 1 },
-          { id: "5", depot: 0, load: 5, mileage: 35, count: 1 }
+          { id: "5", depot: 0, load: 5, mileage: 35, count: 1 },
         ],
         distancePrior: 5, // 路程加权
         timePrior: 1, // 用时加权
-        loadPrior: 4 // 满载率加权
+        loadPrior: 4, // 满载率加权
       };
       console.log(problem);
       this.$router.push({
         name: "page_result",
         query: {
-          problem: problem
-        }
+          problem: problem,
+        },
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -753,7 +864,7 @@ export default {
 /* .side-bk {
   background-color: #f1eeee;
 } */
-.container {
+/* .container {
   height: 100%;
   width: 100%;
   position: absolute;
@@ -764,7 +875,7 @@ export default {
   flex: 1;
   flex-shrink: 0;
   border-radius: 5px;
-}
+} */
 
 .ele-form-bmap {
   width: 100%;
@@ -891,8 +1002,8 @@ export default {
   color: #ffffff;
 }
 .btn-blue-grey {
-    background-color: #607d8b;
-    border          : 1px solid #607d8b;
-    color           : #ffffff;
+  background-color: #607d8b;
+  border: 1px solid #607d8b;
+  color: #ffffff;
 }
 </style>

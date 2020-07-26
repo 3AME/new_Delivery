@@ -31,50 +31,61 @@
               src="../../assets/images/small/app_name.png"
             />
             <!-- <h3 v-if="!asideCollapse" class="mt-0 font-600 vertical-center" style="padding: 10px">川流配送</h3> -->
+
+
+
+            <!-- <span v-if="!asideCollapse" style="margin: 10px;">川流配送</span> -->
+            <!-- <el-row>
+              <el-tooltip class="item no-drag" effect="dark" content="编辑用户信息" placement="bottom">
+                <el-button type="primary" icon="el-icon-edit" size="small" circle></el-button>
+              </el-tooltip>
+              <el-tooltip class="item no-drag" effect="dark" content="用户消息" placement="bottom">
+                <el-button type="info" icon="el-icon-message" size="small" circle></el-button>
+              </el-tooltip>
+            </el-row>-->
           </div>
+          <!-- <el-divider></el-divider> -->
           <el-menu
             :default-active="this.$route.fullPath"
+            class="el-menu-vertical-demo"
             :collapse="asideCollapse"
             router
           >
             <!-- @open="handleOpen"
             @close="handleClose"-->
             <el-menu-item v-for="(item, index) in children" :key="index" :index="item.path">
-              <!-- <i :class="'fa fa-' + item.icon"></i> -->
-              <i :class="item.icon"></i>
+              <i :class="'fa fa-' + item.icon"></i>
               <span slot="title">{{ item.title }}</span>
             </el-menu-item>
           </el-menu>
         </div>
         <!-- 主体 -->
-        <div style="width: 100%" flex-box="1" flex>
-          <div class="d2-theme-container-main" flex-box="1" flex>
-            <!-- 搜索 -->
-            <transition name="fade-scale">
-              <div v-if="searchActive" class="d2-theme-container-main-layer" flex>
-                <d2-panel-search ref="panelSearch" @close="searchPanelClose" />
+        <div class="d2-theme-container-main" flex-box="1" flex>
+          <top-bar></top-bar>
+          <!-- 搜索 -->
+          <transition name="fade-scale">
+            <div v-if="searchActive" class="d2-theme-container-main-layer" flex>
+              <d2-panel-search ref="panelSearch" @close="searchPanelClose" />
+            </div>
+          </transition>
+          <!-- 内容 -->
+          <transition name="fade-scale">
+            <div v-if="!searchActive" class="d2-theme-container-main-layer" flex="dir:top">
+              <!-- tab -->
+              <div class="d2-theme-container-main-header" flex-box="0">
+                <d2-tabs />
               </div>
-            </transition>
-            <!-- 内容 -->
-            <transition name="fade-scale">
-              <div v-if="!searchActive" class="d2-theme-container-main-layer" flex="dir:top">
-                <!-- tab -->
-                <div class="d2-theme-container-main-header" flex-box="0">
-                  <!-- <d2-tabs /> -->
-                  <top-bar></top-bar>
-                </div>
-                <!-- 页面 -->
-                <div class="d2-theme-container-main-body" flex-box="1">
-                  <transition :name="transitionActive ? 'fade-transverse' : ''">
-                    <!-- :include="keepAlive" -->
-                    <keep-alive>
-                      <router-view />
-                    </keep-alive>
-                  </transition>
-                </div>
+              <!-- 页面 -->
+              <div class="d2-theme-container-main-body" flex-box="1">
+                <transition :name="transitionActive ? 'fade-transverse' : ''">
+                  <!-- :include="keepAlive" -->
+                  <keep-alive>
+                    <router-view />
+                  </keep-alive>
+                </transition>
               </div>
-            </transition>
-          </div>
+            </div>
+          </transition>
         </div>
       </div>
     </div>
@@ -82,10 +93,10 @@
 </template>
 
 <script>
-import TopBar from "../../views/demo/topbar";
+import TopBar from '../../views/demo/topbar'
 // import d2MenuSide from "./components/menu-side";
 import d2MenuHeader from "./components/menu-header";
-// import d2Tabs from "./components/tabs";
+import d2Tabs from "./components/tabs";
 // import d2HeaderFullscreen from './components/header-fullscreen'
 // import d2HeaderLocales from './components/header-locales'
 
@@ -103,8 +114,7 @@ export default {
     // d2MenuSide,
     // d2MenuHeader,
     TopBar,
-    // d2Tabs,
-
+    d2Tabs,
     // d2HeaderFullscreen,
     // d2HeaderLocales,
     // d2HeaderSearch,
@@ -114,34 +124,22 @@ export default {
     // d2HeaderLog,
     // d2HeaderColor
   },
-  watch: {
-    $route(to, from) {
-      console.log(to.path);
-      console.log(from.path);
-      if (to.path == '/page_map' || to.path == '/page_result') {
-        this.asideCollapse = true;
-      } else {
-        this.asideCollapse = false;
-      }
-    },
-  },
   data() {
     return {
-      asideCollapse: false,
       // [侧边栏宽度] 正常状态
       asideWidth: "240px",
       // [侧边栏宽度] 折叠状态
       asideWidthCollapse: "65px",
       children: [
-        { path: "/index", icon: "el-icon-s-home", title: "主页" },
-        { path: "/page_coordinate", icon: "el-icon-s-data", title: "坐标查询" },
-        { path: "/page_route", icon: "el-icon-position", title: "路线查询" },
-        { path: "/page_map", icon: "el-icon-map-location", title: "地图选择" },
-        { path: "/page_history", icon: "el-icon-time", title: "任务列表" },
-        { path: "/about", icon: "el-icon-info", title: "关于我们" },
-        { path: "/faq", icon: "el-icon-question", title: "常见问题" },
-        { path: "/use", icon: "el-icon-s-management", title: "使用手册" },
-        { path: "/version", icon: "el-icon-date", title: "历史版本" },
+        { path: "/index", icon: "home", title: "主页" },
+        { path: "/page_coordinate", icon: "object-ungroup", title: "坐标查询" },
+        { path: "/page_route", icon: "road", title: "路线查询" },
+        { path: "/page_map", icon: "crosshairs", title: "地图选择" },
+        { path: "/page_history", icon: "history", title: "任务列表" },
+        { path: "/about", icon: "users", title: "关于我们" },
+        { path: "/faq", icon: "question", title: "常见问题" },
+        { path: "/use", icon: "book", title: "使用手册" },
+        { path: "/version", icon: "cube", title: "历史版本" },
       ],
     };
   },
@@ -150,7 +148,7 @@ export default {
       keepAlive: (state) => state.page.keepAlive,
       grayActive: (state) => state.gray.active,
       transitionActive: (state) => state.transition.active,
-      // asideCollapse: (state) => state.menu.asideCollapse,
+      asideCollapse: (state) => state.menu.asideCollapse,
       asideTransition: (state) => state.menu.asideTransition,
     }),
     ...mapGetters("d2admin", {

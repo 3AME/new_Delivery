@@ -1,8 +1,8 @@
 <template>
-  <d2-container>
-    <div class="row" style="margin-right: 0px; margin-left: 0px;">
-      <div class="col-lg-12">
-        <div class="card">
+  <el-container class="content-container" style="overflow:scroll;overflow-x: hidden !important;">
+    <div class="col-lg-12">
+        <div>
+          <!-- class="card" -->
           <div class="card-body mt-5">
             <section id="cd-timeline" class="cd-container">
               <div class="row">
@@ -25,8 +25,7 @@
           </div>
         </div>
       </div>
-    </div>
-  </d2-container>
+  </el-container>
 </template>
 
 <script>

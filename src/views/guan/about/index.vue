@@ -1,10 +1,7 @@
 <template>
-  <d2-container>
-    <div class="row" style="margin-right: 0px; margin-left: 0px;">
-      <div class="col-lg-12">
-        <div class="card">
-          <div class="card-body mt-5">
-            <section id="cd-timeline" class="cd-container">
+  <el-container class="content-container">
+    <el-main style="width: 100%;">
+      <section id="cd-timeline" class="cd-container">
               <div class="row">
                 <div class="col-md-12">
                   <div class="main-timeline">
@@ -81,12 +78,9 @@
                 </div>
               </div>
             </section>
-          </div>
-        </div>
-      </div>
-    </div>
-    <d2-module-index-banner slot="footer" v-bind="banner"/>
-  </d2-container>
+    </el-main>
+    <!-- <d2-module-index-banner slot="footer" v-bind="banner"/> -->
+  </el-container>
 </template>
 
 <script>

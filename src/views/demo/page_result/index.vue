@@ -1,9 +1,6 @@
 <template>
-  <d2-container style="padding: 0px 0px;">
-    <div ref="div_test">
-      <el-container
-        class="container"
-        style="background: #fff;"
+  <el-container
+        class="content-container"
         v-loading="loading"
         element-loading-text="拼命加载中"
         element-loading-spinner="el-icon-loading"
@@ -37,70 +34,13 @@
           </el-card>
 
           <el-card class="box-card">
-            <!-- <div slot="header" class="clearfix">
-              <span>最优路线</span>
-              <el-checkbox
-                v-model="checked"
-                style="float: right; padding: 3px 0"
-                @change="onCheckboxChange"
-              ></el-checkbox>
-            </div>-->
             <span>路线详情</span>
-            <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
             <el-checkbox
               v-model="checked"
               style="float: right; padding: 3px 0"
               @change="onCheckboxChange"
               class="checkbox-route"
             ></el-checkbox>
-            <!-- <div style="text-align: center; margin-bottom: 20px;">
-              <el-button class="btn-success" size="mini" @click="drawer = true">路线详情</el-button>
-            </div>-->
-
-            <!-- <div style="text-align: center; margin-bottom: 20px;">
-              <el-button class="btn-success" size="mini" @click="saveResult">保存结果</el-button>
-            </div>-->
-
-            <!-- <div style="text-align: center; margin-bottom: 20px;">
-              <el-switch
-                v-model="hideRoute"
-                @change="toggleRoute()"
-                :active-text="problem.routeMode ? '隐藏无关路线' : '隐藏坐标文字'"
-              ></el-switch>
-            </div>-->
-
-            <!-- <div
-              v-for="(route, index) in routes"
-              :key="index"
-              style="padding-top: 4px; padding-bottom: 4px;"
-            >
-              <div @click="toggleVisible(route, index)">
-                <label class="el-checkbox is-checked" style="margin-right: 4px;">
-                  <span class="el-checkbox__input is-checked">
-                    <span
-                      class="el-checkbox__inner"
-                      :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
-                    ></span>
-                    <input
-                      @click="toggleVisible(route, index)"
-                      type="checkbox"
-                      aria-hidden="false"
-                      class="el-checkbox__original"
-                      :value="route.checked"
-                      :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
-                    />
-                  </span>
-                </label>
-                <span
-                  :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-                >车辆{{ route.id }}</span>
-              </div>
-              <div
-                @click="toggleVisible(route, index)"
-                :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-                :fill="route.color"
-              >{{ route.text }}</div>
-            </div>-->
           </el-card>
 
           <el-card
@@ -165,51 +105,6 @@
               </el-card>
             </el-col>
           </el-row>
-          <!-- <el-row :gutter="24" class="mt-10">
-            <el-col
-              :span="6"
-              v-for="(route, index) in routes"
-              :key="index"
-              @click.native.prevent="toggleVisible(route, index)"
-            >
-              <el-card style="margin-top: 10px;">
-                <div slot="header" class="clearfix">
-                  <span>车辆{{ route.id }}</span>
-                  <label class="el-checkbox is-checked" style="margin-right: 4px; float: right">
-                    <span class="el-checkbox__input is-checked">
-                      <span
-                        class="el-checkbox__inner"
-                        :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
-                      ></span>
-                      <input
-                        type="checkbox"
-                        aria-hidden="false"
-                        class="el-checkbox__original"
-                        :value="route.checked"
-                        :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
-                      />
-                    </span>
-                  </label>
-                </div>
-                <div
-                  :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-                  :fill="route.color"
-                >车辆{{ route.id }}</div>
-                <div
-                  :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-                  :fill="route.color"
-                >路线：{{route.text}}</div>
-                <div
-                  :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-                  :fill="route.color"
-                >路程：{{ route.distance.toFixed(2) }}公里</div>
-                <div
-                  :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-                  :fill="route.color"
-                >时间：{{ route.time.toFixed(2) }}小时</div>
-              </el-card>
-            </el-col>
-          </el-row>-->
           <el-row style="height:50%; width: 100%;">
             <el-col :span="12" style="height:100%; padding: 20px">
               <el-card class="svg_card" style="height:100%; width: 100%;">
@@ -249,48 +144,7 @@
             </el-col>
           </el-row>
         </el-main>
-        <!-- <el-drawer title="路线详情" :visible.sync="drawer" :with-header="false" direction="rtl">
-          <d2-container>
-            <el-card class="box-card">
-              <div class="clearfix">
-                <span>路线详情</span>
-                <el-button
-                  style="float: right; padding: 3px 0"
-                  type="text"
-                  @click="drawer = false"
-                >关闭</el-button>
-              </div>
-            </el-card>
-            <div>
-              <el-card
-                class="box-card"
-                v-for="(route, index) in routes"
-                :key="index"
-                style="padding-top: 4px; padding-bottom: 4px;"
-              >
-                <div
-                  :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-                  :fill="route.color"
-                >车辆{{ route.id }}</div>
-                <div
-                  :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-                  :fill="route.color"
-                >路线：{{route.text}}</div>
-                <div
-                  :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-                  :fill="route.color"
-                >路程：{{ route.distance.toFixed(2) }}公里</div>
-                <div
-                  :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-                  :fill="route.color"
-                >时间：{{ route.time.toFixed(2) }}小时</div>
-              </el-card>
-            </div>
-          </d2-container>
-        </el-drawer> -->
       </el-container>
-    </div>
-  </d2-container>
 </template>
 
 <script>
@@ -2135,6 +1989,11 @@ export default {
   flex: 1;
   flex-shrink: 0;
   border-radius: 5px;
+
+  background: #fff;
+
+  border-bottom-right-radius: 12px;
+
 }
 
 .svg_card .el-card__body {

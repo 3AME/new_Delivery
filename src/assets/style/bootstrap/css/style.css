@@ -101,12 +101,12 @@ b, strong {
   font-weight: 900;
 }
 
-.container-alt {
+/* .container-alt {
   margin-left: auto;
   margin-right: auto;
   padding-left: 15px;
   padding-right: 15px;
-}
+} */
 
 #wrapper {
   height: 100%;
@@ -3411,7 +3411,7 @@ table.focus-on tbody tr.focused td {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #30419b;
+  background: #409eff;
   margin: auto;
   position: absolute;
   top: 0;
@@ -3426,7 +3426,7 @@ table.focus-on tbody tr.focused td {
   margin: 0;
   font-size: 14px;
   color: #ffffff;
-  background: #30419b;
+  background: #409eff;
   text-align: center;
   position: absolute;
   top: 50%;
@@ -3437,7 +3437,7 @@ table.focus-on tbody tr.focused td {
 
 .main-timeline .year:before {
   content: "";
-  border-right: 18px solid #30419b;
+  border-right: 18px solid #409eff;
   border-top: 14px solid transparent;
   border-bottom: 18px solid transparent;
   position: absolute;
@@ -3518,7 +3518,7 @@ table.focus-on tbody tr.focused td {
 .main-timeline .timeline:nth-child(2n) .year:before {
   border: 16px solid transparent;
   border-right: none;
-  border-left: 18px solid #30419b;
+  border-left: 18px solid #409eff;
   left: auto;
   right: -18px;
 }

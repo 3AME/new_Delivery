@@ -1,5 +1,5 @@
 <template>
-  <d2-container>
+  <el-container class="content-container" style="overflow:scroll;overflow-x: hidden !important;">
     <el-table :data="querys" style="width: 100%">
       <!-- <el-table-column type="selection" width="55"></el-table-column> -->
       <el-table-column prop="title" label="标题" align="center">
@@ -43,7 +43,7 @@
         </template>
       </el-table-column>
     </el-table>
-  </d2-container>
+  </el-container>
 </template>
 
 <script>

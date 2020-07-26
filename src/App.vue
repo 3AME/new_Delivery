@@ -1,9 +1,13 @@
 <template>
   <div id="app">
+     <!-- style="padding: 8px" -->
     <!-- <router-view/> -->
     <!-- <keep-alive> -->
-    <router-view v-if="isRouterAlive"></router-view>
+      <router-view v-if="isRouterAlive"></router-view>
     <!-- </keep-alive> -->
+    <!-- <el-container class="card" height="100%" width="100%">
+      <router-view v-if="isRouterAlive"></router-view>
+    </el-container> -->
   </div>
 </template>
 
@@ -45,17 +49,92 @@ export default {
 <style lang="scss">
 @import "~@/assets/style/public-class.scss";
 
-// body {
-//   background-color: rgba(0, 0, 0, 0);
-// }
+body {
+  background-color: rgba(0, 0, 0, 0);
+}
 
-// #app {
-//   text-align: center;
-//   background-color: #000;
-//   border-radius: 30px;
-//   box-shadow: 8px 8px 10px grey;
-//   -webkit-app-region: drag;
-// }
+#app {
+  // text-align: center;
+  background-color: #f6f7fb;
+  border-radius: 12px;
+  // box-shadow: 8px 8px 10px grey;
+  box-shadow: 0 2px 12px 0 grey;
+  // padding: 8px;
+  // margin: 8px;
+  // -webkit-app-region: drag;
+}
+
+#app .content-container {
+  background: #fff;
+  position: absolute;
+  border-bottom-right-radius: 12px;
+  // top: 0px;
+  // right: 0px;
+  // bottom: 0px;
+  // left: 0px;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  // flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+}
+
+#app .btn-action {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 12px;
+  padding-right: 12px;
+  font-size: 14px;
+  color: #666f7f;
+}
+
+#app .card {
+  border-radius: 12px;
+  /* box-shadow: 2px 2px 2px 2px grey; */
+  box-shadow: 0 2px 12px 0 #eeeeee;
+  // padding: 10px;
+}
+
+#app .vertical-center {
+  text-align: center;
+  // margin-left: -10%;
+  // margin-top: 5%;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+
+
+// 覆盖el-collapse-item的css
+#app .el-collapse-item__wrap {
+    will-change: height;
+    background-color: #FFF;
+    overflow: hidden;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    border-bottom: 0px solid #EBEEF5;
+}
+#app .el-collapse-item__header {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    height: 48px;
+    line-height: 48px;
+    background-color: #FFF;
+    color: #303133;
+    cursor: pointer;
+    border-bottom: 0px solid #EBEEF5;
+    font-size: 13px;
+    font-weight: 500;
+    -webkit-transition: border-bottom-color .3s;
+    transition: border-bottom-color .3s;
+    outline: 0;
+}
 
 ::-webkit-scrollbar {
   width: 8px;
