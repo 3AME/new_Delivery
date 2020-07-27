@@ -3,11 +3,14 @@
      <!-- style="padding: 8px" -->
     <!-- <router-view/> -->
     <!-- <keep-alive> -->
-      <router-view v-if="isRouterAlive"></router-view>
+      <!-- <router-view v-if="isRouterAlive"></router-view> -->
     <!-- </keep-alive> -->
-    <!-- <el-container class="card" height="100%" width="100%">
-      <router-view v-if="isRouterAlive"></router-view>
-    </el-container> -->
+
+    <el-container class="content-container" style="background-color: transparent;">
+      <el-main class="card" style="padding: 0px; margin: 0px; background-color: #f6f7fb;border: 1px solid grey">
+        <router-view v-if="isRouterAlive"></router-view>
+      </el-main>
+    </el-container>
   </div>
 </template>
 
@@ -55,10 +58,11 @@ body {
 
 #app {
   // text-align: center;
-  background-color: #f6f7fb;
-  border-radius: 12px;
-  // box-shadow: 8px 8px 10px grey;
-  box-shadow: 0 2px 12px 0 grey;
+  // background-color: #f6f7fb;
+  background-color: transparent;
+  // border-radius: 12px;
+  // box-shadow: 0 2px 12px 0 grey;
+  // border: 1px solid grey;
   // padding: 8px;
   // margin: 8px;
   // -webkit-app-region: drag;

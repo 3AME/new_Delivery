@@ -56,7 +56,7 @@ function createWindow () {
   ipcMain.on('maximize', e => {
     // console.log('wisth11=' + width + " height22=" + height)
     // console.log('getContentSize=' + win.getContentSize() + " width=" + size.width + " height=" + size.height)
-    if (win.getContentSize()[0] == parseInt(size.width) && win.getContentSize()[1] == parseInt(size.height)) {
+    if (win.getContentSize()[0] == parseInt(size.width) || win.getContentSize()[1] == parseInt(size.height)) {
       // console.log('1111111111')
       win.setSize(width, height, true)
       win.setPosition(parseInt(width / 8), parseInt(height / 8), true)

@@ -1,48 +1,70 @@
 <template>
-  <el-container class="content-container" style="overflow:scroll;overflow-x: hidden !important;">
-    <el-table :data="querys" style="width: 100%">
-      <!-- <el-table-column type="selection" width="55"></el-table-column> -->
-      <el-table-column prop="title" label="标题" align="center">
-        <template slot-scope="scope">
-          <span style="width: 140px;" class="line-1 hover">{{scope.row.title}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="time" label="时间" align="center">
-        <template slot-scope="scope">
-          <span style="width: 190px;" class="line-1 hover">{{scope.row.time}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center">
-        <template slot-scope="scope">
-          <el-tooltip class="item" effect="dark" content="查询" placement="bottom">
+  <el-container class="content-container">
+    <el-header height="auto" style="padding-top: 20px">
+
+      <div>
+        <strong style="width: 140px; color: #5673ff; padding: 10px; font-size: 24px">历史任务列表</strong>
+      <el-button class="btn-action" type="text" icon="el-icon-menu" style="color: #5673ff;"><strong>总计（{{ querys.length }}）</strong></el-button>
+      </div>
+      <div>
+        <el-button-group class="card">
+        <el-button class="btn-action" type="text" icon="el-icon-delete" style="color: #409eff;">删除</el-button>
+        <el-button class="btn-action" type="text" icon="el-icon-tickets" style="color: #fcbe2d;">保存</el-button>
+        <el-button class="btn-action" type="text" icon="el-icon-search" style="color: #02c58d;">查询</el-button>
+        <el-button
+          class="btn-action"
+          type="text"
+          icon="el-icon-search"
+          style="color: red;"
+          @click="deleteAll()"
+        >清空</el-button>
+      </el-button-group>
+      </div>
+    </el-header>
+    <el-main>
+      <el-table class="card" :data="querys" height="100%" style="padding: 20px 0">
+        <!-- :header-cell-style="{background:'#e4e5e6'}" -->
+        <el-table-column
+      type="selection"
+      width="55">
+    </el-table-column>
+        <el-table-column prop="title" label="标题" align="center">
+          <template slot-scope="scope">
+            <strong style="width: 140px; color: black;" class="line-1 hover">{{scope.row.title}}</strong>
+          </template>
+        </el-table-column>
+        <el-table-column prop="time" label="时间" align="center">
+          <template slot-scope="scope">
+            <strong style="width: 190px; color: black;" class="line-1 hover">{{scope.row.time}}</strong>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center">
+          <template slot-scope="scope">
             <el-button
-              size="mini"
-              class="btn-success"
+              class="btn-action"
+              type="text"
+              icon="el-icon-search"
+              style="color: #409eff;"
               @click="queryProblem(scope.$index, scope.row)"
-            >
-              <i class="el-icon-search" />
-            </el-button>
-          </el-tooltip>
-          <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
-            <el-button size="mini" class="btn-danger" @click="deleteQuery(scope.$index, scope.row)">
-              <i class="el-icon-delete" />
-            </el-button>
-          </el-tooltip>
-          <el-tooltip class="item" effect="dark" content="保存" placement="bottom">
-            <el-button size="mini" class="btn-warning" @click="saveQuery(scope.$index, scope.row)">
-              <i class="el-icon-download" />
-            </el-button>
-          </el-tooltip>
-        </template>
-      </el-table-column>
-      <el-table-column align="center">
-        <template slot="header">
-          <el-button
-          size="mini" class="btn-danger" style="margin: 10px;" @click="deleteAll()">
-          全部删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+            >查询</el-button>
+            <el-button
+              class="btn-action"
+              type="text"
+              icon="el-icon-delete"
+              style="color: red;"
+              @click="deleteQuery(scope.$index, scope.row)"
+            >删除</el-button>
+            <el-button
+              class="btn-action"
+              type="text"
+              icon="el-icon-download"
+              style="color: #02c58d;"
+              @click="saveQuery(scope.$index, scope.row)"
+            >保存</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-main>
   </el-container>
 </template>
 
@@ -52,13 +74,13 @@ import { ipcRenderer } from "electron";
 export default {
   data() {
     return {
-      popoverVisible: false
+      popoverVisible: false,
     };
   },
   computed: {
     querys() {
       return this.$store.state.d2admin.query.querys;
-    }
+    },
   },
   activated() {
     // ipcRenderer.send('open-save-dialog', {
@@ -77,20 +99,20 @@ export default {
       this.$confirm("此操作将删除全部查询任务, 是否继续?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(() => {
           this.$store.commit("d2admin/DELETE_ALL_QUERY_DATA");
           this.$notify({
             title: "成功",
             message: "全部删除成功",
-            type: "success"
+            type: "success",
           });
         })
         .catch(() => {
           this.$notify.info({
             title: "消息",
-            message: "已取消删除"
+            message: "已取消删除",
           });
         });
       // console.log('popoverVisible111=' + this.popoverVisible)
@@ -108,13 +130,13 @@ export default {
         name: row.title, //距离优先
         problem: row.problem,
         time: row.time,
-        isHistory: true
-      }
+        isHistory: true,
+      };
       this.$router.push({
         name: "page_result",
         query: {
-          queryValue: queryValue
-        }
+          queryValue: queryValue,
+        },
       });
     },
     deleteQuery(index, row) {
@@ -122,22 +144,24 @@ export default {
       this.$notify({
         title: "成功",
         message: "删除" + row.title + "成功",
-        type: "success"
+        type: "success",
       });
     },
     saveQuery(index, row) {
       var problem = row.problem;
       var table = [];
 
-      let depots = problem.nodes.filter(node => {
-        return node.type == "depot"
+      let depots = problem.nodes.filter((node) => {
+        return node.type == "depot";
       });
 
       if (!problem.routeMode) {
-        depots.forEach(node => {
-          let row0 = ["物流中心" + node.id + "(" + node.x + ", " + node.y + ")"];
+        depots.forEach((node) => {
+          let row0 = [
+            "物流中心" + node.id + "(" + node.x + ", " + node.y + ")",
+          ];
           table.push(row0);
-        })
+        });
 
         var header1 = ["配送节点", "横坐标x(km)", "纵坐标y(km)", "需求量q(t)"];
 
@@ -154,17 +178,18 @@ export default {
           }
         });
       } else {
-
-        depots.forEach(node => {
-          let row0 = ["物流中心" + node.id + "(" + node.x + ", " + node.y + ")"];
+        depots.forEach((node) => {
+          let row0 = [
+            "物流中心" + node.id + "(" + node.x + ", " + node.y + ")",
+          ];
           table.push(row0);
-        })
+        });
 
         let row0 = ["各配送点与配送中心的距离（/KM）"];
         table.push(row0);
 
         let header1 = ["配送节点"];
-        problem.nodes.forEach(node => {
+        problem.nodes.forEach((node) => {
           header1.push(node.id);
         });
         table.push(header1);
@@ -215,7 +240,7 @@ export default {
       xlsx.utils.book_append_sheet(wb, ws, "query");
       // 输出
       ipcRenderer.send("open-save-dialog", row.title);
-      ipcRenderer.once("selectedItem", function(e, path) {
+      ipcRenderer.once("selectedItem", function (e, path) {
         if (path != null) {
           xlsx.writeFile(wb, path);
         }
@@ -249,13 +274,18 @@ export default {
       xlsx.utils.book_append_sheet(wb, ws, "query");
       // 输出
       ipcRenderer.send("open-save-dialog", row.title);
-      ipcRenderer.once("selectedItem", function(e, path) {
+      ipcRenderer.once("selectedItem", function (e, path) {
         if (path != null) {
           xlsx.writeFile(wb, path);
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
-<style src="../../../assets/btn.css" scoped></style>
+<style src="../../../assets/btn.css" scoped>
+.el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner {
+    background-color: #5673ff;
+    border-color: #5673ff;
+}
+</style>
