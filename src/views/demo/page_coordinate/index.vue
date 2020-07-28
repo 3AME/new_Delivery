@@ -151,6 +151,7 @@ export default {
         loadPrior: 4, //满载率优先
         speedValue: 10,
         maxIter: 200,
+        costPrior: false,
       },
       queryValue: {
         show: false,
@@ -214,7 +215,7 @@ export default {
         this.table.data = results;
         outdata = results;
         for (var i in this.stdcolumns) {
-          console.log(this.stdcolumns[i].label);
+          // console.log(this.stdcolumns[i].label);
           if (!header.includes(this.stdcolumns[i].label)) {
             var me = this;
             this.$confirm(
@@ -247,7 +248,7 @@ export default {
         return false;
       } else {
         let problem = [];
-        var costModeFlag = false;
+        var displayCostFlag = false;
         outdata.map(v => {
           let obj = {};
           obj.nodes = {
@@ -272,7 +273,7 @@ export default {
             waitingCost: v["Waiting_cost"]
           };
           if (v["Use_cost"] || v["Driving_cost"] ||v["Waiting_cost"]) {
-            costModeFlag =true;
+            displayCostFlag =true;
           }
           problem.push(obj);
         });
@@ -298,17 +299,9 @@ export default {
             new_vehicles.splice(i, 2); // 删除excel数据中出现的undefined
           }
         }
-        // eslint-disable-next-line camelcase
-        let new_test = {
-          distancePrior: 5, // 路程加权
-          timePrior: 1, // 用时加权
-          loadPrior: 4, // 满载率加权
-        };
-        // eslint-disable-next-line camelcase
-
         newproblem_edges = {
           routeMode: false,
-          costMode: costModeFlag,
+          displayCost: displayCostFlag,
           nodes: new_nodes,
           edges: newproblem_edges,
           vehicles: new_vehicles,
@@ -317,9 +310,10 @@ export default {
           loadPrior: this.drawerValue.loadPrior,
           speed: this.drawerValue.speedValue,
           maxiter: this.drawerValue.maxIter,
+          // costPrior: this.drawerValue.isleastCostMode
         };
 
-        console.log("problem:" + JSON.stringify(newproblem_edges));
+        // console.log("problem:" + JSON.stringify(newproblem_edges));
         // this.$router.push({
         //   name: "page_result",
         //   query: {
