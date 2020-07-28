@@ -1,6 +1,6 @@
 <template>
   <el-container class="content-container" v-loading="loading">
-    <el-header height="auto">
+    <!-- <el-header height="auto">
       <div style="text-align: center; padding: 10px">
         <el-button-group class="card">
           <el-button
@@ -8,7 +8,7 @@
             type="text"
             icon="el-icon-delete"
             @click="addVehicle"
-            style="color: #fc5454;"
+            style="color: #409eff;"
           >添加车辆</el-button>
           <el-button
             class="btn-action"
@@ -33,24 +33,44 @@
           >查询</el-button>
         </el-button-group>
       </div>
-    </el-header>
-    <el-container>
-      <el-aside width="20%" class="aside">
-        <div class="card" style="margin: 10px;text-align: center;">
-          <el-button-group>
-            <el-button
-              @click="addVehicle"
-              class="btn-action"
-              type="text"
-              icon="el-icon-document-add"
-              style="color: #409eff"
-            >添加车辆</el-button>
-          </el-button-group>
+    </el-header>-->
+    <el-container style="overflow:scroll;overflow-x: hidden !important; margin: 10px">
+      <el-aside width="20%" height="100%" style="margin: 10px;">
+        <div style="text-align: center; padding: 20px">
+          <img width="40%" src="../../../assets/images/small/车辆.png" />
         </div>
-        <div v-if="vehicles.length == 0" class="box-card">
-          <div style="text-align: center;">空空如也</div>
-        </div>
-        <div>
+        <div class="card" style="margin: 10px">
+          <div style="padding: 10px; border-bottom: 1px solid #EBEEF5;">
+            <el-row>
+              <el-col :span="16">
+                <span style="font-size: 24px;">车辆列表</span>
+              </el-col>
+
+              <el-col
+                :span="8"
+                style="left: 0; right: 0; top: 0; bottom: 0; margin: auto; position: absolute; top: 50%; transform: translate(100%, -25%);"
+              >
+                <el-popover placement="right" width="240" trigger="hover">
+                  <p style="padding: 10px">确定清空车辆列表？</p>
+                  <div style="text-align: right; margin: 0; padding: 10px">
+                    <el-button type="primary" size="mini" @click="clearVehicle">确定</el-button>
+                  </div>
+                  <i
+                    v-if="vehicles.length > 0"
+                    slot="reference"
+                    class="el-icon-delete"
+                    style="float: right; font-size: 12px; color: red;"
+                  >清空</i>
+                </el-popover>
+              </el-col>
+            </el-row>
+          </div>
+          <div v-if="vehicles.length == 0" class="box-card">
+            <div style="font-size: 16px; color: #999; text-align: center; padding: 100px 0;">
+              <img width="80%" src="../../../assets/images/small/暂无数据.png" />
+              <p>什么都没有</p>
+            </div>
+          </div>
           <el-popover
             v-for="(vehicle, index) in vehicles"
             :key="vehicle.id"
@@ -60,6 +80,10 @@
             placement="right"
           >
             <div style="text-align: center; padding: 10px">
+              车辆类型
+              <el-input width="50%" size="mini" v-model="vehicle.id" autidocomplete="off" clearable></el-input>
+            </div>
+            <div style="text-align: center; padding: 10px">
               车辆载重
               <el-input-number v-model="vehicle.load" :min="1" :max="10" label="车辆载重" size="mini"></el-input-number>
             </div>
@@ -82,167 +106,140 @@
               <i
                 @click="removeVehicle(vehicle)"
                 class="i-tag el-icon-delete"
-                style="font-size: 18px;"
+                style="font-size: 18px; color: red;"
               ></i>
             </div>
-
-            <!-- <div slot="reference" class="card" width="100%" style="padding: 10px;margin: 10px">
-          <el-row>
-          <el-col :span="8">
-            <img width="30%" src="../../../assets/images/small/车辆.png" />
-          </el-col>
-          <el-col :span="8">
-            <div>车辆{{ vehicle.id }}</div>
-          </el-col>
-          <el-col :span="8">
-            <img width="30%" src="../../../assets/images/small/车辆.png" />
-          </el-col>
-        </el-row>
-
-            </div>-->
-            <div slot="reference" class="card" style="padding: 10px; margin: 10px">
-              <!-- <el-button type="text" width="100%" icon="el-icon-search">hover 激活
-              <i class="el-icon-upload el-icon--right"></i>
-              </el-button>-->
-              <button
-                type="button"
-                class="el-button el-button--text el-button--default"
-                width="100%"
-              >
-                <el-row>
-                  <el-col :span="8">
-                    <img width="30%" src="../../../assets/images/small/车辆.png" />
-                  </el-col>
-                  <el-col :span="8">
-                    <div>车辆{{ vehicle.id }}</div>
-                  </el-col>
-                  <el-col :span="8">
-                    <img width="30%" src="../../../assets/images/small/车辆.png" />
-                  </el-col>
-                </el-row>
-              </button>
-              <el-card class="box-card">
-            <div slot="header" class="clearfix">
-              <span>最优结果</span>
-              <el-button slot="reference" id="btn-save-result" class="btn-success btn-save-result" size="mini" style="float: right;">保存</el-button>
-            </div>
-          </el-card>
+            <div slot="reference" class="el-card__header">
+              <el-row type="flex" justify="space-around">
+                <el-col :span="4">
+                  <i class="el-icon-truck" style="font-size: 20px; float: left; color: #409eff"></i>
+                </el-col>
+                <el-col :span="16">
+                  <span style="font-size: 12px;padding: 0 8px">车辆类型：{{ vehicle.id }}</span>
+                </el-col>
+                <el-col :span="4">
+                  <i
+                    class="el-icon-delete"
+                    style="float: right; color: red;"
+                    @click="removeVehicle(vehicle)"
+                  ></i>
+                </el-col>
+              </el-row>
             </div>
           </el-popover>
         </div>
-        <el-collapse id="collapse_nodes" accordion style>
-          <el-collapse-item
-            v-for="(vehicle, index) in vehicles"
-            :key="vehicle.id"
-            :title="'车辆' + vehicle.id"
-            :name="index"
-            style="margin-left: 8px;margin-right: 8px;"
-          >
-            <div style="text-align: center;">
-              车辆载重
-              <el-input-number v-model="vehicle.load" :min="1" :max="10" label="车辆载重" size="mini"></el-input-number>
-            </div>
-            <div style="text-align: center;">
-              车辆里程
-              <el-input-number
-                v-model="vehicle.mileage"
-                :step="5"
-                :min="10"
-                :max="120"
-                label="车辆里程"
-                size="mini"
-              ></el-input-number>
-            </div>
-            <div style="text-align: center;">
-              车辆数量
-              <el-input-number v-model="vehicle.count" :min="1" :max="5" label="车辆里程" size="mini"></el-input-number>
-            </div>
-            <div style="text-align: center;">
-              <i
-                @click="removeVehicle(vehicle)"
-                class="i-tag el-icon-delete"
-                style="font-size: 16px;"
-              ></i>
-            </div>
-          </el-collapse-item>
-        </el-collapse>
       </el-aside>
-      <el-main class="card" style="padding: 0px;margin-bottom: 20px">
-        <baidu-map
-          :ak="ak"
-          :center="center"
-          :scroll-wheel-zoom="isScrollWheelZoom"
-          style="height:100%;"
-          :zoom="12"
-          @click="handleChange"
-          @load="handleMapLoaded"
-          class="ele-form-bmap"
+      <el-container>
+        <el-main
+          class="card"
+          height="100%"
+          style="padding: 0px; margin: 20px 10px; border: 1px solid #ccc;"
         >
-          <bm-geolocation
-            :autoLocation="true"
-            :showAddressBar="true"
-            @locationSuccess="handleChange"
-            anchor="BMAP_ANCHOR_BOTTOM_RIGHT"
-            v-if="isShowGeolocation"
-          ></bm-geolocation>
+          <baidu-map
+            :ak="ak"
+            :center="center"
+            :scroll-wheel-zoom="isScrollWheelZoom"
+            style="height:100%;"
+            :zoom="12"
+            @click="handleChange"
+            @load="handleMapLoaded"
+            class="ele-form-bmap"
+          >
+            <bm-geolocation
+              :autoLocation="true"
+              :showAddressBar="true"
+              @locationSuccess="handleChange"
+              anchor="BMAP_ANCHOR_BOTTOM_RIGHT"
+              v-if="isShowGeolocation"
+            ></bm-geolocation>
 
-          <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT" v-if="isShowNavigation"></bm-navigation>
+            <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT" v-if="isShowNavigation"></bm-navigation>
 
-          <bm-control :offset="{width: '10px', height: '10px'}">
-            <bm-auto-complete
-              v-model="searchValue"
-              :sugStyle="{zIndex: 999999}"
-              @confirm="onAutoComplete"
-            >
-              <el-input
-                :placeholder="logisticsCenter == undefined ? '搜索并添加中心节点' : '搜索并添加子节点'"
+            <bm-control :offset="{width: '10px', height: '10px'}">
+              <bm-auto-complete
                 v-model="searchValue"
-                clearable
-              ></el-input>
-              <!-- <input
+                :sugStyle="{zIndex: 999999}"
+                @confirm="onAutoComplete"
+              >
+                <el-input
+                  :placeholder="logisticsCenter == undefined ? '搜索并添加中心节点' : '搜索并添加子节点'"
+                  v-model="searchValue"
+                  clearable
+                ></el-input>
+                <!-- <input
                 type="text"
                 :placeholder="logisticsCenter == undefined ? '搜索并添加中心节点' : '搜索并添加子节点'"
                 class="serachinput"
-              />-->
-            </bm-auto-complete>
-          </bm-control>
-          <bm-local-search
-            :auto-viewport="true"
-            :keyword="searchValue"
-            :pageCapacity="10"
-            :panel="false"
-            @searchcomplete="handleSearchEnd"
-            v-if="isSearching"
-          ></bm-local-search>
-          <bm-marker
-            v-for="(item,index) in polylinePath"
-            :key="index"
-            :position="item"
-            :dragging="true"
-            animation="BMAP_ANIMATION_BOUNCE"
-          />
+                />-->
+              </bm-auto-complete>
+            </bm-control>
+            <bm-local-search
+              :auto-viewport="true"
+              :keyword="searchValue"
+              :pageCapacity="10"
+              :panel="false"
+              @searchcomplete="handleSearchEnd"
+              v-if="isSearching"
+            ></bm-local-search>
+            <bm-marker
+              v-for="(item,index) in polylinePath"
+              :key="index"
+              :position="item"
+              :dragging="true"
+              animation="BMAP_ANIMATION_BOUNCE"
+            />
 
-          <bm-view style="width:100%;height:100%"></bm-view>
-          <bm-driving
-            v-for="(item, index) in drivingPath"
-            :key="-index - 1"
-            :start="item.start"
-            :end="item.end"
-            startCity="成都市"
-            endCity="成都市"
-            :auto-viewport="true"
-            @onpolylinesset="onPolylinesSet"
-            @resultshtmlset="resultsHtmlSet"
-            @searchcomplete="searchComplete"
-          />
-        </baidu-map>
-      </el-main>
-      <el-aside
-        width="20%"
-        class="aside"
-        style="overflow:scroll;overflow-x: hidden !important; margin: 20px"
-      >
-        <div class="card" style="margin: 10px;text-align: center;">
+            <bm-view style="width:100%; height:100%"></bm-view>
+            <bm-driving
+              v-for="(item, index) in drivingPath"
+              :key="-index - 1"
+              :start="item.start"
+              :end="item.end"
+              startCity="成都市"
+              endCity="成都市"
+              :auto-viewport="true"
+              @onpolylinesset="onPolylinesSet"
+              @resultshtmlset="resultsHtmlSet"
+              @searchcomplete="searchComplete"
+            />
+          </baidu-map>
+        </el-main>
+        <el-footer height="auto">
+          <div style="text-align: center; padding: 50px">
+            <el-button-group class="card">
+              <el-button
+                class="btn-action"
+                type="text"
+                icon="el-icon-delete"
+                @click="addVehicle"
+                style="color: #409eff;"
+              >添加车辆</el-button>
+              <el-button
+                class="btn-action"
+                type="text"
+                icon="el-icon-tickets"
+                style="color: #fcbe2d;"
+              >添加地点</el-button>
+              <el-button
+                class="btn-action"
+                @click="drawerValue.drawerShow = true"
+                type="text"
+                icon="el-icon-set-up"
+                style="color: #607d8b;"
+              >设置算法参数</el-button>
+              <el-button
+                class="btn-action"
+                @click="test"
+                type="text"
+                icon="el-icon-search"
+                style="color: #02c58d;"
+              >查询</el-button>
+            </el-button-group>
+          </div>
+        </el-footer>
+      </el-container>
+      <el-aside width="20%" class="aside" style="margin: 10px">
+        <!-- <div class="card" style="margin: 10px; text-align: center;">
           <el-button-group>
             <el-button
               @click="refresh"
@@ -266,12 +263,104 @@
               @click="drawerValue.drawerShow = true"
             >设置</el-button>
           </el-button-group>
+        </div>-->
+        <div style="text-align: center; padding: 20px">
+          <img width="40%" src="../../../assets/images/small/地点.png" />
         </div>
-        <div v-if="polylinePath.length > 0" style="text-align: center;">
+        <div class="card" style="margin: 10px">
+          <div style="padding: 10px; border-bottom: 1px solid #EBEEF5;">
+            <el-row>
+              <el-col :span="16">
+                <span style="font-size: 24px;">地点列表</span>
+              </el-col>
+
+              <el-col
+                :span="8"
+                style="left: 0; right: 0; top: 0; bottom: 0; margin: auto; position: absolute; top: 50%; transform: translate(100%, -25%);"
+              >
+                <el-popover placement="top-start" width="240" trigger="hover">
+                  <p style="padding: 10px">确定清空地点列表？</p>
+                  <div style="text-align: right; margin: 0; padding: 10px">
+                    <el-button type="primary" size="mini" @click="clearTags">确定</el-button>
+                  </div>
+                  <i
+                    v-if="polylinePath.length > 0"
+                    slot="reference"
+                    class="el-icon-delete"
+                    style="float: right; font-size: 12px; color: red;"
+                  >清空</i>
+                </el-popover>
+              </el-col>
+            </el-row>
+          </div>
+          <div v-if="polylinePath.length == 0" class="box-card">
+            <div style="font-size: 16px; color: #999; text-align: center; padding: 100px 0;">
+              <img width="80%" src="../../../assets/images/small/暂无数据.png" />
+              <p>什么都没有</p>
+            </div>
+          </div>
+          <el-popover
+            v-for="(path, index) in polylinePath"
+            :key="path.name"
+            title="修改地点信息"
+            :name="index"
+            trigger="hover"
+            placement="right"
+          >
+            <div
+              class="div-tag"
+              style="text-align: center; padding: 10px"
+              v-if="index == 0"
+            >节点类型：中心节点</div>
+            <div class="div-tag" style="text-align: center; padding: 10px" v-else>节点类型：子节点</div>
+            <div class="div-tag" style="text-align: center; padding: 10px">节点地名：{{ path.name }}</div>
+            <div style="text-align: center; padding: 10px" v-if="index != 0">
+              <!-- 需求量 -->
+              <el-select
+                v-model="path.need"
+                filterable
+                allow-create
+                default-first-option
+                placeholder="需求量"
+                size="mini"
+              >
+                <el-option v-for="item in need_options" :key="item" :label="item" :value="item"></el-option>
+              </el-select>
+            </div>
+            <div style="text-align: center; padding: 10px">
+              <i
+                @click="handleClose(path)"
+                class="i-tag el-icon-delete"
+                style="font-size: 16px; color: red;"
+              ></i>
+            </div>
+            <div slot="reference" class="el-card__header">
+              <el-row type="flex" justify="space-around">
+                <el-col :span="4">
+                  <i
+                    class="el-icon-office-building"
+                    style="font-size: 20px; float: left; color: #02c58d; left: 0; right: 0; top: 0; bottom: 0; margin: auto; position: absolute; top: 50%; transform: translate(0%, -50%);"
+                  ></i>
+                </el-col>
+                <el-col :span="16" style="text-align: center">
+                  <span style="font-size: 12px;padding: 0 8px;">{{ path.name }}</span>
+                </el-col>
+                <el-col :span="4">
+                  <i
+                    class="el-icon-delete"
+                    style="float: right; color: red; left: 0; right: 0; top: 0; bottom: 0; margin: auto; position: absolute; top: 50%; transform: translate(90%, -50%);"
+                    @click="handleClose(path)"
+                  ></i>
+                </el-col>
+              </el-row>
+            </div>
+          </el-popover>
+        </div>
+
+        <!-- <div v-if="polylinePath.length > 0" style="text-align: center;">
           <el-button size="mini" class="btn-danger" style="margin: 8px;" @click="clearTags()">清空</el-button>
         </div>
         <div v-if="polylinePath.length == 0" class="box-card" style>
-          <!-- <el-divider></el-divider> -->
           <div style="text-align: center;">空空如也</div>
         </div>
 
@@ -293,7 +382,6 @@
             <div class="div-tag" style="text-align: center;" v-if="index == 0">中心节点</div>
             <div class="div-tag" style="text-align: center;" v-else>子节点</div>
             <div style="text-align: center;" v-if="index != 0">
-              <!-- 需求量 -->
               <el-select
                 v-model="path.need"
                 filterable
@@ -309,7 +397,7 @@
               <i @click="handleClose(path)" class="i-tag el-icon-delete" style="font-size: 16px;"></i>
             </div>
           </el-collapse-item>
-        </el-collapse>
+        </el-collapse>-->
       </el-aside>
     </el-container>
     <drawer v-model="drawerValue" />
@@ -695,9 +783,12 @@ export default {
     },
     removeVehicle(vehicle) {
       this.vehicles.splice(this.vehicles.indexOf(vehicle), 1);
-      this.vehicles.forEach((vehicle, i) => {
-        vehicle.id = i + 1;
-      });
+      // this.vehicles.forEach((vehicle, i) => {
+      //   vehicle.id = i + 1;
+      // });
+    },
+    clearVehicle(vehicle) {
+      this.vehicles.splice(0, this.vehicles.length);
     },
     // 显示输入框
     showInput() {

@@ -23,7 +23,17 @@
     </div>
     <div>
       <el-row>
-        <el-col :span="6">
+        <el-col :span="4">
+          <el-button
+            class="no-drag"
+            type="text"
+            size="mini"
+            style="padding: 10px;"
+          >
+            <i class="btn el-icon-shopping-cart-2"></i>
+          </el-button>
+        </el-col>
+        <el-col :span="4">
           <el-button
             class="no-drag"
             type="text"
@@ -34,7 +44,18 @@
             <i class="btn el-icon-refresh"></i>
           </el-button>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="4">
+          <el-button
+            class="no-drag"
+            type="text"
+            size="mini"
+            @click="setting"
+            style="padding: 10px;"
+          >
+            <i class="btn el-icon-setting"></i>
+          </el-button>
+        </el-col>
+        <el-col :span="4">
           <el-button
             class="no-drag"
             type="text"
@@ -45,7 +66,7 @@
             <i class="btn el-icon-minus"></i>
           </el-button>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="4">
           <el-button
             class="no-drag"
             type="text"
@@ -56,7 +77,7 @@
             <i class="btn el-icon-copy-document"></i>
           </el-button>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="4">
           <el-button class="no-drag" type="text" size="mini" @click="close" style="padding: 10px;">
             <i class="btn el-icon-close"></i>
           </el-button>
@@ -105,6 +126,9 @@ export default {
     refresh() {
       this.reload();
       // window.location.reload();
+    },
+    setting() {
+
     },
   },
 };
