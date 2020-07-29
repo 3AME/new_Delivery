@@ -32,11 +32,7 @@
             />
             <!-- <h3 v-if="!asideCollapse" class="mt-0 font-600 vertical-center" style="padding: 10px">川流配送</h3> -->
           </div>
-          <el-menu
-            :default-active="this.$route.fullPath"
-            :collapse="asideCollapse"
-            router
-          >
+          <el-menu :default-active="this.$route.fullPath" :collapse="asideCollapse" router>
             <!-- @open="handleOpen"
             @close="handleClose"-->
             <el-menu-item v-for="(item, index) in children" :key="index" :index="item.path">
@@ -118,12 +114,25 @@ export default {
     $route(to, from) {
       console.log(to.path);
       console.log(from.path);
-      if (to.path == '/page_map' || to.path == '/page_result') {
+      // if (to.path == '/page_map' || to.path == '/page_result') {
+      //   this.asideCollapse = true;
+      // } else {
+      //   this.asideCollapse = false;
+      // }
+      if (to.path != "/index") {
         this.asideCollapse = true;
       } else {
         this.asideCollapse = false;
       }
     },
+  },
+  mounted() {
+    console.log("this.$route.path=" + this.$route.path);
+    if (this.$route.path != "/index") {
+      this.asideCollapse = true;
+    } else {
+      this.asideCollapse = false;
+    }
   },
   data() {
     return {
