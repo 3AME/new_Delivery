@@ -31,7 +31,7 @@
             <div class="text-item" v-if="result">总路程: {{ result.distance.toFixed(2) }} 公里</div>
             <div class="text-item" v-if="result">总时间: {{ result.time.toFixed(2) }} 小时</div>
             <div class="text-item" v-if="result">平均满载率: {{ (result.loadFactor * 100).toFixed(2) }} %</div>
-            <div class="text-item" v-if="result && costMode">预算成本: {{ result.vehicleCost.toFixed(2) }} 元</div>
+            <div class="text-item" v-if="result && displayCost">预算成本: {{ result.vehicleCost.toFixed(2) }} 元</div>
             <!-- <div class="text-item" v-if="result">车辆行驶成本: {{ result.time.toFixed(2) }} 小时</div> -->
             <!-- <div class="text-item" v-if="result">平均满载率: {{ (result.loadFactor * 100).toFixed(2) }} %</div> -->
           </el-card>
@@ -146,19 +146,39 @@
               </el-card>
             </el-col>
           </el-row>
-          <el-row v-if="costMode" style="height:50%; width: 100%;">
+          <!-- <el-row style="height:50%; width: 100%;">
             <el-col :span="24" style="height:100%;padding: 20px">
               <el-card class="svg_card" style="height:100%; width: 100%;">
-                <!-- style="height:10%; width: 100%;" -->
                 <div slot="header" class="clearfix">
                   <span>方案成本预估</span>
-                  <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
                 </div>
                 <svg
                   id="histogram_cost"
                   style="height:80%; width: 100%;"
                   ref="histogram_cost"
                 />
+              </el-card>
+            </el-col>
+          </el-row> -->
+          <el-row v-if="displayCost" style="height:50%; width: 100%;">
+            <el-col :span="12" style="height:100%; padding: 20px">
+              <el-card class="svg_card" style="height:100%; width: 100%;">
+                <!-- style="height:10%; width: 100%;" -->
+                <div slot="header" class="clearfix">
+                  <span>预估成本变化</span>
+                  <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
+                </div>
+                <svg id="cost_svg" style="height:80%; width: 100%;" ref="cost_svg" />
+              </el-card>
+            </el-col>
+            <el-col :span="12" style="height:100%;padding: 20px">
+              <el-card class="svg_card" style="height:100%; width: 100%;">
+                <!-- style="height:10%; width: 100%;" -->
+                <div slot="header" class="clearfix">
+                  <span>方案成本预估</span>
+                  <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
+                </div>
+                <svg id="histogram_cost" style="height:80%; width: 100%;" ref="histogram_cost" />
               </el-card>
             </el-col>
           </el-row>
@@ -178,7 +198,7 @@ export default {
   data() {
     return {
       // drawer: false,'
-      costMode: false,
+      displayCost: false,
       forceSimulation: undefined,
       myChart: undefined,
       result: undefined,
@@ -201,7 +221,7 @@ export default {
       if (me.forceSimulation) {
         let width = me.$refs["svg"].clientWidth;
         let height = me.$refs["svg"].clientHeight;
-        console.log("onresize width=" + width + " height=" + height);
+        // console.log("onresize width=" + width + " height=" + height);
         me.forceSimulation
           .force("center")
           .x(width / 2)
@@ -218,7 +238,8 @@ export default {
     let loadHistogram = d3.selectAll("svg#histogram_load > *");
     let distanceHistogram = d3.selectAll("svg#histogram_distance > *");
     let costHistogram = d3.selectAll("svg#histogram_cost > *");
-    console.log("d3.selectAll()=" + svgChildren.size());
+    let costSvg = d3.selectAll("svg#cost_svg > *");
+    // console.log("d3.selectAll()=" + svgChildren.size());
     let queryValue = this.$route.query.queryValue;
     if (
       svgChildren.size() > 0 &&
@@ -235,6 +256,7 @@ export default {
     loadHistogram.remove();
     distanceHistogram.remove();
     costHistogram.remove();
+    costSvg.remove();
     this.msgs.splice(0, this.msgs.length);
     this.routes.splice(0, this.routes.length);
     // console.log("activated");
@@ -259,7 +281,7 @@ export default {
       let problem = queryValue.problem;
       this.maxiter = problem.maxiter;
       var isRouteMode = problem.routeMode;
-      this.costMode = problem.costMode || false;
+      this.displayCost = problem.displayCost || true;
       console.log("function solve run");
       console.log("problem=", problem);
       var solver = spawn("resources/VehicleRouting.exe");
@@ -278,7 +300,7 @@ export default {
           n_customer++;
         }
       }
-      console.log("n_customer=", n_customer);
+      // console.log("n_customer=", n_customer);
       pipe(n_customer);
       for (let i in problem.nodes) {
         var node = problem.nodes[i];
@@ -362,7 +384,7 @@ export default {
           pipe(edge.u, edge.v, edge.w);
         }
       }
-      console.log("vehicles", problem.vehicles);
+      // console.log("vehicles", problem.vehicles);
       pipe(problem.vehicles.length);
       var speed = problem.speed || 10;
       var work_time = problem.work_time || -1;
@@ -374,13 +396,14 @@ export default {
         var load = veh.load;
         var mileage = veh.mileage || -1;
         var count = veh.count || -1;
-        var useCost = veh.useCost ||  200;
-        var drivingCost = veh.drivingCost || 100;
+        var useCost = veh.useCost ||  100;
+        var drivingCost = veh.drivingCost || 2;
         var waitingCost = veh.waitingCost || 24;
         pipe(veh.id, depot, load, mileage, count);
         pipe(useCost, drivingCost, waitingCost);
       }
-
+      // var costPrior=(Number)(problem.costPrior) || 0
+      // pipe(problem.distancePrior, problem.timePrior, problem.loadPrior, costPrior);
       pipe(problem.distancePrior, problem.timePrior, problem.loadPrior);
       pipe(npop, popsize, problem.maxiter);
       let out = "";
@@ -396,26 +419,26 @@ export default {
           }
           let data = out.substr(0, eol);
           let [flag, payload] = data.split(" ");
-          console.log("flag=" + flag);
-          console.log("payload=" + payload);
+          // console.log("flag=" + flag);
+          // console.log("payload=" + payload);
           payload = eval("(" + payload + ")");
 
           switch (flag) {
             case "msg":
               // onMessageReceived(payload);
-              console.log("msg");
-              console.log(payload);
+              // console.log("msg");
+              // console.log(payload);
               this.msgs.push(payload);
               break;
             case "fin":
               // onFinReceived(payload);
-              console.log("fin");
-              console.log(payload);
+              // console.log("fin");
+              // console.log(payload);
               break;
             case "sol":
               // onSolReceived(payload);
-              console.log("sol");
-              console.log(payload);
+              // console.log("sol");
+              // console.log(payload);
               this.result = payload;
               break;
             default:
@@ -457,8 +480,9 @@ export default {
           this.showCurveGraph();
           this.showLoadHistogram();
           this.showDistanceHistogram();
-          if (this.costMode) {
+          if (this.displayCost) {
             this.showCostHistogram();
+            this.showcostSvg();
           } 
           
         }
@@ -487,7 +511,7 @@ export default {
       let size = this.routes.filter(r => {
         return r.checked;
       }).length;
-      console.log("size=" + size + " length=" + this.routes.length);
+      // console.log("size=" + size + " length=" + this.routes.length);
       this.checked = size == this.routes.length;
     },
     onCheckedChange(route, i) {
@@ -631,7 +655,7 @@ export default {
         fileName = this.problemName + ".xlsx";
         sourse = wb;
       } else {
-        console.log(this.$el);
+        // console.log(this.$el);
         let ht = this.$root;
         var test = document.getElementsByTagName("html")[0].innerHTML;
         let html = document.createElement("html");
@@ -646,7 +670,7 @@ export default {
 
         let scripts = html.getElementsByTagName("script");
         for (var i = 0; i < scripts.length; i++) {
-          console.log("src" + i + ": " + scripts[i].src);
+          // console.log("src" + i + ": " + scripts[i].src);
         }
         html.getElementsByClassName('btn-save-result')[0].style.display = 'none';
         html.getElementsByClassName('switch-toggle-route')[0].style.display = 'none';
@@ -654,7 +678,7 @@ export default {
         for (let i = 0; i < checkboxs.length; i++) {
           checkboxs[i].style.display = 'none';
         }
-        console.log("html=" + html.outerHTML);
+        // console.log("html=" + html.outerHTML);
         fileName = this.problemName + ".html";
         sourse = html.outerHTML;
       }
@@ -676,13 +700,13 @@ export default {
             let fs = require("fs");
             fs.writeFile(path, sourse, function(err) {
               if (err) {
-                console.log(err);
+                // console.log(err);
                 me.$notify.error({
                   title: "错误",
                   message: "保存失败：" + err
                 });
               } else {
-                console.log("file success！！！");
+                // console.log("file success！！！");
                 me.$notify({
                   title: "成功",
                   message: "保存成功",
@@ -788,7 +812,7 @@ export default {
             sameAll.push(item);
           }
         });
-        console.log("sameAll=" + JSON.stringify(sameAll));
+        // console.log("sameAll=" + JSON.stringify(sameAll));
 
         sameAll.forEach(function(s, i) {
           s.sameIndex = i + 1;
@@ -814,15 +838,15 @@ export default {
       edges.sort(function(x, y) {
         return x.sameTotal - y.sameTotal;
       });
-      console.log("sort=" + JSON.stringify(edges));
+      // console.log("sort=" + JSON.stringify(edges));
       var maxSame = edges[edges.length - 1].sameTotal;
-      console.log("maxSame=" + maxSame);
+      // console.log("maxSame=" + maxSame);
 
       edges.forEach(function(link) {
         link.maxSameHalf = Math.floor(maxSame / 2);
       });
 
-      console.log("edges=" + JSON.stringify(edges));
+      // console.log("edges=" + JSON.stringify(edges));
 
       let width = this.$refs["svg"].clientWidth;
       let height = this.$refs["svg"].clientHeight;
@@ -922,7 +946,7 @@ export default {
           }
         })
         .attr("stroke", function(d, i) {
-          console.log("stroke d=" + JSON.stringify(d) + "  d.vid=" + d.vid);
+          // console.log("stroke d=" + JSON.stringify(d) + "  d.vid=" + d.vid);
           if (d.vid !== undefined) {
             var color = legendColors(d.vid);
             return color;
@@ -1228,7 +1252,7 @@ export default {
               if (!value) {
                 value = map.get(route + "" + tempRoute);
               }
-              console.log("value=" + value);
+              // console.log("value=" + value);
               if (value > 0) {
                 edges.push({
                   source: tempRoute,
@@ -1306,7 +1330,7 @@ export default {
             sameAll.push(item);
           }
         });
-        console.log("sameAll=" + JSON.stringify(sameAll));
+        // console.log("sameAll=" + JSON.stringify(sameAll));
 
         sameAll.forEach(function(s, i) {
           s.sameIndex = i + 1;
@@ -1325,15 +1349,15 @@ export default {
       edges.sort(function(x, y) {
         return x.sameTotal - y.sameTotal;
       });
-      console.log("sort=" + JSON.stringify(edges));
+      // console.log("sort=" + JSON.stringify(edges));
       var maxSame = edges[edges.length - 1].sameTotal;
-      console.log("maxSame=" + maxSame);
+      // console.log("maxSame=" + maxSame);
 
       edges.forEach(function(link) {
         link.maxSameHalf = Math.floor(maxSame / 2);
       });
 
-      console.log("edges=" + JSON.stringify(edges));
+      // console.log("edges=" + JSON.stringify(edges));
 
       // 设置一个color的颜色比例尺，为了让不同的扇形呈现不同的颜色
       // var colorScale = d3
@@ -1416,7 +1440,7 @@ export default {
           }
         })
         .attr("stroke", function(d, i) {
-          console.log("stroke d=" + JSON.stringify(d) + "  d.vid=" + d.vid);
+          // console.log("stroke d=" + JSON.stringify(d) + "  d.vid=" + d.vid);
           if (d.vid !== undefined) {
             var color = legendColors(d.vid);
             console.log(
@@ -1668,7 +1692,7 @@ export default {
       }
     },
     showCurveGraph() {
-      console.log("msgs=" + JSON.stringify(this.msgs));
+      // console.log("msgs=" + JSON.stringify(this.msgs));
       let width = this.$refs["test_svg"].clientWidth;
       let height = this.$refs["test_svg"].clientHeight;
       const margin = { top: 40, right: 40, bottom: 40, left: 40 };
@@ -2094,7 +2118,81 @@ export default {
           return d.distance.toFixed(1);
         });
 
-    }
+    },
+    showcostSvg() {
+      // console.log("msgs=" + JSON.stringify(this.msgs));
+      let width = this.$refs["cost_svg"].clientWidth;
+      let height = this.$refs["cost_svg"].clientHeight;
+      const margin = { top: 40, right: 40, bottom: 40, left: 40 };
+
+      let svg = d3
+        .select("svg#cost_svg")
+        .attr("preserveAspectRatio", "xMidYMid meet")
+        .attr("viewBox", "0 0 " + width + " " + height);
+
+      // var data = [1, 3, 5, 7, 8, 4, 3, 7];
+      let costs = this.msgs.map(msg => {
+        return msg.vehicleCost.toFixed(1);
+      });
+
+      // 比例尺
+      const xScale = d3
+        .scaleLinear()
+        // .domain([0, data.length-1])
+        .domain([0, this.maxiter])
+        .nice()
+        .range([margin.left, width - margin.right]);
+      const yScale = d3
+        .scaleLinear()
+        // .domain([0, d3.max(data)])
+        // Math.floor(this.msgs[0].cost), Math.ceil(this.msgs[this.msgs.length - 1].cost)
+        .domain([d3.min(costs), d3.max(costs)])
+        // .domain([Math.floor(this.msgs[this.msgs.length - 1].cost), Math.ceil(this.msgs[0].cost)])
+        .nice()
+        .range([height - margin.bottom, margin.top]);
+
+      svg
+        .append("g")
+        .attr("transform", `translate(0,${height - margin.bottom})`)
+        .call(d3.axisBottom(xScale))
+        .append("text")
+        .attr("text-anchor", "start")
+        .attr("fill", "grey")
+        // .style("font-size", "12px")
+        // .style("font-style", "oblique")
+        .attr("x", width - margin.right - 20)
+        .attr("y", 30)
+        .text(d => "迭代次数");
+
+      // y轴
+      svg
+        .append("g")
+        .attr("transform", `translate(${margin.left},0)`)
+        .call(d3.axisLeft(yScale))
+        .append("text")
+        .attr("text-anchor", "start")
+        .attr("fill", "grey")
+        // .style("font-size", "12px")
+        // .style("font-style", "宋体")
+        .attr("x", 0)
+        .attr("y", 30)
+        .text(d => "预估成本");
+
+      const pathLine = d3
+        .line()
+        .curve(d3.curveBasis) // 如果没有这一行则是折线，有则为曲线
+        .x((d, i) => xScale(d.step))
+        .y((d, i) => yScale(d.vehicleCost));
+
+      // [1,2,3,4,5,6,7,8]
+      svg
+        .append("path")
+        .attr("d", pathLine(this.msgs)) // data
+        .attr("stroke", "red")
+        .attr("stroke-width", "1px")
+        .attr("fill", "none");
+
+    },
   }
 };
 </script>

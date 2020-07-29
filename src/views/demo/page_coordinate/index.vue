@@ -395,6 +395,7 @@ export default {
         loadPrior: 4, //满载率优先
         speedValue: 10,
         maxIter: 200,
+        costPrior: false,
       },
       queryValue: {
         show: false,
@@ -466,7 +467,7 @@ export default {
           };
         });
         for (var i in this.stdcolumns) {
-          console.log(this.stdcolumns[i].label);
+          // console.log(this.stdcolumns[i].label);
           if (!header.includes(this.stdcolumns[i].label)) {
             var me = this;
             this.$confirm(
