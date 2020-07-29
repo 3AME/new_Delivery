@@ -2,118 +2,57 @@
   <el-container class="content-container">
     <el-header height="auto">
       <el-button-group>
-      <el-col :span="3.2">
-        <el-upload :before-upload="handleUpload" action="default">
-          <el-button
-            class="btn-action"
-            type="text"
-            icon="el-icon-document-add"
-            style="color: #409eff"
-          >打开</el-button>
-        </el-upload>
-      </el-col>
-      <el-button
-        class="btn-action"
-        type="text"
-        icon="el-icon-delete"
-        @click="clear"
-        style="color: #fc5454"
-      >清除数据</el-button>
-      <el-button
-        class="btn-action"
-        @click="handleDownload"
-        type="text"
-        icon="el-icon-tickets"
-        style="color: #fcbe2d"
-      >格式模板</el-button>
-      <el-button
-        class="btn-action"
-        @click="drawerValue.drawerShow = true"
-        type="text"
-        icon="el-icon-set-up"
-        style="color: #607d8b"
-      >设置算法参数</el-button>
-      <el-button
-        class="btn-action"
-        @click="inquery"
-        type="text"
-        icon="el-icon-search"
-        style="color: #02c58d"
-      >查询</el-button>
-    </el-button-group>
-    <el-collapse class="card" @change="handleChange" style="padding: 10px;">
-      <el-collapse-item name="1">
-        <template slot="title">
-          <div
-            style="text-align:center;color:#000; padding: 20px"
-          >
-            <b>路线查询文件内容要求</b>
-          </div>
-        </template>
-        <span class="s">
-          <div style="color:red;text-align:center;">
-            <b>进入路线形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序可任意：</b>
-          </div>
-          <br />
-          <table border="1px" style="border-collapse:collapse;margin-left:1%">
-            <tr>
-              <th>type</th>
-              <th>name_a</th>
-              <th>demand</th>
-              <th>serviceTime</th>
-              <th>beginTime</th>
-              <th>endTime</th>
-              <th>Vehicle_type</th>
-              <th>Vehicles_id</th>
-              <th>Vehicle_load</th>
-              <th>Vehicle_number</th>
-              <th>Vehicle_mileage</th>
-              <th>Center_name</th>
-              <th>0</th>
-              <th>1</th>
-              <th>2</th>
-              <th>3</th>
-              <th>4</th>
-              <th>5</th>
-              <th>6</th>
-              <th>7</th>
-              <th>...</th>
-            </tr>
-          </table>
-          <div class="s">
-            <b>type</b>：点的类型，depot——配送中心，customer——客户点，other——其他类型的点
-            <br />
-            <b>name_a</b>：点的数字编号
-            <br />
-            <b>demand</b>：客户的需求量，配送中心也可以写，这不影响路线的计算
-            <br />
-            <b>serviceTime</b>：自定义该点的服务时间（默认：5min)
-            <br />
-            <b>beginTime</b>：客户点接受配送到达的最早时间（单位默认：min)
-            <br />
-            <b>endTime</b>：客户点接受配送到达的最迟时间（单位默认：min)
-            <br />
-            <b>Vehicle_load</b>：车辆载重（单位默认：t)
-            <br />
-            <b>Vehicle_number</b>：该车辆类型的数量，可不做配置
-            <br />
-            <b>Vehicle_mileage</b>：车辆里程，（默认：35km)
-            <br />
-            <b>Center_name</b>：车辆所在配送中心的名字，对应type="depot"类型点的的编号
-            <br />
-            <b>0、1、2对应的字段为name_a</b>
-          </div>
-        </span>
-      </el-collapse-item>
-    </el-collapse>
+        <el-col :span="3.2">
+          <el-upload :before-upload="handleUpload" action="default">
+            <el-button
+              class="btn-action"
+              type="text"
+              icon="el-icon-document-add"
+              style="color: #409eff"
+            >打开</el-button>
+          </el-upload>
+        </el-col>
+        <el-button
+          class="btn-action"
+          type="text"
+          icon="el-icon-delete"
+          @click="clear"
+          style="color: #fc5454"
+        >清除数据</el-button>
+        <el-button
+          class="btn-action"
+          @click="handleDownload"
+          type="text"
+          icon="el-icon-tickets"
+          style="color: #fcbe2d"
+        >格式模板</el-button>
+        <el-button
+          class="btn-action"
+          @click="drawerValue.drawerShow = true"
+          type="text"
+          icon="el-icon-set-up"
+          style="color: #607d8b"
+        >设置算法参数</el-button>
+        <el-button
+          class="btn-action"
+          @click="inquery"
+          type="text"
+          icon="el-icon-search"
+          style="color: #02c58d"
+        >查询</el-button>
+      </el-button-group>
     </el-header>
     <el-main>
       <el-table
         class="card"
         :header-cell-style="{background:'#e4e5e6'}"
         v-bind="table"
-        height="100%"
+        height="90%"
       >
+      <template slot="empty">
+        <img src="../../../assets/images/路线.png">
+        <img src="../../../assets/images/暂无数据3.png">
+      </template>
         <el-table-column
           v-for="(item, index) in table.columns"
           :key="index"
@@ -121,6 +60,70 @@
           :label="item.label"
         ></el-table-column>
       </el-table>
+      <div style="height:0.5em"></div>
+      <el-collapse class="card" @change="handleChange" style="padding: 10px;background-color:#add8e6">
+        <el-collapse-item name="1">
+          <template slot="title">
+            <div style="text-align:center;color:#000;width:100%">
+              <b>路线查询文件内容要求</b>
+            </div>
+          </template>
+          <span class="s">
+            <div style="color:red;text-align:center;">
+              <b>进入路线形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序可任意：</b>
+            </div>
+            <br />
+            <table border="1px" style="border-collapse:collapse;margin-left:1%">
+              <tr>
+                <th>type</th>
+                <th>name_a</th>
+                <th>demand</th>
+                <th>serviceTime</th>
+                <th>beginTime</th>
+                <th>endTime</th>
+                <th>Vehicle_type</th>
+                <th>Vehicles_id</th>
+                <th>Vehicle_load</th>
+                <th>Vehicle_number</th>
+                <th>Vehicle_mileage</th>
+                <th>Center_name</th>
+                <th>0</th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>6</th>
+                <th>7</th>
+                <th>...</th>
+              </tr>
+            </table>
+            <div class="s">
+              <b>type</b>：点的类型，depot——配送中心，customer——客户点，other——其他类型的点
+              <br />
+              <b>name_a</b>：点的数字编号
+              <br />
+              <b>demand</b>：客户的需求量，配送中心也可以写，这不影响路线的计算
+              <br />
+              <b>serviceTime</b>：自定义该点的服务时间（默认：5min)
+              <br />
+              <b>beginTime</b>：客户点接受配送到达的最早时间（单位默认：min)
+              <br />
+              <b>endTime</b>：客户点接受配送到达的最迟时间（单位默认：min)
+              <br />
+              <b>Vehicle_load</b>：车辆载重（单位默认：t)
+              <br />
+              <b>Vehicle_number</b>：该车辆类型的数量，可不做配置
+              <br />
+              <b>Vehicle_mileage</b>：车辆里程，（默认：35km)
+              <br />
+              <b>Center_name</b>：车辆所在配送中心的名字，对应type="depot"类型点的的编号
+              <br />
+              <b>0、1、2对应的字段为name_a</b>
+            </div>
+          </span>
+        </el-collapse-item>
+      </el-collapse>
     </el-main>
     <drawer v-model="drawerValue" />
     <query-dialog v-model="queryValue"></query-dialog>
@@ -256,7 +259,7 @@ export default {
         console.log(outdata);
         let problem = [];
         var costModeFlag = false;
-        outdata.map(v => {
+        outdata.map((v) => {
           // let i = num_node
           let obj = {};
           obj.nodes = {
@@ -277,11 +280,11 @@ export default {
             useCost: v["Use_cost"],
             drivingCost: v["Driving_cost"],
             waitingCost: v["Waiting_cost"],
-            mileage: v["Vehicle_mileage"]
+            mileage: v["Vehicle_mileage"],
             // count: 5
           };
-          if (v["Use_cost"] || v["Driving_cost"] ||v["Waiting_cost"]) {
-            costModeFlag =true;
+          if (v["Use_cost"] || v["Driving_cost"] || v["Waiting_cost"]) {
+            costModeFlag = true;
           }
           obj.distancePrior = 5;
           obj.timePrior = 1;
@@ -428,6 +431,5 @@ export default {
 };
 </script>
 <style>
-
 </style>
 <style src="../../../assets/btn.css" scoped></style>

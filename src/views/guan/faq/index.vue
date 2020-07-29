@@ -16,7 +16,7 @@
           <div class="row m-t-30">
             <div class="col-lg-4">
               <div class="card faq-box border-success">
-                <div class="card-body">
+                <div class="card-body" style="height:20em">
                   <div class="faq-icon float-right">
                     <i class="fas fa-question-circle font-24 mt-2 text-success"></i>
                   </div>
@@ -32,7 +32,7 @@
 
             <div class="col-lg-4">
               <div class="card faq-box border-primary">
-                <div class="card-body">
+                <div class="card-body" style="height:20em">
                   <div class="faq-icon float-right">
                     <i class="fas fa-question-circle font-24 mt-2 text-primary"></i>
                   </div>
@@ -45,7 +45,7 @@
 
             <div class="col-lg-4">
               <div class="card faq-box border-warning">
-                <div class="card-body">
+                <div class="card-body" style="height:20em">
                   <div class="faq-icon float-right">
                     <i class="fas fa-question-circle font-24 mt-2 text-warning"></i>
                   </div>
@@ -56,10 +56,11 @@
               </div>
             </div>
           </div>
+          <div style="height:1em"></div>
           <div class="row">
             <div class="col-lg-4">
               <div class="card faq-box border-danger">
-                <div class="card-body">
+                <div class="card-body" style="height:20em">
                   <div class="faq-icon float-right">
                     <i class="fas fa-question-circle font-24 mt-2 text-danger"></i>
                   </div>
@@ -72,7 +73,7 @@
 
             <div class="col-lg-4">
               <div class="card faq-box border-info">
-                <div class="card-body">
+                <div class="card-body" style="height:20em">
                   <div class="faq-icon float-right">
                     <i class="fas fa-question-circle font-24 mt-2 text-info"></i>
                   </div>
@@ -85,7 +86,7 @@
 
             <div class="col-lg-4">
               <div class="card faq-box border-dark">
-                <div class="card-body">
+                <div class="card-body" style="height:20em">
                   <div class="faq-icon float-right">
                     <i class="fas fa-question-circle font-24 mt-2 text-dark"></i>
                   </div>

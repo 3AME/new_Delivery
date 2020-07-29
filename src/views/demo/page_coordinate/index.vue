@@ -42,67 +42,6 @@
             style="color: #02c58d"
           >查询</el-button>
         </el-button-group>
-        <el-collapse class="card" @change="handleChange" style="padding: 10px;">
-          <el-collapse-item name="1">
-            <template slot="title">
-              <div style="text-align:center;color:#000; padding: 20px">
-                <b>坐标查询文件内容要求</b>
-              </div>
-            </template>
-            <el-divider></el-divider>
-            <span class="s">
-              <div style="color:red;text-align:center;">
-                <b>坐标形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序可任意：</b>
-              </div>
-              <br />
-              <table border="1px" style="border-collapse:collapse;margin-left:1%">
-                <tr>
-                  <th>type</th>
-                  <th>name</th>
-                  <th>X</th>
-                  <th>Y</th>
-                  <th>demand</th>
-                  <th>serviceTime</th>
-                  <th>beginTime</th>
-                  <th>endTime</th>
-                  <th>Vehicle_type</th>
-                  <th>Vehicle_load</th>
-                  <th>Vehicle_number</th>
-                  <th>Vehicle_mileage</th>
-                  <th>Center_name</th>
-                </tr>
-              </table>
-              <div class="s">
-                <br />
-                <b>type</b>：点的类型，depot——配送中心，customer——客户点，other——其他类型的点
-                <br />
-                <b>name</b>：点的名字或者编号
-                <br />
-                <b>X</b>：点的横坐标（单位默认：km)
-                <br />
-                <b>Y</b>：点的纵坐标（单位默认：km)
-                <br />
-                <b>demand</b>：点的需求量，配送中心也可以写，这不影响路线的计算
-                <br />
-                <b>serviceTime</b>：自定义该点的服务时间（默认：5min)
-                <br />
-                <b>beginTime</b>：客户点接受配送到达的最早时间（单位默认：min)
-                <br />
-                <b>endTime</b>：客户点接受配送到达的最迟时间（单位默认：min)
-                <br />
-                <b>Vehicle_type</b>：车辆类型
-                <br />
-                <b>Vehicle_load</b>：车辆载重
-                <br />
-                <b>Vehicle_number</b>：该车辆类型的数量
-                <br />
-                <b>Vehicle_mileage</b>：车辆里程
-                <br />
-                <b>Center_name</b>：车辆所在配送中心的名字，对应type=depot的name值
-              </div>
-            </span>
-          </el-collapse-item>
-        </el-collapse>
       </div>
     </el-header>
     <el-main>
@@ -110,8 +49,12 @@
         class="card"
         :header-cell-style="{background:'#e4e5e6'}"
         v-bind="table"
-        height="100%"
+        height="90%"
       >
+      <template slot="empty">
+        <img src="../../../assets/images/坐标.png">
+        <img src="../../../assets/images/暂无数据3.png">
+      </template>
         <el-table-column
           v-for="(item, index) in table.columns"
           :key="index"
@@ -119,6 +62,70 @@
           :label="item.label"
         ></el-table-column>
       </el-table>
+      <div style="height:0.5em"></div>
+      <el-collapse class="card" @change="handleChange" style="padding: 10px;background-color:#9fb6cd">
+        <el-collapse-item name="1">
+          <template slot="title">
+            <div style="text-align:center;color:#000;width:100%">
+              <!-- <div style="text-align:center;"> -->
+              <b>坐标查询文件内容要求</b>
+              <!-- </div> -->
+            </div>
+          </template>
+          <el-divider></el-divider>
+          <span class="s" style="background-color:#f0f8ff">
+            <div style="color:red;text-align:center;">
+              <b>坐标形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序可任意：</b>
+            </div>
+            <br />
+            <table border="1px" style="border-collapse:collapse;margin-left:1%">
+              <tr>
+                <th>type</th>
+                <th>name</th>
+                <th>X</th>
+                <th>Y</th>
+                <th>demand</th>
+                <th>serviceTime</th>
+                <th>beginTime</th>
+                <th>endTime</th>
+                <th>Vehicle_type</th>
+                <th>Vehicle_load</th>
+                <th>Vehicle_number</th>
+                <th>Vehicle_mileage</th>
+                <th>Center_name</th>
+              </tr>
+            </table>
+            <div class="s">
+              <br />
+              <b>type</b>：点的类型，depot——配送中心，customer——客户点，other——其他类型的点
+              <br />
+              <b>name</b>：点的名字或者编号
+              <br />
+              <b>X</b>：点的横坐标（单位默认：km)
+              <br />
+              <b>Y</b>：点的纵坐标（单位默认：km)
+              <br />
+              <b>demand</b>：点的需求量，配送中心也可以写，这不影响路线的计算
+              <br />
+              <b>serviceTime</b>：自定义该点的服务时间（默认：5min)
+              <br />
+              <b>beginTime</b>：客户点接受配送到达的最早时间（单位默认：min)
+              <br />
+              <b>endTime</b>：客户点接受配送到达的最迟时间（单位默认：min)
+              <br />
+              <b>Vehicle_type</b>：车辆类型
+              <br />
+              <b>Vehicle_load</b>：车辆载重
+              <br />
+              <b>Vehicle_number</b>：该车辆类型的数量
+              <br />
+              <b>Vehicle_mileage</b>：车辆里程
+              <br />
+              <b>Center_name</b>：车辆所在配送中心的名字，对应type=depot的name值
+            </div>
+          </span>
+        </el-collapse-item>
+      </el-collapse>
     </el-main>
     <drawer v-model="drawerValue" />
     <query-dialog v-model="queryValue"></query-dialog>
@@ -270,7 +277,7 @@ export default {
             mileage: v["Vehicle_mileage"],
             useCost: v["Use_cost"],
             drivingCost: v["Driving_cost"],
-            waitingCost: v["Waiting_cost"]
+            waitingCost: v["Waiting_cost"],
           };
           if (v["Use_cost"] || v["Driving_cost"] ||v["Waiting_cost"]) {
             displayCostFlag =true;
@@ -360,6 +367,5 @@ export default {
 };
 </script>
 <style>
-
 </style>
 <style src="../../../assets/btn.css" scoped></style>

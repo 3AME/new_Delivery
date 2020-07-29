@@ -35,7 +35,7 @@ export default {
         { path: "/index", icon: "home", title: "主页" },
         { path: "/page_coordinate", icon: "object-ungroup", title: "坐标查询" },
         { path: "/page_route", icon: "road", title: "路线查询" },
-        { path: "/page_map", icon: "crosshairs", title: "地图选择" },
+        { path: "/page_map", icon: "crosshairs", title: "地图查询" },
         { path: "/page_history", icon: "history", title: "任务列表" },
         { path: "/about", icon: "users", title: "关于我们" },
         { path: "/faq", icon: "question", title: "常见问题" },

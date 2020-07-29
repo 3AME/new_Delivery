@@ -207,14 +207,7 @@
           <!-- <div style="position:absolute; right:30px; top:30px; background:#F00; width:40%; height:100px">sdrftgyhj</div> -->
         </el-main>
         <el-footer height="auto">
-          <div style="text-align: center; padding-bottom: 50px">
-            <el-autocomplete popper-class="my-autocomplete" placeholder="请输入内容">
-              <i class="el-icon-edit el-input__icon" slot="suffix"></i>
-              <template>
-                <div class="name">item.value</div>
-                <span class="addr">item.address</span>
-              </template>
-            </el-autocomplete>
+          <div style="text-align: center; padding: 50px">
             <el-button-group class="card">
               <el-button
                 class="btn-action"
@@ -243,11 +236,6 @@
                 icon="el-icon-search"
                 style="color: #02c58d;"
               >查询</el-button>
-              <el-switch
-                v-model="selectMode"
-                active-text="点击选点"
-                style="padding-top: 20px; padding-bottom: 20px; padding-left: 12px; padding-right: 12px;"
-              ></el-switch>
             </el-button-group>
           </div>
         </el-footer>
@@ -267,7 +255,7 @@
                 :span="8"
                 style="left: 0; right: 0; top: 0; bottom: 0; margin: auto; position: absolute; top: 50%; transform: translate(100%, -25%);"
               >
-                <el-popover placement="start" width="240" trigger="hover">
+                <el-popover placement="top-start" width="240" trigger="hover">
                   <p style="padding: 10px">确定清空地点列表？</p>
                   <div style="text-align: right; margin: 0; padding: 10px">
                     <el-button type="primary" size="mini" @click="clearTags">确定</el-button>
@@ -456,7 +444,7 @@ export default {
         // }
       ],
       tempDrivingPath: [],
-      selectMode: true,
+      selectMode: false,
       inputVisible: false,
       need_options: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
       loadOptions: [1, 2, 3, 4, 5],
@@ -602,76 +590,33 @@ export default {
     // 位置改变
     handleChange(res) {
       console.log("handleChange");
-
       if (res && res.point) {
         if (this.selectMode) {
-          // this.printObj(res);
-          // console.log("pixel=" + this.printObj(res.pixel));
-          // console.log("jb=" + this.printObj(res.jb));
-          // this.polylinePath.push({
-          //   name: "地点(" + res.point.lng + ", " + res.point.lat + ")",
-          //   lng: res.point.lng,
-          //   lat: res.point.lat,
-          // });
-          // this.center = res.point;
-          // let geocoder = new BMap.Geocoder(); // 创建地址解析器的实例
-          // geocoder.getLocation(res.point, (rs) => {
-          //   // this.add.site = rs.address;
-          //   // 地址描述(string)=
-          //   console.log(rs.address); // 这里打印可以看到里面的详细地址信息，可以根据需求选择想要的
-          //   console.log(rs.addressComponents); // 结构化的地址描述(object)
-          //   console.log(rs.addressComponents.province); // 省
-          //   console.log(rs.addressComponents.city); // 城市
-          //   console.log(rs.addressComponents.district); // 区县
-          //   console.log(rs.addressComponents.street); // 街道
-          //   console.log(rs.addressComponents.streetNumber); // 门牌号
-          //   console.log(rs.surroundingPois); // 附近的POI点(array)
-          //   console.log(rs.business); // 商圈字段，代表此点所属的商圈(string)
-          // });
-          let me = this;
-          let point = res.point;
-          let name = "地点(" + res.point.lng + ", " + res.point.lat + ")";
-          me.activeName = "1";
-          me.polylinePath.forEach(function (item) {
-            // me.drivingPath.push({
-            //   start: name,
-            //   end: item.name
-            // })
-            var p = {
-              start: {
-                name: name,
-                lng: point.lng,
-                lat: point.lat,
-              },
-              end: {
-                name: item.name,
-                lng: item.lng,
-                lat: item.lat,
-              },
-            };
-            console.log("pppppppppppp=" + JSON.stringify(p));
-            // me.drivingPath.push(p)
-            me.tempDrivingPath.push(p);
+          this.printObj(res);
+          // console.log('res=' + Object.keys(res))
+          // console.log('point=' + Object.keys(res.point))
+          console.log("pixel=" + this.printObj(res.pixel));
+          console.log("jb=" + this.printObj(res.jb));
+          this.polylinePath.push({
+            name: "地点(" + res.point.lng + ", " + res.point.lat + ")",
+            lng: res.point.lng,
+            lat: res.point.lat,
           });
-          if (me.tempDrivingPath.length > 0) {
-            me.drivingPath.push(me.tempDrivingPath[0]);
-          }
-          me.activeNode = me.drivingPath.length;
-          // console.log('size=' + me.drivingPath.length)
-          // console.log('me.drivingPath=' + JSON.stringify(me.drivingPath))
-          // console.log('lng=' + point.lng + ' lat=' + point.lat)
-          var path = {
-            name: name,
-            lng: point.lng,
-            lat: point.lat,
-          };
-          if (me.logisticsCenter === undefined) {
-            me.logisticsCenter = path;
-          } else {
-            // path.need = 0.1 * (me.polylinePath.length + 1);
-            path.need = 0.1;
-          }
-          me.polylinePath.push(path);
+          // eslint-disable-next-line no-undef
+          let geocoder = new BMap.Geocoder(); // 创建地址解析器的实例
+          geocoder.getLocation(res.point, (rs) => {
+            // this.add.site = rs.address;
+            // 地址描述(string)=
+            console.log(rs.address); // 这里打印可以看到里面的详细地址信息，可以根据需求选择想要的
+            console.log(rs.addressComponents); // 结构化的地址描述(object)
+            console.log(rs.addressComponents.province); // 省
+            console.log(rs.addressComponents.city); // 城市
+            console.log(rs.addressComponents.district); // 区县
+            console.log(rs.addressComponents.street); // 街道
+            console.log(rs.addressComponents.streetNumber); // 门牌号
+            console.log(rs.surroundingPois); // 附近的POI点(array)
+            console.log(rs.business); // 商圈字段，代表此点所属的商圈(string)
+          });
         } else {
           this.center = res.point;
           this.$emit("input", {

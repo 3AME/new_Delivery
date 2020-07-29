@@ -1,32 +1,14 @@
 <template>
   <el-container class="content-container is-vertical" style="height: 100%; width: 100%">
     <div style="height: 100%; width: 100%; text-align: center; display: table;">
-        <!-- class="vertical-center" -->
         <div class="vertical-center">
-          <el-row style="text-align: center; ">
-            <el-col :span="9" style="text-align: right; height: 100%;">
-              <img
-                class="rounded-circle"
-                style="height: 100px; padding: 10px"
-                src="./image/all_bak.png"
-              />
-            </el-col>
-            <el-col :span="15" style="text-align: left; height: 100%;">
-              <!-- <h3 class="mt-0 font-600 vertical-center" style="height: 100px;padding: 10px">川流配送</h3> -->
-              <img
-                class="rounded-circle"
-                style="height: 100px; padding: 10px"
-                alt="200x200"
-                src="../../../assets/images/small/app_name.png"
-              />
-            </el-col>
-          </el-row>
-          <!-- <img
+          <img
             class="rounded-circle"
-            style="height: 100px; padding: 10px"
+            height="10%"
+            style="padding: 10px"
             alt="200x200"
-            src="../../../assets/images/small/app_name.png"
-          />-->
+            src="../../../assets/images/small/app_name_with_logo.png"
+          />
           <div
             class="card"
             style="margin-left: 15%; margin-top: 10px; margin-right: 15%; margin-bottom: 10px;padding: 2%"
