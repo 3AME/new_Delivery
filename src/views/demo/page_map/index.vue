@@ -35,28 +35,32 @@
       </div>
     </el-header>-->
     <el-container style="overflow:scroll;overflow-x: hidden !important; margin: 10px">
-      <el-aside width="20%" height="100%" style="margin: 10px;">
+      <el-aside width="20%" class="aside" style="margin: 10px;">
         <div class="card" style="margin: 10px">
           <div style="text-align: center; padding: 20px">
-            <img width="40%" src="../../../assets/images/small/车辆.png" />
+            <img width="40%" src="../../../assets/images/small/地点.png" />
           </div>
           <div style="padding: 10px; border-bottom: 1px solid #EBEEF5;">
             <el-row>
               <el-col :span="16">
-                <span style="font-size: 24px;">车辆列表</span>
+                <span style="font-size: 24px;">地点列表</span>
               </el-col>
 
               <el-col
                 :span="8"
                 style="left: 0; right: 0; top: 0; bottom: 0; margin: auto; position: absolute; top: 50%; transform: translate(100%, -25%);"
               >
-                <el-popover placement="right" width="240" trigger="hover">
-                  <p style="padding: 10px">确定清空车辆列表？</p>
+                <el-popover
+                  placement="bottom"
+                  width="240"
+                  trigger="hover"
+                  v-if="polylinePath.length > 0"
+                >
+                  <p style="padding: 10px">确定清空地点列表？</p>
                   <div style="text-align: right; margin: 0; padding: 10px">
-                    <el-button type="primary" size="mini" @click="clearVehicle">确定</el-button>
+                    <el-button type="primary" size="mini" @click="clearTags">确定</el-button>
                   </div>
                   <i
-                    v-if="vehicles.length > 0"
                     slot="reference"
                     class="el-icon-delete"
                     style="float: right; font-size: 12px; color: red;"
@@ -65,63 +69,67 @@
               </el-col>
             </el-row>
           </div>
-          <div v-if="vehicles.length == 0" class="box-card">
+          <div v-if="polylinePath.length == 0" class="box-card">
             <div style="font-size: 16px; color: #999; text-align: center; padding: 100px 0;">
               <img width="80%" src="../../../assets/images/small/暂无数据.png" />
               <p>什么都没有</p>
             </div>
           </div>
           <el-popover
-            v-for="(vehicle, index) in vehicles"
-            :key="vehicle.id"
-            title="修改车辆信息"
+            v-for="(path, index) in polylinePath"
+            :key="path.name"
+            title="修改地点信息"
             :name="index"
             trigger="hover"
             placement="right"
           >
-            <div style="text-align: center; padding: 10px">
-              车辆类型
-              <el-input width="50%" size="mini" v-model="vehicle.id" autidocomplete="off" clearable></el-input>
-            </div>
-            <div style="text-align: center; padding: 10px">
-              车辆载重
-              <el-input-number v-model="vehicle.load" :min="1" :max="10" label="车辆载重" size="mini"></el-input-number>
-            </div>
-            <div style="text-align: center; padding: 10px">
-              车辆里程
-              <el-input-number
-                v-model="vehicle.mileage"
-                :step="5"
-                :min="10"
-                :max="120"
-                label="车辆里程"
-                size="mini"
-              ></el-input-number>
-            </div>
-            <div style="text-align: center; padding: 10px">
-              车辆数量
-              <el-input-number v-model="vehicle.count" :min="1" :max="5" label="车辆里程" size="mini"></el-input-number>
-            </div>
+            <el-row style="padding: 10px">
+              <el-col :span="8">节点类型：</el-col>
+              <el-col :span="16">{{ index == 0 ? '中心节点' : '子节点' }}</el-col>
+            </el-row>
+            <el-row style="padding: 10px">
+              <el-col :span="8">节点名：</el-col>
+              <el-col :span="16">{{ path.name }}</el-col>
+            </el-row>
+            <el-row style="padding: 10px">
+              <el-col :span="8">需求量</el-col>
+              <el-col :span="16">
+                <el-select
+                  v-model="path.need"
+                  filterable
+                  allow-create
+                  default-first-option
+                  placeholder="需求量"
+                  size="mini"
+                  :disabled="path.type == 'depot'"
+                >
+                  <el-option v-for="item in need_options" :key="item" :label="item" :value="item"></el-option>
+                </el-select>
+              </el-col>
+            </el-row>
             <div style="text-align: center; padding: 10px">
               <i
-                @click="removeVehicle(vehicle)"
+                @click="removeDepot(path)"
                 class="i-tag el-icon-delete"
-                style="font-size: 18px; color: red;"
+                style="font-size: 16px; color: red;"
               ></i>
             </div>
             <div slot="reference" class="el-card__header">
               <el-row type="flex" justify="space-around">
                 <el-col :span="4">
-                  <i class="el-icon-truck" style="font-size: 20px; float: left; color: #409eff"></i>
+                  <i
+                    class="el-icon-office-building"
+                    style="font-size: 20px; float: left; color: #00cdcd;"
+                  ></i>
                 </el-col>
-                <el-col :span="16">
-                  <span style="font-size: 12px;padding: 0 8px">车辆类型：{{ vehicle.id }}</span>
+                <el-col :span="16" style="text-align: center">
+                  <span style="font-size: 12px;padding: 0 8px;">{{ path.name }}</span>
                 </el-col>
                 <el-col :span="4">
                   <i
                     class="el-icon-delete"
                     style="float: right; color: red;"
-                    @click="removeVehicle(vehicle)"
+                    @click="removeDepot(path)"
                   ></i>
                 </el-col>
               </el-row>
@@ -129,6 +137,7 @@
           </el-popover>
         </div>
       </el-aside>
+
       <el-container>
         <el-main
           class="card"
@@ -166,11 +175,6 @@
                   v-model="searchValue"
                   clearable
                 ></el-input>
-                <!-- <input
-                type="text"
-                :placeholder="logisticsCenter == undefined ? '搜索并添加中心节点' : '搜索并添加子节点'"
-                class="serachinput"
-                />-->
               </bm-auto-complete>
             </bm-control>
             <bm-local-search
@@ -188,6 +192,19 @@
               :dragging="true"
               animation="BMAP_ANIMATION_BOUNCE"
             />
+
+            <!-- <bm-marker :position="logisticsCenter">
+              <bm-info-window
+              :position="logisticsCenter"
+                :show="show"
+                @close="show = false"
+                @open="infoWindowOpen"
+                style="font-size: 14px"
+              >
+                <p>站点：</p>
+                <p>站点地址：</p>
+              </bm-info-window>
+            </bm-marker> -->
 
             <bm-view style="width:100%; height:100%"></bm-view>
             <bm-driving
@@ -208,13 +225,18 @@
         </el-main>
         <el-footer height="auto">
           <div style="text-align: center; padding-bottom: 50px">
-            <el-autocomplete popper-class="my-autocomplete" placeholder="请输入内容">
+            <el-autocomplete
+              popper-class="my-autocomplete"
+              placeholder="请输入内容"
+              style="padding: 10px"
+            >
               <i class="el-icon-edit el-input__icon" slot="suffix"></i>
               <template>
                 <div class="name">item.value</div>
                 <span class="addr">item.address</span>
               </template>
             </el-autocomplete>
+
             <el-button-group class="card">
               <el-button
                 class="btn-action"
@@ -252,28 +274,32 @@
           </div>
         </el-footer>
       </el-container>
-      <el-aside width="20%" class="aside" style="margin: 10px; float: right">
+      <el-aside width="20%" height="100%" style="margin: 10px;">
         <div class="card" style="margin: 10px">
           <div style="text-align: center; padding: 20px">
-            <img width="40%" src="../../../assets/images/small/地点.png" />
+            <img width="40%" src="../../../assets/images/small/车辆.png" />
           </div>
           <div style="padding: 10px; border-bottom: 1px solid #EBEEF5;">
             <el-row>
               <el-col :span="16">
-                <span style="font-size: 24px;">地点列表</span>
+                <span style="font-size: 24px;">车辆列表</span>
               </el-col>
 
               <el-col
                 :span="8"
                 style="left: 0; right: 0; top: 0; bottom: 0; margin: auto; position: absolute; top: 50%; transform: translate(100%, -25%);"
               >
-                <el-popover placement="start" width="240" trigger="hover">
-                  <p style="padding: 10px">确定清空地点列表？</p>
+                <el-popover
+                  placement="bottom"
+                  width="240"
+                  trigger="hover"
+                  v-if="vehicles.length > 0"
+                >
+                  <p style="padding: 10px">确定清空车辆列表？</p>
                   <div style="text-align: right; margin: 0; padding: 10px">
-                    <el-button type="primary" size="mini" @click="clearTags">确定</el-button>
+                    <el-button type="primary" size="mini" @click="clearVehicle">确定</el-button>
                   </div>
                   <i
-                    v-if="polylinePath.length > 0"
                     slot="reference"
                     class="el-icon-delete"
                     style="float: right; font-size: 12px; color: red;"
@@ -282,111 +308,89 @@
               </el-col>
             </el-row>
           </div>
-          <div v-if="polylinePath.length == 0" class="box-card">
+          <div v-if="vehicles.length == 0" class="box-card">
             <div style="font-size: 16px; color: #999; text-align: center; padding: 100px 0;">
               <img width="80%" src="../../../assets/images/small/暂无数据.png" />
               <p>什么都没有</p>
             </div>
           </div>
           <el-popover
-            v-for="(path, index) in polylinePath"
-            :key="path.name"
-            title="修改地点信息"
+            v-for="(vehicle, index) in vehicles"
+            :key="vehicle.id"
+            title="修改车辆信息"
             :name="index"
             trigger="hover"
             placement="right"
           >
-            <div
-              class="div-tag"
-              style="text-align: center; padding: 10px"
-              v-if="index == 0"
-            >节点类型：中心节点</div>
-            <div class="div-tag" style="text-align: center; padding: 10px" v-else>节点类型：子节点</div>
-            <div class="div-tag" style="text-align: center; padding: 10px">节点地名：{{ path.name }}</div>
-            <div style="text-align: center; padding: 10px" v-if="index != 0">
-              <!-- 需求量 -->
-              <el-select
-                v-model="path.need"
-                filterable
-                allow-create
-                default-first-option
-                placeholder="需求量"
-                size="mini"
-              >
-                <el-option v-for="item in need_options" :key="item" :label="item" :value="item"></el-option>
-              </el-select>
-            </div>
+            <el-row style="padding: 10px">
+              <el-col :span="8">车辆类型：</el-col>
+              <el-col :span="16">
+                <el-input
+                  width="50%"
+                  size="mini"
+                  v-model="vehicle.id"
+                  autidocomplete="off"
+                  clearable
+                ></el-input>
+              </el-col>
+            </el-row>
+            <el-row style="padding: 10px">
+              <el-col :span="8">车辆载重：</el-col>
+              <el-col :span="16">
+                <el-input-number v-model="vehicle.load" :min="1" :max="10" label="车辆载重" size="mini"></el-input-number>
+              </el-col>
+            </el-row>
+            <el-row style="padding: 10px">
+              <el-col :span="8">车辆里程：</el-col>
+              <el-col :span="16">
+                <el-input-number
+                  v-model="vehicle.mileage"
+                  :step="5"
+                  :min="10"
+                  :max="120"
+                  label="车辆里程"
+                  size="mini"
+                ></el-input-number>
+              </el-col>
+            </el-row>
+            <el-row style="padding: 10px">
+              <el-col :span="8">车辆数量：</el-col>
+              <el-col :span="16">
+                <el-input-number
+                  v-model="vehicle.count"
+                  :min="1"
+                  :max="10"
+                  label="车辆里程"
+                  size="mini"
+                ></el-input-number>
+              </el-col>
+            </el-row>
             <div style="text-align: center; padding: 10px">
               <i
-                @click="handleClose(path)"
+                @click="removeVehicle(vehicle)"
                 class="i-tag el-icon-delete"
-                style="font-size: 16px; color: red;"
+                style="font-size: 18px; color: red;"
               ></i>
             </div>
             <div slot="reference" class="el-card__header">
               <el-row type="flex" justify="space-around">
                 <el-col :span="4">
-                  <i
-                    class="el-icon-office-building"
-                    style="font-size: 20px; float: left; color: #02c58d; left: 0; right: 0; top: 0; bottom: 0; margin: auto; position: absolute; top: 50%; transform: translate(0%, -50%);"
-                  ></i>
+                  <i class="el-icon-truck" style="font-size: 20px; float: left; color: #409eff"></i>
                 </el-col>
-                <el-col :span="16" style="text-align: center">
-                  <span style="font-size: 12px;padding: 0 8px;">{{ path.name }}</span>
+                <el-col :span="16">
+                  <span style="font-size: 12px;padding: 0 8px">车辆类型：{{ vehicle.id }}</span>
                 </el-col>
                 <el-col :span="4">
                   <i
                     class="el-icon-delete"
-                    style="float: right; color: red; left: 0; right: 0; top: 0; bottom: 0; margin: auto; position: absolute; top: 50%; transform: translate(90%, -50%);"
-                    @click="handleClose(path)"
+                    style="float: right; color: red;"
+                    @click="removeVehicle(vehicle)"
                   ></i>
                 </el-col>
               </el-row>
             </div>
           </el-popover>
         </div>
-
-        <!-- <div v-if="polylinePath.length > 0" style="text-align: center;">
-          <el-button size="mini" class="btn-danger" style="margin: 8px;" @click="clearTags()">清空</el-button>
-        </div>
-        <div v-if="polylinePath.length == 0" class="box-card" style>
-          <div style="text-align: center;">空空如也</div>
-        </div>
-
-        <el-collapse
-          id="collapse_nodes"
-          v-else
-          v-model="activeNode"
-          accordion
-          style
-          aria-expanded="true"
-        >
-          <el-collapse-item
-            v-for="(path, index) in polylinePath"
-            :key="path.name"
-            :title="path.name"
-            :name="index"
-            style="margin-left: 8px;margin-right: 8px;"
-          >
-            <div class="div-tag" style="text-align: center;" v-if="index == 0">中心节点</div>
-            <div class="div-tag" style="text-align: center;" v-else>子节点</div>
-            <div style="text-align: center;" v-if="index != 0">
-              <el-select
-                v-model="path.need"
-                filterable
-                allow-create
-                default-first-option
-                placeholder="需求量"
-                size="mini"
-              >
-                <el-option v-for="item in need_options" :key="item" :label="item" :value="item"></el-option>
-              </el-select>
-            </div>
-            <div style="text-align: center;">
-              <i @click="handleClose(path)" class="i-tag el-icon-delete" style="font-size: 16px;"></i>
-            </div>
-          </el-collapse-item>
-        </el-collapse>-->
       </el-aside>
     </el-container>
     <drawer v-model="drawerValue" />
@@ -418,6 +422,7 @@ export default {
   },
   data() {
     return {
+      show: false,
       drawerValue: {
         drawerShow: false,
         distancePrior: 5, //距离优先
@@ -456,7 +461,7 @@ export default {
         // }
       ],
       tempDrivingPath: [],
-      selectMode: true,
+      selectMode: false,
       inputVisible: false,
       need_options: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
       loadOptions: [1, 2, 3, 4, 5],
@@ -498,6 +503,14 @@ export default {
     }
   },
   methods: {
+    infoWindowOpen() {
+      //这里有个问题纠结了很久，百度的信息窗口默认有个点击其他地方就消失的事件，我没有找到
+      //并且信息窗口点击一次显示，一次消失
+      //于是我加了一个100毫秒的定时器，保证每次点击地图都可以展示信息窗口
+      setInterval(() => {
+        this.show = true;
+      }, 100);
+    },
     refresh() {
       // this.reload();
       window.location.reload();
@@ -804,7 +817,7 @@ export default {
       }
     },
     // 移除Tag
-    handleClose(tag) {
+    removeDepot(tag) {
       this.polylinePath.splice(this.polylinePath.indexOf(tag), 1);
       for (var i = this.drivingPath.length - 1; i >= 0; i--) {
         var item = this.drivingPath[i];
@@ -1100,33 +1113,5 @@ export default {
   -webkit-transition: border-bottom-color 0.3s;
   transition: border-bottom-color 0.3s;
   outline: 0;
-}
-/* #collapse_nodes .el-collapse-item__wrap {
-  background-color: #f5f5f5;
-} */
-.btn-success {
-  background-color: #02c58d;
-  border: 1px solid #02c58d;
-  color: #ffffff;
-}
-.btn-dark {
-  background-color: #354558;
-  border: 1px solid #354558;
-  color: #ffffff;
-}
-.btn-danger {
-  background-color: #fc5454;
-  border: 1px solid #fc5454;
-  color: #ffffff;
-}
-.btn-upload {
-  background-color: #30419b;
-  border: 1px solid #30419b;
-  color: #ffffff;
-}
-.btn-blue-grey {
-  background-color: #607d8b;
-  border: 1px solid #607d8b;
-  color: #ffffff;
 }
 </style>

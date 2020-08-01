@@ -1,46 +1,48 @@
 <template>
-  <el-container class="content-container">
+  <el-container class="content-container" style="overflow-x: hidden !important;">
     <el-header height="auto" style="padding: 20px">
-      <el-button-group class="card">
-        <el-col :span="3.2">
-          <el-upload :before-upload="handleUpload" action="default">
-            <el-button
-              class="btn-action"
-              type="text"
-              icon="el-icon-document-add"
-              style="color: #409eff"
-            >打开</el-button>
-          </el-upload>
-        </el-col>
-        <el-button
-          class="btn-action"
-          type="text"
-          icon="el-icon-delete"
-          @click="clear"
-          style="color: #fc5454"
-        >清除数据</el-button>
-        <el-button
-          class="btn-action"
-          @click="handleDownload"
-          type="text"
-          icon="el-icon-tickets"
-          style="color: #fcbe2d"
-        >格式模板</el-button>
-        <el-button
-          class="btn-action"
-          @click="drawerValue.drawerShow = true"
-          type="text"
-          icon="el-icon-set-up"
-          style="color: #607d8b"
-        >设置算法参数</el-button>
-        <el-button
-          class="btn-action"
-          @click="inquery"
-          type="text"
-          icon="el-icon-search"
-          style="color: #02c58d"
-        >查询</el-button>
-      </el-button-group>
+      <div>
+        <el-button-group class="card">
+          <el-col :span="3.2">
+            <el-upload :before-upload="handleUpload" action="default">
+              <el-button
+                class="btn-action"
+                type="text"
+                icon="el-icon-document-add"
+                style="color: #409eff"
+              >打开</el-button>
+            </el-upload>
+          </el-col>
+          <el-button
+            class="btn-action"
+            type="text"
+            icon="el-icon-delete"
+            @click="clear"
+            style="color: #fc5454"
+          >清除数据</el-button>
+          <el-button
+            class="btn-action"
+            @click="handleDownload"
+            type="text"
+            icon="el-icon-tickets"
+            style="color: #fcbe2d"
+          >格式模板</el-button>
+          <el-button
+            class="btn-action"
+            @click="drawerValue.drawerShow = true"
+            type="text"
+            icon="el-icon-set-up"
+            style="color: #607d8b"
+          >设置算法参数</el-button>
+          <el-button
+            class="btn-action"
+            @click="inquery"
+            type="text"
+            icon="el-icon-search"
+            style="color: #02c58d"
+          >查询</el-button>
+        </el-button-group>
+      </div>
     </el-header>
     <el-container style="overflow:scroll;overflow-x: hidden !important; ">
       <el-aside width="20%" style="margin: 10px;" v-if="table.data.length > 0">
@@ -58,7 +60,7 @@
                 :span="8"
                 style="left: 0; right: 0; top: 0; bottom: 0; margin: auto; position: absolute; top: 50%; transform: translate(100%, -25%);"
               >
-                <el-popover
+                <el-popconfirm
                   placement="bottom"
                   width="240"
                   trigger="hover"
@@ -73,7 +75,7 @@
                     class="el-icon-delete"
                     style="float: right; font-size: 12px; color: red;"
                   >清空</i>
-                </el-popover>
+                </el-popconfirm>
               </el-col>
             </el-row>
           </div>
@@ -100,6 +102,14 @@
             <el-row style="padding: 10px">
               <el-col :span="8">节点名：</el-col>
               <el-col :span="16">{{ path.id }}</el-col>
+            </el-row>
+            <el-row style="padding: 10px">
+              <el-col :span="8">横坐标：</el-col>
+              <el-col :span="16">{{ path.x }}</el-col>
+            </el-row>
+            <el-row style="padding: 10px">
+              <el-col :span="8">纵坐标：</el-col>
+              <el-col :span="16">{{ path.y }}</el-col>
             </el-row>
             <el-row style="padding: 10px">
               <el-col :span="8">需求量</el-col>
@@ -147,6 +157,7 @@
           </el-popover>
         </div>
       </el-aside>
+
       <el-main style="padding: 10px 20px">
         <el-table
           class="card"
@@ -155,8 +166,8 @@
           height="100%"
         >
           <template slot="empty">
-            <img src="../../../assets/images/路线.png" width="30%" />
-            <img src="../../../assets/images/暂无数据3.png" width="80%" />
+            <img src="../../../assets/images/坐标.png" style="width: 80%" />
+            <img src="../../../assets/images/暂无数据3.png" style="width: 80%" />
           </template>
           <el-table-column
             v-for="(item, index) in table.columns"
@@ -285,58 +296,54 @@
         </div>
       </el-aside>
     </el-container>
-
     <el-footer height="auto" style="padding: 20px">
-     
-      <template slot="empty">
-        <img src="../../../assets/images/路线.png">
-        <img src="../../../assets/images/暂无数据3.png">
-      </template>
-     
-      <div style="height:0.5em"></div>
-      <el-collapse class="card" @change="handleChange" style="padding: 0.1em;background-color:#add8e6">
+      <el-collapse
+        class="card"
+        @change="handleChange"
+        style="padding: 10px;background-color:#9fb6cd"
+      >
         <el-collapse-item name="1">
           <template slot="title">
             <div style="text-align:center;color:#000;width:100%">
-              <b>路线查询文件内容要求</b>
+              <!-- <div style="text-align:center;"> -->
+              <b>坐标查询文件内容要求</b>
+              <!-- </div> -->
             </div>
           </template>
-          <span class="s">
+          <el-divider></el-divider>
+          <span class="s" style="background-color:#f0f8ff">
             <div style="color:red;text-align:center;">
-              <b>进入路线形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序可任意：</b>
+              <b>坐标形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序可任意：</b>
             </div>
             <br />
             <table border="1px" style="border-collapse:collapse;margin-left:1%">
               <tr>
                 <th>type</th>
-                <th>name_a</th>
+                <th>name</th>
+                <th>X</th>
+                <th>Y</th>
                 <th>demand</th>
                 <th>serviceTime</th>
                 <th>beginTime</th>
                 <th>endTime</th>
                 <th>Vehicle_type</th>
-                <th>Vehicles_id</th>
                 <th>Vehicle_load</th>
                 <th>Vehicle_number</th>
                 <th>Vehicle_mileage</th>
                 <th>Center_name</th>
-                <th>0</th>
-                <th>1</th>
-                <th>2</th>
-                <th>3</th>
-                <th>4</th>
-                <th>5</th>
-                <th>6</th>
-                <th>7</th>
-                <th>...</th>
               </tr>
             </table>
             <div class="s">
+              <br />
               <b>type</b>：点的类型，depot——配送中心，customer——客户点，other——其他类型的点
               <br />
-              <b>name_a</b>：点的数字编号
+              <b>name</b>：点的名字或者编号
               <br />
-              <b>demand</b>：客户的需求量，配送中心也可以写，这不影响路线的计算
+              <b>X</b>：点的横坐标（单位默认：km)
+              <br />
+              <b>Y</b>：点的纵坐标（单位默认：km)
+              <br />
+              <b>demand</b>：点的需求量，配送中心也可以写，这不影响路线的计算
               <br />
               <b>serviceTime</b>：自定义该点的服务时间（默认：5min)
               <br />
@@ -344,15 +351,15 @@
               <br />
               <b>endTime</b>：客户点接受配送到达的最迟时间（单位默认：min)
               <br />
-              <b>Vehicle_load</b>：车辆载重（单位默认：t)
+              <b>Vehicle_type</b>：车辆类型
               <br />
-              <b>Vehicle_number</b>：该车辆类型的数量，可不做配置
+              <b>Vehicle_load</b>：车辆载重
               <br />
-              <b>Vehicle_mileage</b>：车辆里程，（默认：35km)
+              <b>Vehicle_number</b>：该车辆类型的数量
               <br />
-              <b>Center_name</b>：车辆所在配送中心的名字，对应type="depot"类型点的的编号
+              <b>Vehicle_mileage</b>：车辆里程
               <br />
-              <b>0、1、2对应的字段为name_a</b>
+              <b>Center_name</b>：车辆所在配送中心的名字，对应type=depot的name值
             </div>
           </span>
         </el-collapse-item>
@@ -373,8 +380,8 @@ import drawer from "../drawer/";
 import QueryDialog from "../dialog/query-dialog";
 Vue.use(pluginExport);
 Vue.use(pluginImport);
+var outdata;
 export default {
-  inject: ["reload"], //注入依赖
   components: {
     drawer,
     QueryDialog,
@@ -395,7 +402,7 @@ export default {
         problem: {},
         time: "",
         isHistory: false,
-        type: "route",
+        type: "coordinate",
       },
       table: {
         columns: [],
@@ -414,7 +421,9 @@ export default {
     console.log("mounted");
     this.stdcolumns = [
       { label: "type", prop: "type" },
-      { label: "name_a", prop: "name_a" },
+      { label: "name", prop: "name" },
+      { label: "X", prop: "X" },
+      { label: "Y", prop: "Y" },
       { label: "demand", prop: "demand" },
       { label: "serviceTime", prop: "serviceTime" },
       { label: "beginTime", prop: "beginTime" },
@@ -422,9 +431,6 @@ export default {
       { label: "Vehicle_type", prop: "Vehicle_type" },
       { label: "Vehicle_load", prop: "Vehicle_load" },
       { label: "Vehicle_number", prop: "Vehicle_number" },
-      // { label: "Use_cost", prop: "Use_cost" },
-      // { label: "Driving_cost", prop: "Driving_cost" },
-      // { label: "Waiting_cost", prop: "Waiting_cost" },
       { label: "Vehicle_mileage", prop: "Vehicle_mileage" },
       { label: "Center_name", prop: "Center_name" },
     ];
@@ -441,9 +447,6 @@ export default {
     },
     clearDepots() {
       this.polylinePath.splice(0, this.polylinePath.length);
-    },
-    refresh() {
-      this.reload();
     },
     clear() {
       this.table = {
@@ -462,9 +465,8 @@ export default {
             prop: e,
           };
         });
-
         for (var i in this.stdcolumns) {
-          // console.log(this.stdcolumns[i].label)
+          console.log(this.stdcolumns[i].label);
           if (!header.includes(this.stdcolumns[i].label)) {
             var me = this;
             this.$confirm(
@@ -480,78 +482,49 @@ export default {
           }
         }
         this.table.data = results;
-        console.log("results:", results);
+        outdata = results;
         this.tableToPreblem(results);
       });
       return false;
     },
-    tableToPreblem(results) {
-      console.log(results);
+    tableToPreblem(outdata) {
       let problem = [];
       var costModeFlag = false;
-      results.map((v) => {
-        // let i = num_node
+      outdata.map((v) => {
         let obj = {};
         obj.nodes = {
           type: v["type"],
-          id: v["name_a"],
+          id: v["name"],
           demand: v["demand"],
           service_time: v["serviceTime"],
           tw_beg: v["beginTime"],
           tw_end: v["endTime"],
+          x: v["X"],
+          y: v["Y"],
         };
-        // obj.edge = { u: v['begin'], v: v['end'], w: v['load_length'] }
-        obj.list = { list_num: v["name_a"] };
+        // obj.edges = { x: v['X'], y: v['Y'] }
         obj.vehicles = {
           id: v["Vehicle_type"],
           depot: v["Center_name"],
           load: v["Vehicle_load"],
           count: v["Vehicle_number"],
+          mileage: v["Vehicle_mileage"],
           useCost: v["Use_cost"],
           drivingCost: v["Driving_cost"],
           waitingCost: v["Waiting_cost"],
-          mileage: v["Vehicle_mileage"],
-          // count: 5
         };
         if (v["Use_cost"] || v["Driving_cost"] || v["Waiting_cost"]) {
           costModeFlag = true;
         }
-        obj.distancePrior = 5;
-        obj.timePrior = 1;
-        obj.loadPrior = 4;
         problem.push(obj);
       });
-      console.log(problem);
       // eslint-disable-next-line camelcase
-      let new_results = [];
-      for (var i = 0; i < results.length; i++) {
-        results.map((v) => {
-          let obj = {};
-          obj = { u: v["name_a"], v: i, w: v[i] };
-          if (obj.w == undefined || obj.w < 0 || obj.u == obj.v) {
-          } else {
-            new_results.push(obj);
-          }
-        });
-      }
-      console.log(new_results);
-      // eslint-disable-next-line camelcase
-      let new_list = problem.map((obj) => {
-        return obj.list;
-      });
-      console.log(new_list);
       let new_nodes = problem.map((obj) => {
         return obj.nodes;
       });
-      console.log("nodes:");
-      console.log(new_nodes);
-      for (let i = new_nodes.length - 1; i >= 0; i--) {
-        if (new_nodes[i].type === undefined || new_nodes[i].id === undefined) {
-          new_nodes.splice(i, 2); // 删除excel数据中出现的undefined
-        }
-      }
-      console.log(new_nodes);
+      let newproblem_edges = "euc2d";
 
+      // eslint-disable-next-line camelcase
       let new_vehicles = problem.map((obj) => {
         if (obj.vehicles !== undefined) {
           return obj.vehicles;
@@ -559,29 +532,27 @@ export default {
           console.log("value is undefined");
         }
       });
-      // new_vehicles.splice(0);
-      console.log(new_vehicles);
       for (let i = new_vehicles.length - 1; i >= 0; i--) {
         if (
-          new_vehicles[i].load === undefined
-          // ||new_vehicles[i].count === undefined
+          new_vehicles[i].load === undefined ||
+          new_vehicles[i].id === undefined
         ) {
           new_vehicles.splice(i, 2); // 删除excel数据中出现的undefined
         }
       }
-      console.log(new_vehicles);
       // eslint-disable-next-line camelcase
       let new_test = {
         distancePrior: 5, // 路程加权
         timePrior: 1, // 用时加权
         loadPrior: 4, // 满载率加权
       };
-      console.log(new_test);
-      var new_problem = {
-        routeMode: true,
+      // eslint-disable-next-line camelcase
+
+      newproblem_edges = {
+        routeMode: false,
         costMode: costModeFlag,
         nodes: new_nodes,
-        edges: new_results,
+        edges: newproblem_edges,
         vehicles: new_vehicles,
         distancePrior: this.drawerValue.distancePrior,
         timePrior: this.drawerValue.timePrior,
@@ -589,18 +560,13 @@ export default {
         speed: this.drawerValue.speedValue,
         maxiter: this.drawerValue.maxIter,
       };
-      console.log(new_problem);
       this.vehicles = new_vehicles;
       this.polylinePath = new_nodes;
-      this.queryValue.problem = new_problem;
 
-      console.log(this.distancePrior);
+      console.log("problem:" + JSON.stringify(newproblem_edges));
+      this.queryValue.problem = newproblem_edges;
     },
-
     inquery() {
-      // eslint-disable-next-line camelcase
-      // var num_node = this.input;
-      // console.log(num_node);
       if (this.queryValue.problem == null) {
         this.$confirm("还未选择文件打开哦", "温馨提示", {
           confirmButtonText: "确定",
@@ -610,47 +576,22 @@ export default {
           this.$notify.info({
             title: "消息",
             message: "未选择文件打开",
-            type: "warning",
           });
         });
-        return false;
       } else {
         this.queryValue.show = true;
-        //刷新四个参数的值
-        this.distancePrior = "";
-        this.timePrior = "";
-        this.loadPrior = "";
-        this.speed_value = "";
       }
     },
     handleChange(val) {
       console.log(val);
     },
     handleDownload() {
-      // var columns = [];
-      // for (var i in this.stdcolumns) {
-      //   columns.push({
-      //     label: this.stdcolumns[i].label,
-      //     prop: this.stdcolumns[i].prop
-      //   });
-      // }
-      // columns.push({ label: "0", prop: "0" });
-      // columns.push({ label: "1", prop: "1" });
-      // columns.push({ label: "...", prop: "..." });
-      // console.log("columns:", columns);
-      // this.$export.excel({
-      //   title: "路线查询文件",
-      //   columns
-      // });
-
       var table = [];
-      let row = this.stdcolumns.map((item) => {
-        return item.label;
-      });
-      row.push("0");
-      row.push("1");
-      row.push("...");
-      table.push(row);
+      table.push(
+        this.stdcolumns.map((item) => {
+          return item.label;
+        })
+      );
 
       // 创建book
       var wb = xlsx.utils.book_new();
@@ -659,7 +600,7 @@ export default {
       // sheet写入book
       xlsx.utils.book_append_sheet(wb, ws, "query");
       // 输出
-      ipcRenderer.send("open-save-dialog", "路线查询文件");
+      ipcRenderer.send("open-save-dialog", "坐标查询文件");
       ipcRenderer.once("selectedItem", function (e, path) {
         if (path != null) {
           xlsx.writeFile(wb, path);
