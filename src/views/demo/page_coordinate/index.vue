@@ -1,7 +1,14 @@
 <template>
-  <el-container class="content-container" style="overflow-x: hidden !important;">
+  <el-container class="content-container">
+    <!-- style="overflow-x: hidden !important;" -->
     <el-header height="auto" style="padding: 20px">
       <div>
+        <strong style="width: 140px; color: #5673ff; padding: 10px; font-size: 24px">坐标查询</strong>
+        <!-- <el-button class="btn-action" type="text" icon="el-icon-menu" style="color: #5673ff;">
+          <strong>总计（{{ querys.length }}）</strong>
+        </el-button>-->
+      </div>
+      <div style="margin-top: 20px">
         <el-button-group class="card">
           <el-col :span="3.2">
             <el-upload :before-upload="handleUpload" action="default">
@@ -15,10 +22,20 @@
           </el-col>
           <el-button
             class="btn-action"
+            @click="inquery"
+            type="text"
+            icon="el-icon-search"
+            style="color: #02c58d"
+            :disabled="queryValue.problem.nodes == undefined"
+          >查询</el-button>
+
+          <el-button
+            class="btn-action"
             type="text"
             icon="el-icon-delete"
             @click="clear"
             style="color: #fc5454"
+            :disabled="queryValue.problem.nodes == undefined"
           >清除数据</el-button>
           <el-button
             class="btn-action"
@@ -36,11 +53,22 @@
           >设置算法参数</el-button>
           <el-button
             class="btn-action"
-            @click="inquery"
+            @click="visible1 = true"
             type="text"
-            icon="el-icon-search"
-            style="color: #02c58d"
-          >查询</el-button>
+            icon="el-icon-set-up"
+            style="color: #607d8b"
+            :disabled="queryValue.problem.nodes == undefined"
+          >添加节点</el-button>
+          <el-button
+            class="btn-action"
+            @click="visible = true"
+            type="text"
+            icon="el-icon-set-up"
+            style="color: #607d8b"
+            :disabled="queryValue.problem.nodes == undefined"
+          >添加车辆</el-button>
+          <!-- <add-coordinate-popover v-model="queryValue.problem.nodes"></add-coordinate-popover>
+          <add-vehicle-popover v-model="queryValue.problem.nodes" @add="addVehicle"></add-vehicle-popover> -->
         </el-button-group>
       </div>
     </el-header>
@@ -95,21 +123,41 @@
           >
             <el-row style="padding: 10px">
               <el-col :span="8">节点类型：</el-col>
-              <el-col
-                :span="16"
-              >{{ path.type == 'depot' ? '中心节点' : (path.type == 'customer' ? '子节点' : '其他节点') }}</el-col>
+              <el-col :span="16">
+                <el-select
+                  v-model="path.type"
+                  filterable
+                  allow-create
+                  default-first-option
+                  placeholder="节点类型"
+                  size="mini"
+                >
+                  <el-option
+                    v-for="item in node_types"
+                    :key="item.type"
+                    :label="item.title"
+                    :value="item.type"
+                  ></el-option>
+                </el-select>
+              </el-col>
             </el-row>
             <el-row style="padding: 10px">
               <el-col :span="8">节点名：</el-col>
-              <el-col :span="16">{{ path.id }}</el-col>
+              <el-col :span="16">
+                <el-input size="mini" v-model="path.name" autidocomplete="off" clearable></el-input>
+              </el-col>
             </el-row>
             <el-row style="padding: 10px">
               <el-col :span="8">横坐标：</el-col>
-              <el-col :span="16">{{ path.x }}</el-col>
+              <el-col :span="16">
+                <el-input size="mini" v-model="path.x" autidocomplete="off" clearable></el-input>
+              </el-col>
             </el-row>
             <el-row style="padding: 10px">
               <el-col :span="8">纵坐标：</el-col>
-              <el-col :span="16">{{ path.y }}</el-col>
+              <el-col :span="16">
+                <el-input size="mini" v-model="path.y" autidocomplete="off" clearable></el-input>
+              </el-col>
             </el-row>
             <el-row style="padding: 10px">
               <el-col :span="8">需求量</el-col>
@@ -139,11 +187,13 @@
                 <el-col :span="4">
                   <i
                     class="el-icon-office-building"
-                    style="font-size: 20px; float: left; color: #00cdcd;"
+                    :style="'font-size: 20px; float: left; color: ' + getNodeColorByType(path.type) + ';'"
                   ></i>
                 </el-col>
-                <el-col :span="16" style="text-align: center">
-                  <span style="font-size: 12px;padding: 0 8px;">{{ path.id }}</span>
+                <el-col :span="16">
+                  <span
+                    :style="'font-size: 12px;padding: 0 8px; color:' + getNodeColorByType(path.type) + ';'"
+                  >节点名：{{ path.name }}</span>
                 </el-col>
                 <el-col :span="4">
                   <i
@@ -219,22 +269,36 @@
           </div>
           <el-popover
             v-for="(vehicle, index) in vehicles"
-            :key="vehicle.id"
+            :key="index"
             title="修改车辆信息"
-            :name="index"
+            :name="vehicle.id"
             trigger="hover"
             placement="right"
           >
             <el-row style="padding: 10px">
               <el-col :span="8">车辆类型：</el-col>
               <el-col :span="16">
-                <el-input
-                  width="50%"
+                <el-input size="mini" v-model="vehicle.id" autidocomplete="off" clearable></el-input>
+              </el-col>
+            </el-row>
+            <el-row style="padding: 10px">
+              <el-col :span="8">运输中心：</el-col>
+              <el-col :span="16">
+                <el-select
+                  v-model="vehicle.depot"
+                  filterable
+                  allow-create
+                  default-first-option
+                  placeholder="运输中心"
                   size="mini"
-                  v-model="vehicle.id"
-                  autidocomplete="off"
-                  clearable
-                ></el-input>
+                >
+                  <el-option
+                    v-for="item in queryValue.problem.nodes.filter(node => {return node.type == 'depot'})"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  ></el-option>
+                </el-select>
               </el-col>
             </el-row>
             <el-row style="padding: 10px">
@@ -367,6 +431,8 @@
     </el-footer>
     <drawer v-model="drawerValue" />
     <query-dialog v-model="queryValue"></query-dialog>
+    <add-coordinate-dialog v-model="queryValue.problem.nodes" :visible.sync="visible1"></add-coordinate-dialog>
+    <add-vehicle-dialog v-model="queryValue.problem" :visible.sync="visible"></add-vehicle-dialog>
   </el-container>
 </template>
 
@@ -378,6 +444,10 @@ import pluginImport from "@d2-projects/vue-table-import";
 import pluginExport from "@d2-projects/vue-table-export";
 import drawer from "../drawer/";
 import QueryDialog from "../dialog/query-dialog";
+import AddVehicleDialog from "../dialog/add-vehicle-dialog";
+import AddCoordinateDialog from "../dialog/add-coordinate-dialog";
+// import AddCoordinatePopover from "../popover/add-coordinate-popover";
+// import AddVehiclePopover from "../popover/add-vehicle-popover";
 Vue.use(pluginExport);
 Vue.use(pluginImport);
 var outdata;
@@ -385,6 +455,10 @@ export default {
   components: {
     drawer,
     QueryDialog,
+    AddVehicleDialog,
+    AddCoordinateDialog,
+    // AddVehiclePopover,
+    // AddCoordinatePopover,
   },
   data() {
     return {
@@ -415,7 +489,15 @@ export default {
       stdcolumns: [],
       polylinePath: [],
       vehicles: [],
+      temp_vehicle: { id: "xx", depot: 1, load: 2, mileage: 50, count: 5 },
       need_options: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+      node_types: [
+        { type: "depot", title: "中心节点" },
+        { type: "customer", title: "子节点" },
+        { type: "other", title: "其它节点" },
+      ],
+      visible: false,
+      visible1: false,
     };
   },
   mounted() {
@@ -437,6 +519,27 @@ export default {
     ];
   },
   methods: {
+    test() {
+      this.visible = true;
+      console.log('test')
+    },
+    addVehicle(vehicle) {
+      // this.queryValue.problem.vehicles.push({
+      //   id: this.temp_vehicle.id,
+      //   depot: this.temp_vehicle.depot,
+      //   load: this.temp_vehicle.load,
+      //   mileage: this.temp_vehicle.mileage,
+      //   count: this.temp_vehicle.count,
+      // });
+      this.queryValue.problem.vehicles.push(vehicle);
+    },
+    getNodeColorByType(type) {
+      return type == "depot"
+        ? "red"
+        : type == "customer"
+        ? "#02c58d"
+        : "#fcbe2d";
+    },
     removeVehicle(vehicle) {
       this.vehicles.splice(this.vehicles.indexOf(vehicle), 1);
     },
@@ -496,6 +599,7 @@ export default {
         obj.nodes = {
           type: v["type"],
           id: v["name"],
+          name: "" + v["name"],
           demand: v["demand"],
           service_time: v["serviceTime"],
           tw_beg: v["beginTime"],
@@ -514,6 +618,7 @@ export default {
           drivingCost: v["Driving_cost"],
           waitingCost: v["Waiting_cost"],
         };
+        console.log("vehicles:" + JSON.stringify(obj.vehicles));
         if (v["Use_cost"] || v["Driving_cost"] || v["Waiting_cost"]) {
           costModeFlag = true;
         }
@@ -561,6 +666,7 @@ export default {
         speed: this.drawerValue.speedValue,
         maxiter: this.drawerValue.maxIter,
       };
+      console.log("new_vehicles:" + JSON.stringify(new_vehicles));
       this.vehicles = new_vehicles;
       this.polylinePath = new_nodes;
 
@@ -580,6 +686,36 @@ export default {
           });
         });
       } else {
+        let depots = this.queryValue.problem.nodes.filter((path) => {
+          return path.type == "depot";
+        });
+
+        if (depots.length < 1) {
+          this.$notify({
+            title: "警告",
+            message: "请设置配送中心节点！",
+            type: "warning",
+          });
+          return;
+        }
+
+        let customers = this.queryValue.problem.nodes.filter((path) => {
+          return path.type == "customer";
+        });
+
+        if (customers.length < 2) {
+          this.$notify({
+            title: "警告",
+            message: "子节点过少！请添加子节点",
+            type: "warning",
+          });
+          return;
+        }
+        this.queryValue.problem.names = this.queryValue.problem.nodes.map(
+          (node) => {
+            return node.name;
+          }
+        );
         this.queryValue.show = true;
       }
     },

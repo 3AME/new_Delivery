@@ -1,13 +1,16 @@
 <template>
   <div id="app">
-     <!-- style="padding: 8px" -->
+    <!-- style="padding: 8px" -->
     <!-- <router-view/> -->
     <!-- <keep-alive> -->
-      <!-- <router-view v-if="isRouterAlive"></router-view> -->
+    <!-- <router-view v-if="isRouterAlive"></router-view> -->
     <!-- </keep-alive> -->
 
     <el-container class="content-container" style="background-color: transparent;">
-      <el-main class="card" style="padding: 0px; margin: 0px; background-color: #f6f7fb;border: 1px solid grey;">
+      <el-main
+        class="card"
+        style="padding: 0px; margin: 0px; background-color: #f6f7fb;border: 1px solid grey;"
+      >
         <router-view v-if="isRouterAlive"></router-view>
       </el-main>
     </el-container>
@@ -109,35 +112,55 @@ body {
   vertical-align: middle;
 }
 
+#app .el-dialog {
+  display: flex;
+  flex-direction: column;
+  margin: 0 !important;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /*height:600px;*/
+  max-height: calc(100% - 30px);
+  max-width: calc(100% - 30px);
 
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid #ebeef5;
+  border-radius: 8px;
+}
+#app .el-dialog .el-dialog__body {
+  flex: 1;
+  overflow: auto;
+}
 
 // 覆盖el-collapse-item的css
 #app .el-collapse-item__wrap {
-    will-change: height;
-    background-color: #FFF;
-    overflow: hidden;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    border-bottom: 0px solid #EBEEF5;
+  will-change: height;
+  background-color: #fff;
+  overflow: hidden;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  border-bottom: 0px solid #ebeef5;
 }
 #app .el-collapse-item__header {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    height: 48px;
-    line-height: 48px;
-    background-color: #FFF;
-    color: #303133;
-    cursor: pointer;
-    border-bottom: 0px solid #EBEEF5;
-    font-size: 13px;
-    font-weight: 500;
-    -webkit-transition: border-bottom-color .3s;
-    transition: border-bottom-color .3s;
-    outline: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  height: 48px;
+  line-height: 48px;
+  background-color: #fff;
+  color: #303133;
+  cursor: pointer;
+  border-bottom: 0px solid #ebeef5;
+  font-size: 13px;
+  font-weight: 500;
+  -webkit-transition: border-bottom-color 0.3s;
+  transition: border-bottom-color 0.3s;
+  outline: 0;
 }
 
 ::-webkit-scrollbar {

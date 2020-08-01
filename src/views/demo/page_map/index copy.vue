@@ -12,9 +12,8 @@
           class="btn-action"
           type="text"
           icon="el-icon-delete"
-          @click="visible = true"
+          @click="addVehicle"
           style="color: #409eff;"
-          :disabled="queryValue.problem.nodes.length == 0"
         >添加车辆</el-button>
         <el-button
           class="btn-action"
@@ -64,7 +63,7 @@
                   placement="bottom"
                   width="240"
                   trigger="hover"
-                  v-if="queryValue.problem.nodes.length > 0"
+                  v-if="polylinePath.length > 0"
                 >
                   <p style="padding: 10px">确定清空地点列表？</p>
                   <div style="text-align: right; margin: 0; padding: 10px">
@@ -79,14 +78,14 @@
               </el-col>
             </el-row>
           </div>
-          <div v-if="queryValue.problem.nodes.length == 0" class="box-card">
+          <div v-if="polylinePath.length == 0" class="box-card">
             <div style="font-size: 16px; color: #999; text-align: center; padding: 100px 0;">
               <img width="80%" src="../../../assets/images/small/暂无数据.png" />
               <p>什么都没有</p>
             </div>
           </div>
           <el-popover
-            v-for="(path, index) in queryValue.problem.nodes"
+            v-for="(path, index) in polylinePath"
             :key="index"
             title="修改地点信息"
             :name="path.name"
@@ -211,7 +210,7 @@
               v-if="isSearching"
             ></bm-local-search>
             <bm-marker
-              v-for="(item,index) in queryValue.problem.nodes"
+              v-for="(item,index) in polylinePath"
               :key="index"
               :position="item"
               :dragging="true"
@@ -316,7 +315,7 @@
                   placement="bottom"
                   width="240"
                   trigger="hover"
-                  v-if="queryValue.problem.vehicles.length > 0"
+                  v-if="vehicles.length > 0"
                 >
                   <p style="padding: 10px">确定清空车辆列表？</p>
                   <div style="text-align: right; margin: 0; padding: 10px">
@@ -331,14 +330,14 @@
               </el-col>
             </el-row>
           </div>
-          <div v-if="queryValue.problem.vehicles.length == 0" class="box-card">
+          <div v-if="vehicles.length == 0" class="box-card">
             <div style="font-size: 16px; color: #999; text-align: center; padding: 100px 0;">
               <img width="80%" src="../../../assets/images/small/暂无数据.png" />
               <p>什么都没有</p>
             </div>
           </div>
           <el-popover
-            v-for="(vehicle, index) in queryValue.problem.vehicles"
+            v-for="(vehicle, index) in vehicles"
             :key="index"
             title="修改车辆信息"
             :name="vehicle.id"
@@ -355,26 +354,6 @@
                   autidocomplete="off"
                   clearable
                 ></el-input>
-              </el-col>
-            </el-row>
-            <el-row style="padding: 10px">
-              <el-col :span="8">运输中心：</el-col>
-              <el-col :span="16">
-                <el-select
-                  v-model="vehicle.depot"
-                  filterable
-                  allow-create
-                  default-first-option
-                  placeholder="运输中心"
-                  size="mini"
-                >
-                  <el-option
-                    v-for="item in queryValue.problem.nodes.filter(node => {return node.type == 'depot'})"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id"
-                  ></el-option>
-                </el-select>
               </el-col>
             </el-row>
             <el-row style="padding: 10px">
@@ -438,7 +417,7 @@
     </el-container>
     <drawer v-model="drawerValue" />
     <query-dialog v-model="queryValue"></query-dialog>
-    <add-vehicle-dialog v-model="queryValue.problem" :visible.sync="visible"></add-vehicle-dialog>
+    <add-vehicle-dialog :visible.sync="visible"></add-vehicle-dialog>
   </el-container>
 </template>
 
@@ -480,10 +459,7 @@ export default {
       queryValue: {
         show: false,
         name: "", //距离优先
-        problem: {
-          nodes: [],
-          vehicles: []
-        },
+        problem: {},
         time: "",
         isHistory: false,
         type: "map",
@@ -501,8 +477,8 @@ export default {
       isShowGeolocation: true,
       placeholder: "添加地址",
       value: "成都市",
-      // polylinePath: [],
-      // vehicles: [{ id: "xx", depot: 0, load: 2, mileage: 50, count: 5 }],
+      polylinePath: [],
+      vehicles: [{ id: "xx", depot: 0, load: 2, mileage: 50, count: 5 }],
       drivingPath: [
         // {
         //   start: "锦江区望江宾馆",
@@ -558,30 +534,6 @@ export default {
     }
   },
   methods: {
-    generateId() {
-      if (this.queryValue.problem.nodes != undefined) {
-        let ids = this.queryValue.problem.nodes.map((node) => {
-          return node.id;
-        });
-        ids.sort((x, y) => {
-          if (x < y) {
-            return -1;
-          } else if (x > y) {
-            return 1;
-          } else {
-            return 0;
-          }
-        });
-        console.log("ids=" + JSON.stringify(ids));
-        for (let i = 0; i < ids[ids.length - 1]; i++) {
-          if (i != ids[i]) {
-            return i;
-          }
-        }
-        return ids.length;
-      }
-      return 0;
-    },
     getNodeColorByType(type) {
       return type == "depot"
         ? "red"
@@ -594,7 +546,7 @@ export default {
       window.location.reload();
     },
     test() {
-      if (this.queryValue.problem.nodes.length < 3) {
+      if (this.polylinePath.length < 3) {
         this.$notify({
           title: "警告",
           message: "节点过少，请在地图上添加节点！",
@@ -602,7 +554,7 @@ export default {
         });
         return;
       }
-      if (this.queryValue.problem.vehicles.length < 1) {
+      if (this.vehicles.length < 1) {
         this.$notify({
           title: "警告",
           message: "车辆过少，请添加车辆！",
@@ -611,7 +563,7 @@ export default {
         return;
       }
 
-      let depots = this.queryValue.problem.nodes.filter((path) => {
+      let depots = this.polylinePath.filter((path) => {
         return path.type == "depot";
       });
 
@@ -624,7 +576,7 @@ export default {
         return;
       }
 
-      let customers = this.queryValue.problem.nodes.filter((path) => {
+      let customers = this.polylinePath.filter((path) => {
         return path.type == "customer";
       });
 
@@ -637,15 +589,15 @@ export default {
         return;
       }
 
-      var names = this.queryValue.problem.nodes.map((x) => {
+      var names = this.polylinePath.map((x) => {
         return x.name;
       });
       var problem = {
         routeMode: true,
         names: names,
-        nodes: this.queryValue.problem.nodes,
+        nodes: [],
         edges: [],
-        vehicles: this.queryValue.problem.vehicles,
+        vehicles: this.vehicles,
         distancePrior: this.drawerValue.distancePrior,
         timePrior: this.drawerValue.timePrior,
         loadPrior: this.drawerValue.loadPrior,
@@ -663,14 +615,13 @@ export default {
         });
       });
 
-      // for (var i = 0; i < this.polylinePath.length; i++) {
-      //   problem.nodes.push({
-      //     type: this.polylinePath[i].type,
-      //     id: i,
-      //     demand: this.polylinePath[i].demand,
-      //   });
-      // }
-      // problem.nodes = this.queryValue.problem.nodes;
+      for (var i = 0; i < this.polylinePath.length; i++) {
+        problem.nodes.push({
+          type: this.polylinePath[i].type,
+          id: i,
+          demand: this.polylinePath[i].demand,
+        });
+      }
 
       console.log("test problem=" + JSON.stringify(problem));
       this.queryValue.problem = problem;
@@ -737,7 +688,7 @@ export default {
 
             let name = "地点(" + point.lng + ", " + point.lat + ")";
             me.activeName = "1";
-            me.queryValue.problem.nodes.forEach(function (item) {
+            me.polylinePath.forEach(function (item) {
               var p = {
                 start: {
                   name: name,
@@ -764,19 +715,18 @@ export default {
             // console.log('me.drivingPath=' + JSON.stringify(me.drivingPath))
             // console.log('lng=' + point.lng + ' lat=' + point.lat)
             var path = {
-              id: me.generateId(),
               name: name,
               lng: point.lng,
               lat: point.lat,
               city: rs.addressComponents.city,
             };
-            if (me.queryValue.problem.nodes.length == 0) {
+            if (me.polylinePath.length == 0) {
               path.type = "depot";
             } else {
               path.demand = 0.5;
               path.type = "customer";
             }
-            me.queryValue.problem.nodes.push(path);
+            me.polylinePath.push(path);
           });
           // console.log('res=' + JSON.stringify(res));
         } else {
@@ -809,8 +759,8 @@ export default {
         res.item.value.streetNumber;
       // var name = res.item.value.business
       console.log("name=" + name);
-      console.log("length=" + this.queryValue.problem.nodes.length);
-      let len = this.queryValue.problem.nodes.filter((path) => {
+      console.log("length=" + this.polylinePath.length);
+      let len = this.polylinePath.filter((path) => {
         return path.name == name;
       }).length;
       console.log("len=" + len);
@@ -832,7 +782,7 @@ export default {
         function (point) {
           if (point) {
             me.activeName = "1";
-            me.queryValue.problem.nodes.forEach(function (item) {
+            me.polylinePath.forEach(function (item) {
               // me.drivingPath.push({
               //   start: name,
               //   end: item.name
@@ -861,18 +811,17 @@ export default {
             // console.log('me.drivingPath=' + JSON.stringify(me.drivingPath))
             // console.log('lng=' + point.lng + ' lat=' + point.lat)
             var path = {
-              id: me.generateId(),
               name: name,
               lng: point.lng,
               lat: point.lat,
             };
-            if (me.queryValue.problem.nodes.length == 0) {
+            if (me.polylinePath.length == 0) {
               path.type = "depot";
             } else {
               path.demand = 0.1;
               path.type = "customer";
             }
-            me.queryValue.problem.nodes.push(path);
+            me.polylinePath.push(path);
           }
         },
         res.item.city
@@ -889,7 +838,7 @@ export default {
     },
     // 移除Tag
     removeDepot(tag) {
-      this.queryValue.problem.nodes.splice(this.queryValue.problem.nodes.indexOf(tag), 1);
+      this.polylinePath.splice(this.polylinePath.indexOf(tag), 1);
       for (var i = this.drivingPath.length - 1; i >= 0; i--) {
         var item = this.drivingPath[i];
         if (item.start.name === tag.name || item.end.name === tag.name) {
@@ -898,13 +847,13 @@ export default {
       }
     },
     removeVehicle(vehicle) {
-      this.queryValue.problem.vehicles.splice(this.queryValue.problem.vehicles.indexOf(vehicle), 1);
-      // this.queryValue.problem.vehicles.forEach((vehicle, i) => {
+      this.vehicles.splice(this.vehicles.indexOf(vehicle), 1);
+      // this.vehicles.forEach((vehicle, i) => {
       //   vehicle.id = i + 1;
       // });
     },
     clearVehicle(vehicle) {
-      this.queryValue.problem.vehicles.splice(0, this.queryValue.problem.vehicles.length);
+      this.vehicles.splice(0, this.vehicles.length);
     },
     // 显示输入框
     showInput() {
@@ -918,13 +867,13 @@ export default {
       this.center = path.name;
     },
     clearTags() {
-      this.queryValue.problem.nodes.splice(0, this.queryValue.problem.nodes.length);
+      this.polylinePath.splice(0, this.polylinePath.length);
       this.drivingPath.splice(0, this.drivingPath.length);
       this.tempDrivingPath.splice(0, this.tempDrivingPath.length);
     },
     addVehicle() {
-      this.queryValue.problem.vehicles.push({
-        id: this.queryValue.problem.vehicles.length + 1,
+      this.vehicles.push({
+        id: this.vehicles.length + 1,
         depot: 0,
         load: 2,
         mileage: 80,
