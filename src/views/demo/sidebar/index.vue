@@ -49,8 +49,8 @@ export default {
 </script>
 
 <style>
-.side-bar el-menu-item {
-}
+/* .side-bar el-menu-item {
+} */
 
 .user-info {
   height: 120px;

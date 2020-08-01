@@ -61,7 +61,7 @@
         ></el-table-column>
       </el-table>
       <div style="height:0.5em"></div>
-      <el-collapse class="card" @change="handleChange" style="padding: 10px;background-color:#add8e6">
+      <el-collapse class="card" @change="handleChange" style="padding: 0.1em;background-color:#add8e6">
         <el-collapse-item name="1">
           <template slot="title">
             <div style="text-align:center;color:#000;width:100%">
