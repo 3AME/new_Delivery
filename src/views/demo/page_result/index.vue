@@ -773,14 +773,11 @@ export default {
     showScatterGraph() {
       var problem = this.problem;
       let data = problem.nodes;
-      // problem.nodes.forEach(function(node, index) {
-      //   data.push({
-      //     type: node.type,
-      //     name: "节点" + node.id + ":(" + node.x + ", " + node.y + ")",
-      //     x: node.x,
-      //     y: node.y
-      //   });
-      // });
+
+      let nameMap = new Map();
+      problem.nodes.forEach(function(node, index) {
+        nameMap.set(node.id, node.name);
+      });
 
       var plan = this.result;
 
@@ -820,11 +817,12 @@ export default {
               text += " → ";
             }
             // text += route;
-            if (problem.names !== undefined) {
-              text += problem.names[route];
-            } else {
-              text += route;
-            }
+            // if (problem.names !== undefined) {
+            //   text += problem.names[route];
+            // } else {
+            //   text += route;
+            // }
+            text += nameMap.get(route);
             tempRoute = route;
           });
           legendTexts.push({
@@ -1231,6 +1229,10 @@ export default {
     // 力导向图
     showGraph() {
       var problem = this.problem;
+      let nameMap = new Map();
+      problem.nodes.forEach(function(node, index) {
+        nameMap.set(node.id, node.name);
+      });
 
       var plan = this.result;
 
@@ -1309,11 +1311,13 @@ export default {
               }
               text += " → ";
             }
-            if (problem.names !== undefined) {
-              text += problem.names[route];
-            } else {
-              text += route;
-            }
+            // if (problem.names !== undefined) {
+            //   text += problem.names[route];
+            // } else {
+            //   text += route;
+            // }
+            text += nameMap.get(route);
+
             tempRoute = route;
           });
           legendTexts.push({

@@ -31,7 +31,7 @@
         >设置算法参数</el-button>
         <el-button
           class="btn-action"
-          @click="test"
+          @click="query"
           type="text"
           icon="el-icon-search"
           style="color: #02c58d;"
@@ -236,55 +236,7 @@
 
           <!-- <div style="position:absolute; right:30px; top:30px; background:#F00; width:40%; height:100px">sdrftgyhj</div> -->
         </el-main>
-        <el-footer height="30%" class="card" style="margin: 20px 10px; ">
-          <!-- <div style="text-align: center; padding-bottom: 50px">
-            <el-autocomplete
-              popper-class="my-autocomplete"
-              placeholder="请输入内容"
-              style="padding: 10px"
-            >
-              <i class="el-icon-edit el-input__icon" slot="suffix"></i>
-              <template>
-                <div class="name">item.value</div>
-                <span class="addr">item.address</span>
-              </template>
-            </el-autocomplete>
-
-            <el-button-group class="card">
-              <el-button
-                class="btn-action"
-                type="text"
-                icon="el-icon-delete"
-                @click="addVehicle"
-                style="color: #409eff;"
-              >添加车辆</el-button>
-              <el-button
-                class="btn-action"
-                type="text"
-                icon="el-icon-tickets"
-                style="color: #fcbe2d;"
-              >添加地点</el-button>
-              <el-button
-                class="btn-action"
-                @click="drawerValue.drawerShow = true"
-                type="text"
-                icon="el-icon-set-up"
-                style="color: #607d8b;"
-              >设置算法参数</el-button>
-              <el-button
-                class="btn-action"
-                @click="test"
-                type="text"
-                icon="el-icon-search"
-                style="color: #02c58d;"
-              >查询</el-button>
-              <el-switch
-                v-model="selectMode"
-                active-text="点击选点"
-                style="padding-top: 20px; padding-bottom: 20px; padding-left: 12px; padding-right: 12px;"
-              ></el-switch>
-            </el-button-group>
-          </div>-->
+        <!-- <el-footer height="30%" class="card" style="margin: 20px 10px; ">
           <el-row style="padding: 10px">
             <el-col :span="4">关键词：</el-col>
             <el-col :span="8">
@@ -295,7 +247,7 @@
               <el-input size="mini" v-model="location" autidocomplete="off" clearable></el-input>
             </el-col>
           </el-row>
-        </el-footer>
+        </el-footer>-->
       </el-container>
       <el-aside width="20%" height="100%" style="margin: 10px;">
         <div class="card" style="margin: 10px">
@@ -464,7 +416,7 @@ export default {
     BmMarker,
     drawer,
     QueryDialog,
-    AddVehicleDialog
+    AddVehicleDialog,
   },
   data() {
     return {
@@ -482,7 +434,7 @@ export default {
         name: "", //距离优先
         problem: {
           nodes: [],
-          vehicles: []
+          vehicles: [],
         },
         time: "",
         isHistory: false,
@@ -593,7 +545,7 @@ export default {
       // this.reload();
       window.location.reload();
     },
-    test() {
+    query() {
       if (this.queryValue.problem.nodes.length < 3) {
         this.$notify({
           title: "警告",
@@ -637,6 +589,31 @@ export default {
         return;
       }
 
+      if (this.queryValue.problem.vehicles.length == 0) {
+        this.$notify({
+          title: "警告",
+          message: "请添加车辆类型",
+          type: "warning",
+        });
+        return;
+      }
+
+      let depotsId = depots.map((depot) => {
+        return depot.id;
+      });
+      for (let i = 0; i < this.queryValue.problem.vehicles.length; i++) {
+        let vehicle = this.queryValue.problem.vehicles[i];
+        console.log("vehicle=" + JSON.stringify(vehicle));
+        if (depotsId.indexOf(vehicle.depot) == -1) {
+          this.$notify({
+            title: "警告",
+            message: "车辆类型：" + vehicle.id + "所在的配送中心不存在。",
+            type: "warning",
+          });
+          return;
+        }
+      }
+
       var names = this.queryValue.problem.nodes.map((x) => {
         return x.name;
       });
@@ -672,7 +649,7 @@ export default {
       // }
       // problem.nodes = this.queryValue.problem.nodes;
 
-      console.log("test problem=" + JSON.stringify(problem));
+      console.log("query problem=" + JSON.stringify(problem));
       this.queryValue.problem = problem;
       this.queryValue.show = true;
     },
@@ -889,7 +866,10 @@ export default {
     },
     // 移除Tag
     removeDepot(tag) {
-      this.queryValue.problem.nodes.splice(this.queryValue.problem.nodes.indexOf(tag), 1);
+      this.queryValue.problem.nodes.splice(
+        this.queryValue.problem.nodes.indexOf(tag),
+        1
+      );
       for (var i = this.drivingPath.length - 1; i >= 0; i--) {
         var item = this.drivingPath[i];
         if (item.start.name === tag.name || item.end.name === tag.name) {
@@ -898,13 +878,19 @@ export default {
       }
     },
     removeVehicle(vehicle) {
-      this.queryValue.problem.vehicles.splice(this.queryValue.problem.vehicles.indexOf(vehicle), 1);
+      this.queryValue.problem.vehicles.splice(
+        this.queryValue.problem.vehicles.indexOf(vehicle),
+        1
+      );
       // this.queryValue.problem.vehicles.forEach((vehicle, i) => {
       //   vehicle.id = i + 1;
       // });
     },
     clearVehicle(vehicle) {
-      this.queryValue.problem.vehicles.splice(0, this.queryValue.problem.vehicles.length);
+      this.queryValue.problem.vehicles.splice(
+        0,
+        this.queryValue.problem.vehicles.length
+      );
     },
     // 显示输入框
     showInput() {
@@ -918,7 +904,10 @@ export default {
       this.center = path.name;
     },
     clearTags() {
-      this.queryValue.problem.nodes.splice(0, this.queryValue.problem.nodes.length);
+      this.queryValue.problem.nodes.splice(
+        0,
+        this.queryValue.problem.nodes.length
+      );
       this.drivingPath.splice(0, this.drivingPath.length);
       this.tempDrivingPath.splice(0, this.tempDrivingPath.length);
     },

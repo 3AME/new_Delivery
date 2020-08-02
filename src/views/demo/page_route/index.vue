@@ -67,134 +67,7 @@
       </el-button-group>
     </el-header>
     <el-container style="overflow:scroll;overflow-x: hidden !important; ">
-      <el-aside width="20%" style="margin: 10px;" v-if="table.data.length > 0">
-        <div class="card" style="margin: 10px">
-          <div style="text-align: center; padding: 20px">
-            <img width="40%" src="../../../assets/images/small/地点.png" />
-          </div>
-          <div style="padding: 10px; border-bottom: 1px solid #EBEEF5;">
-            <el-row>
-              <el-col :span="16">
-                <span style="font-size: 24px;">坐标列表</span>
-              </el-col>
-
-              <el-col
-                :span="8"
-                style="left: 0; right: 0; top: 0; bottom: 0; margin: auto; position: absolute; top: 50%; transform: translate(100%, -25%);"
-              >
-                <el-popover
-                  placement="bottom"
-                  width="240"
-                  trigger="hover"
-                  v-if="polylinePath.length > 0"
-                >
-                  <p style="padding: 10px">确定清空坐标列表？</p>
-                  <div style="text-align: right; margin: 0; padding: 10px">
-                    <el-button type="primary" size="mini" @click="clearDepots">确定</el-button>
-                  </div>
-                  <i
-                    slot="reference"
-                    class="el-icon-delete"
-                    style="float: right; font-size: 12px; color: red;"
-                  >清空</i>
-                </el-popover>
-              </el-col>
-            </el-row>
-          </div>
-          <div v-if="polylinePath.length == 0" class="box-card">
-            <div style="font-size: 16px; color: #999; text-align: center; padding: 100px 0;">
-              <img width="80%" src="../../../assets/images/small/暂无数据.png" />
-              <p>什么都没有</p>
-            </div>
-          </div>
-          <el-popover
-            v-for="(path, index) in polylinePath"
-            :key="path.id"
-            title="修改地点信息"
-            :name="index"
-            trigger="hover"
-            placement="right"
-          >
-            <el-row style="padding: 10px">
-              <el-col :span="8">节点ID：</el-col>
-              <el-col :span="16">
-                <el-input size="mini" v-model="path.id" :disabled="true"></el-input>
-              </el-col>
-            </el-row>
-            <el-row style="padding: 10px">
-              <el-col :span="8">节点类型：</el-col>
-              <el-col :span="16">
-                <el-select
-                  v-model="path.type"
-                  filterable
-                  allow-create
-                  default-first-option
-                  placeholder="节点类型"
-                  size="mini"
-                >
-                  <el-option
-                    v-for="item in node_types"
-                    :key="item.type"
-                    :label="item.title"
-                    :value="item.type"
-                  ></el-option>
-                </el-select>
-              </el-col>
-            </el-row>
-            <el-row style="padding: 10px">
-              <el-col :span="8">节点名：</el-col>
-              <el-col :span="16">
-                <el-input size="mini" v-model="path.name" autidocomplete="off" clearable></el-input>
-              </el-col>
-            </el-row>
-            <el-row style="padding: 10px">
-              <el-col :span="8">需求量</el-col>
-              <el-col :span="16">
-                <el-select
-                  v-model="path.demand"
-                  filterable
-                  allow-create
-                  default-first-option
-                  placeholder="需求量"
-                  size="mini"
-                  :disabled="path.type == 'depot'"
-                >
-                  <el-option v-for="item in need_options" :key="item" :label="item" :value="item"></el-option>
-                </el-select>
-              </el-col>
-            </el-row>
-            <div style="text-align: center; padding: 10px">
-              <i
-                @click="removeDepot(path)"
-                class="i-tag el-icon-delete"
-                style="font-size: 16px; color: red;"
-              ></i>
-            </div>
-            <div slot="reference" class="el-card__header">
-              <el-row type="flex" justify="space-around">
-                <el-col :span="4">
-                  <i
-                    class="el-icon-office-building"
-                    :style="'font-size: 20px; float: left; color: ' + getNodeColorByType(path.type) + ';'"
-                  ></i>
-                </el-col>
-                <el-col :span="16">
-                  <span
-                    :style="'font-size: 12px;padding: 0 8px; color:' + getNodeColorByType(path.type) + ';'"
-                  >节点名：{{ path.name }}</span>
-                </el-col>
-                <el-col :span="4">
-                  <i
-                    class="el-icon-delete"
-                    style="float: right; color: red;"
-                    @click="removeDepot(path)"
-                  ></i>
-                </el-col>
-              </el-row>
-            </div>
-          </el-popover>
-        </div>
-      </el-aside>
+      <route-list-side v-if="table.data.length > 0" v-model="queryValue.problem"/>
       <el-main style="padding: 10px 20px">
         <el-table
           class="card"
@@ -214,146 +87,8 @@
           ></el-table-column>
         </el-table>
       </el-main>
-      <el-aside width="20%" height="100%" style="margin: 10px;" v-if="table.data.length > 0">
-        <div class="card" style="margin: 10px">
-          <div style="text-align: center; padding: 20px">
-            <img width="40%" src="../../../assets/images/small/车辆.png" />
-          </div>
-          <div style="padding: 10px; border-bottom: 1px solid #EBEEF5;">
-            <el-row>
-              <el-col :span="16">
-                <span style="font-size: 24px;">车辆列表</span>
-              </el-col>
-
-              <el-col
-                :span="8"
-                style="left: 0; right: 0; top: 0; bottom: 0; margin: auto; position: absolute; top: 50%; transform: translate(100%, -25%);"
-              >
-                <el-popover
-                  placement="bottom"
-                  width="240"
-                  trigger="hover"
-                  v-if="vehicles.length > 0"
-                >
-                  <p style="padding: 10px">确定清空车辆列表？</p>
-                  <div style="text-align: right; margin: 0; padding: 10px">
-                    <el-button type="primary" size="mini" @click="clearVehicle">确定</el-button>
-                  </div>
-                  <i
-                    slot="reference"
-                    class="el-icon-delete"
-                    style="float: right; font-size: 12px; color: red;"
-                  >清空</i>
-                </el-popover>
-              </el-col>
-            </el-row>
-          </div>
-          <div v-if="vehicles.length == 0" class="box-card">
-            <div style="font-size: 16px; color: #999; text-align: center; padding: 100px 0;">
-              <img width="80%" src="../../../assets/images/small/暂无数据.png" />
-              <p>什么都没有</p>
-            </div>
-          </div>
-          <el-popover
-            v-for="(vehicle, index) in vehicles"
-            :key="vehicle.id"
-            title="修改车辆信息"
-            :name="index"
-            trigger="hover"
-            placement="right"
-          >
-            <el-row style="padding: 10px">
-              <el-col :span="8">车辆类型：</el-col>
-              <el-col :span="16">
-                <el-input
-                  width="50%"
-                  size="mini"
-                  v-model="vehicle.id"
-                  autidocomplete="off"
-                  clearable
-                ></el-input>
-              </el-col>
-            </el-row>
-            <el-row style="padding: 10px">
-              <el-col :span="8">运输中心：</el-col>
-              <el-col :span="16">
-                <el-select
-                  v-model="vehicle.depot"
-                  filterable
-                  allow-create
-                  default-first-option
-                  placeholder="运输中心"
-                  size="mini"
-                >
-                  <el-option
-                    v-for="item in queryValue.problem.nodes.filter(node => {return node.type == 'depot'})"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id"
-                  ></el-option>
-                </el-select>
-              </el-col>
-            </el-row>
-            <el-row style="padding: 10px">
-              <el-col :span="8">车辆载重：</el-col>
-              <el-col :span="16">
-                <el-input-number v-model="vehicle.load" :min="1" :max="10" label="车辆载重" size="mini"></el-input-number>
-              </el-col>
-            </el-row>
-            <el-row style="padding: 10px">
-              <el-col :span="8">车辆里程：</el-col>
-              <el-col :span="16">
-                <el-input-number
-                  v-model="vehicle.mileage"
-                  :step="5"
-                  :min="10"
-                  :max="120"
-                  label="车辆里程"
-                  size="mini"
-                ></el-input-number>
-              </el-col>
-            </el-row>
-            <el-row style="padding: 10px">
-              <el-col :span="8">车辆数量：</el-col>
-              <el-col :span="16">
-                <el-input-number
-                  v-model="vehicle.count"
-                  :min="1"
-                  :max="10"
-                  label="车辆里程"
-                  size="mini"
-                ></el-input-number>
-              </el-col>
-            </el-row>
-            <div style="text-align: center; padding: 10px">
-              <i
-                @click="removeVehicle(vehicle)"
-                class="i-tag el-icon-delete"
-                style="font-size: 18px; color: red;"
-              ></i>
-            </div>
-            <div slot="reference" class="el-card__header">
-              <el-row type="flex" justify="space-around">
-                <el-col :span="4">
-                  <i class="el-icon-truck" style="font-size: 20px; float: left; color: #409eff"></i>
-                </el-col>
-                <el-col :span="16">
-                  <span style="font-size: 12px;padding: 0 8px">车辆类型：{{ vehicle.id }}</span>
-                </el-col>
-                <el-col :span="4">
-                  <i
-                    class="el-icon-delete"
-                    style="float: right; color: red;"
-                    @click="removeVehicle(vehicle)"
-                  ></i>
-                </el-col>
-              </el-row>
-            </div>
-          </el-popover>
-        </div>
-      </el-aside>
+      <vehicle-list-side v-if="table.data.length > 0" v-model="queryValue.problem"/>
     </el-container>
-
     <el-footer height="auto" style="padding: 20px">
       <el-collapse
         class="card"
@@ -440,6 +175,8 @@ import drawer from "../drawer/";
 import QueryDialog from "../dialog/query-dialog";
 import AddRouteDialog from "../dialog/add-route-dialog";
 import AddVehicleDialog from "../dialog/add-vehicle-dialog";
+import RouteListSide from "../side/side-list-route";
+import VehicleListSide from "../side/side-list-vehicle";
 Vue.use(pluginExport);
 Vue.use(pluginImport);
 export default {
@@ -449,6 +186,8 @@ export default {
     QueryDialog,
     AddVehicleDialog,
     AddRouteDialog,
+    RouteListSide,
+    VehicleListSide
   },
   data() {
     return {
@@ -476,14 +215,14 @@ export default {
         border: true,
       },
       stdcolumns: [],
-      polylinePath: [],
-      vehicles: [],
-      need_options: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
-      node_types: [
-        { type: "depot", title: "中心节点" },
-        { type: "customer", title: "子节点" },
-        { type: "other", title: "其它节点" },
-      ],
+      // polylinePath: [],
+      // vehicles: [],
+      // need_options: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+      // node_types: [
+      //   { type: "depot", title: "中心节点" },
+      //   { type: "customer", title: "子节点" },
+      //   { type: "other", title: "其它节点" },
+      // ],
       visible: false,
       visible1: false,
     };
@@ -508,33 +247,33 @@ export default {
     ];
   },
   methods: {
-    isDepot(id) {
-      let nodes = this.queryValue.problem.nodes;
-      for (let i = 0; i < nodes.length; i++) {
-        if (nodes[i].id == id) {
-          return node.type == "depot";
-        }
-      }
-    },
-    getNodeColorByType(type) {
-      return type == "depot"
-        ? "red"
-        : type == "customer"
-        ? "#02c58d"
-        : "#fcbe2d";
-    },
-    removeVehicle(vehicle) {
-      this.vehicles.splice(this.vehicles.indexOf(vehicle), 1);
-    },
-    clearVehicle(vehicle) {
-      this.vehicles.splice(0, this.vehicles.length);
-    },
-    removeDepot(depot) {
-      this.polylinePath.splice(this.polylinePath.indexOf(depot), 1);
-    },
-    clearDepots() {
-      this.polylinePath.splice(0, this.polylinePath.length);
-    },
+    // isDepot(id) {
+    //   let nodes = this.queryValue.problem.nodes;
+    //   for (let i = 0; i < nodes.length; i++) {
+    //     if (nodes[i].id == id) {
+    //       return node.type == "depot";
+    //     }
+    //   }
+    // },
+    // getNodeColorByType(type) {
+    //   return type == "depot"
+    //     ? "red"
+    //     : type == "customer"
+    //     ? "#02c58d"
+    //     : "#fcbe2d";
+    // },
+    // removeVehicle(vehicle) {
+    //   this.vehicles.splice(this.vehicles.indexOf(vehicle), 1);
+    // },
+    // clearVehicle(vehicle) {
+    //   this.vehicles.splice(0, this.vehicles.length);
+    // },
+    // removeDepot(depot) {
+    //   this.polylinePath.splice(this.polylinePath.indexOf(depot), 1);
+    // },
+    // clearDepots() {
+    //   this.polylinePath.splice(0, this.polylinePath.length);
+    // },
     refresh() {
       this.reload();
     },
@@ -684,8 +423,8 @@ export default {
         maxiter: this.drawerValue.maxIter,
       };
       console.log(new_problem);
-      this.vehicles = new_vehicles;
-      this.polylinePath = new_nodes;
+      // this.vehicles = new_vehicles;
+      // this.polylinePath = new_nodes;
       this.queryValue.problem = new_problem;
 
       console.log(this.distancePrior);
@@ -731,6 +470,32 @@ export default {
           });
           return;
         }
+
+        if (this.queryValue.problem.vehicles.length == 0) {
+          this.$notify({
+            title: "警告",
+            message: "请添加车辆类型",
+            type: "warning",
+          });
+          return;
+        }
+
+        let depotsId = depots.map((depot) => {
+          return depot.id;
+        });
+        for (let i = 0; i < this.queryValue.problem.vehicles.length; i++) {
+          let vehicle = this.queryValue.problem.vehicles[i];
+          console.log("vehicle=" + JSON.stringify(vehicle));
+          if (depotsId.indexOf(vehicle.depot) == -1) {
+            this.$notify({
+              title: "警告",
+              message: "车辆类型：" + vehicle.id + "所在的配送中心不存在。",
+              type: "warning",
+            });
+            return;
+          }
+        }
+
         this.queryValue.problem.names = this.queryValue.problem.nodes.map(
           (node) => {
             return node.name;
