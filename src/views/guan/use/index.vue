@@ -77,8 +77,10 @@
                   <div class="media m-b-30">
                     <div class="media-body">
                       <h5 class="mt-0 font-24">首页</h5>
+                      <p>
                       <br />展示
                       <b>系统logo、团队名称、系统名称、开发技术支持</b>等信息
+                      </p>
                     </div>
                   </div>
 
@@ -86,9 +88,11 @@
                   <div class="media">
                     <div class="media-body">
                       <h5 class="mt-0 mb-1 font-24">坐标查询</h5>
+                      <p>
                       <br />
                       <b>坐标查询</b>：以二维坐标的方式确定配送中心/客户点的位置。
                       <br />采用坐标查询的页面入口，通过导入文件的方式输入数据进行查询。
+                      </p>
                     </div>
                   </div>
 
@@ -96,9 +100,11 @@
                   <div class="media m-b-30">
                     <div class="media-body">
                       <h5 class="mt-0 font-24">路线查询</h5>
+                      <p>
                       <br />
                       <b>路线查询</b>：以邻接表的方式确定配送中心、客户点的距离以及客户点之间的距离，输入需确定配送中心。
                       <br />采用路线查询的页面入口，通过导入文件的方式输入数据进行查询。
+                      </p>
                     </div>
                   </div>
 
@@ -106,9 +112,10 @@
                   <div class="media">
                     <div class="media-body">
                       <h5 class="mt-0 mb-1 font-24">地图选择</h5>
+                      <p>
                       <br />
                       <b>地图选择</b>：在地图页面标记地点，第一个点默认为配送中心，其后选择客户位置，若删除中心点，在原本配送中心之后的那个点默认变为配送中心。
-                      <br />采用地图选择的页面入口，通过选择地点、页面输入车辆信息的方式进行最优配送方案查询。
+                      <br />采用地图选择的页面入口，通过选择地点、页面输入车辆信息的方式进行最优配送方案查询。</p>
                     </div>
                   </div>
 
@@ -338,8 +345,8 @@
             </div>
   
             <div style="height:1em"></div>
-            <el-tabs type="border-card" style="background-color:#b9d3ee">
-              <el-tab-pane label="坐标查询">
+            <el-tabs type="border-card" style="background-color: #f0f4f7;width:96%;margin:auto">
+              <el-tab-pane label="坐标查询" >
                 <img
                   class="card-img-top img-fluid"
                   src="../../../assets/images/small/坐标查询.png"
@@ -380,7 +387,7 @@
               <el-tab-pane label="地图选择">
                 <img
                   class="card-img-top img-fluid"
-                  src="../../../assets/images/small/page3.jpg"
+                  src="../../../assets/images/small/地图查询.png"
                   alt="Card image cap"
                 />
                 <br />
@@ -403,6 +410,19 @@
       </div>
   </el-container>
 </template>
+<style>
+p{
+  color: #9ca8b3;
+}
+ul{
+  color: #9ca8b3;
+}
+/* .card-img-top{
+  width: 90%;
+  margin: auto;
+  margin-left: 5%;
+} */
+</style>
 <style src="../../../assets/style/bootstrap/css/metismenu.min.css" scoped></style>
 <style src="../../../assets/style/bootstrap/css/bootstrap.min.css" scoped></style>
 <style src="../../../assets/style/bootstrap/css/icons.css" scoped></style>
