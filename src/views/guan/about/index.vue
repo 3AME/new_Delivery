@@ -16,7 +16,7 @@
         <div class="row">
           <el-card shadow="hover" :body-style="{ padding: '3em' }">
             <br />
-            <p class="description text-muted" style="text-indent:2em">
+            <p style="text-indent:2em">
               随着信息技术的发展，现代
               <b>物流</b>作为“第三个利润源泉”是一种先进的组织方式和管理技术，已被世界各国广泛采用，并形成产业化，在国民经济中发挥越来越重要的作用，这一管理技术，正受到日益广泛的重视，并面临巨大的发展机遇，在现代物流中，配送是一个重要的与消费者直接相连的环节，一方面可以体现企业的核心竞争力，另一方面通过线路优化，可以
               <b>提高企业的运作效率</b>，
@@ -36,7 +36,7 @@
         </div>
         <div style="height:3em"></div>
         <div class="row">
-          <el-card shadow="hover" :body-style="{ padding: '3em' }" style="margin:auto">
+          <el-card shadow="hover" :body-style="{ padding: '3em' }" style="margin:auto;padding:0.5em">
             <br />
             <p style="text-intent:2em">该系统的logo由蓝底白车构成。</p>
             <p style="text-intent:2em">系统的主色调为蓝色，logo与系统的主题相辉映。</p>
@@ -50,7 +50,7 @@
               <b>运输工具</b>的形象。
             </p> 
           </el-card>
-          <el-card style="margin-left:1em;margin:auto" shadow="hover" >
+          <el-card style="margin-left:1em;margin:auto;padding:0.5em" shadow="hover" >
             <img src="../../../assets/images/small/1_bak.png" height="250" style="margin:auto" />
           </el-card>
         </div>
@@ -63,7 +63,7 @@
         </div>
         <div style="height:3em"></div>
         <div class="row">
-          <el-card shadow="hover" style="margin:auto">
+          <el-card shadow="hover" style="margin:auto;padding:4.5em">
             <br />
             <p style="text-indent: 2em">
               团队名称为
@@ -207,10 +207,10 @@
   background-color: #f0f4f7;
 }
 p {
-  color: #9ca8b3;
+  color: #555b60f2;
 }
 ul {
-  color: #9ca8b3;
+  color: #555b60f2;
 }
 </style>
 <style src="../../../assets/style/bootstrap/css/metismenu.min.css" scoped></style>

@@ -1,5 +1,5 @@
 <template>
-  <el-container class="content-container" style="overflow-x: hidden !important;">
+  <el-container class="content-container" style="overflow:scroll;overflow-x: hidden !important;">
     <el-header height="auto" style="padding: 20px">
       <div>
         <el-button-group class="card">

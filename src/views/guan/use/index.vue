@@ -412,10 +412,10 @@
 </template>
 <style>
 p{
-  color: #9ca8b3;
+  color: #555b60f2;
 }
 ul{
-  color: #9ca8b3;
+  color: #555b60f2;
 }
 /* .card-img-top{
   width: 90%;
