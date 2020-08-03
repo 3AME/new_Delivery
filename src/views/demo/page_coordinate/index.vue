@@ -184,7 +184,6 @@ import CoordinateListSide from "../side/side-list-coordinate";
 import VehicleListSide from "../side/side-list-vehicle";
 Vue.use(pluginExport);
 Vue.use(pluginImport);
-var outdata;
 export default {
   components: {
     drawer,
@@ -279,13 +278,13 @@ export default {
   },
   methods: {
     clear() {
-      this.table = {
-        columns: [],
-        data: [],
-        size: "mini",
-        stripe: true,
-        border: true,
-      };
+      // this.table = {
+      //   columns: [],
+      //   data: [],
+      //   size: "mini",
+      //   stripe: true,
+      //   border: true,
+      // };
       this.show = false;
       let svgChildren = d3.selectAll("svg#graph_coordinate > *");
       svgChildren.remove();
@@ -319,19 +318,12 @@ export default {
 
         // 坐标查询文件
         if (isCoorFile) {
-          this.table.columns = header.map((e) => {
-            return {
-              label: e,
-              prop: e,
-            };
-          });
-          this.table.data = results;
-          outdata = results;
           this.tableToPreblem(results);
           this.showScatterGraph();
 
         // 线路查询文件
         } else if (isRouteFile) {
+          this.show = false;
           var me = this;
           this.$confirm(
             "该文件是线路查询文件，是否跳转到线路查询页面？",
@@ -560,7 +552,7 @@ export default {
       let data = problem.nodes;
       console.log("data=" + JSON.stringify(data));
 
-      let width = this.$refs["svg_coordinate"].clientWidth * 0.6;
+      let width = this.$refs["svg_coordinate"].clientWidth;
       let height = this.$refs["svg_coordinate"].clientHeight;
       console.log("width=" + width + " height=" + height);
       const margin = { top: 30, right: 60, bottom: 60, left: 60 };

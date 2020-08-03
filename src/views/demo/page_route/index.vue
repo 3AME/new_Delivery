@@ -317,19 +317,12 @@ export default {
 
         // 线路查询文件
         if (isRouteFile) {
-          this.table.columns = header.map((e) => {
-            return {
-              label: e,
-              prop: e,
-            };
-          });
-          // this.table.data = results;
-          outdata = results;
           this.tableToPreblem(results);
           this.showGraph();
 
           // 坐标查询文件
         } else if (isCoorFile) {
+          this.show = false;
           var me = this;
           this.$confirm(
             "该文件是坐标查询文件，是否跳转到坐标查询页面？",
@@ -644,7 +637,7 @@ export default {
         });
       });
 
-      let width = this.$refs["svg_route"].clientWidth * 0.6;
+      let width = this.$refs["svg_route"].clientWidth;
       let height = this.$refs["svg_route"].clientHeight;
       // width = d3.select("svg#graph_route").clientWidth;
       // height = d3.select("svg#graph_route").clientHeight;
