@@ -1,5 +1,5 @@
 <template>
-  <el-container class="content-container" style="overflow:scroll;overflow-x: hidden !important;">
+  <el-container class="content-container" style="overflow:auto;overflow-x: hidden !important;">
     <el-header height="auto" style="padding: 20px">
       <div>
         <strong style="width: 140px; color: #5673ff; padding: 10px; font-size: 24px">坐标查询</strong>
@@ -71,7 +71,7 @@
         </el-button-group>
       </div>
     </el-header>
-    <el-container style="overflow:scroll;overflow-x: hidden !important; ">
+    <el-container>
       <coordinate-list-side v-if="table.data.length > 0" v-model="queryValue.problem"/>
       <el-main style="padding: 10px 20px">
         <el-table
@@ -98,7 +98,7 @@
       <el-collapse
         class="card"
         @change="handleChange"
-        style="padding: 10px;background-color:#9fb6cd;"
+        style="padding: 0.1em;background-color:#9fb6cd;"
       >
         <el-collapse-item name="1">
           <template slot="title">
@@ -162,7 +162,7 @@
           </span>
         </el-collapse-item>
       </el-collapse>
-    </el-footer>
+      </el-footer>
     <drawer v-model="drawerValue" />
     <query-dialog v-model="queryValue"></query-dialog>
     <add-coordinate-dialog v-model="queryValue.problem.nodes" :visible.sync="visible1"></add-coordinate-dialog>

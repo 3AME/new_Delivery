@@ -1,5 +1,5 @@
 <template>
-  <div class="side-bar" style="padding: 10dp">
+  <div class="side-bar" style="padding: 10dp;">
     <div class="user-info drag">
       <div class="avatar no-drag" style="margin: 20px;">
         <img
@@ -49,8 +49,8 @@ export default {
 </script>
 
 <style>
-.side-bar el-menu-item {
-}
+/* .side-bar el-menu-item {
+} */
 
 .user-info {
   height: 120px;

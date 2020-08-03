@@ -1,5 +1,5 @@
 <template>
-  <el-container class="content-container">
+  <el-container class="content-container" style="overflow:auto;overflow-x: hidden !important;">
     <el-header height="auto" style="padding: 20px">
       <div>
         <strong style="width: 140px; color: #5673ff; padding: 10px; font-size: 24px">路线查询</strong>
@@ -90,17 +90,15 @@
       <vehicle-list-side v-if="table.data.length > 0" v-model="queryValue.problem"/>
     </el-container>
     <el-footer height="auto" style="padding: 20px">
-      <el-collapse
-        class="card"
-        @change="handleChange"
-        style="padding: 10px;background-color:#add8e6"
-      >
+      <div style="height:0.5em"></div>
+      <el-collapse class="card" @change="handleChange" style="padding: 0.1em;background-color:#add8e6">
         <el-collapse-item name="1">
           <template slot="title">
             <div style="text-align:center;color:#000;width:100%">
               <b>路线查询文件内容要求</b>
             </div>
           </template>
+          <el-divider></el-divider>
           <span class="s">
             <div style="color:red;text-align:center;">
               <b>进入路线形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序可任意：</b>

@@ -23,7 +23,7 @@
     </div>
     <div>
       <el-row>
-        <el-col :span="4">
+        <!-- <el-col :span="4">
           <el-button
             class="no-drag"
             type="text"
@@ -32,7 +32,7 @@
           >
             <i class="btn el-icon-shopping-cart-2"></i>
           </el-button>
-        </el-col>
+        </el-col> -->
         <el-col :span="4">
           <el-button
             class="no-drag"
@@ -44,7 +44,7 @@
             <i class="btn el-icon-refresh"></i>
           </el-button>
         </el-col>
-        <el-col :span="4">
+        <!-- <el-col :span="4">
           <el-button
             class="no-drag"
             type="text"
@@ -54,7 +54,7 @@
           >
             <i class="btn el-icon-setting"></i>
           </el-button>
-        </el-col>
+        </el-col> -->
         <el-col :span="4">
           <el-button
             class="no-drag"

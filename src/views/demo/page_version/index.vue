@@ -22,8 +22,8 @@
                     <div class="timeline" v-for="(item, index) in versions" :key="index">
                       <span class="timeline-icon"></span>
                       <span class="year">{{ item.timestamp }}</span>
-                      <div class="timeline-content">
-                        <!-- </div><h3 class="title">Version {{ item.versionName }}</h3></div> -->
+                      <div class="timeline-content" style="background-color:#f0f4f7">
+                      <!-- </div><h3 class="title">Version {{ item.versionName }}</h3></div> -->
                         <!-- <p class="description text-muted">微逻辑</p> -->
                         <h3 class="title">Version {{ item.versionName }}</h3>
                         <p
