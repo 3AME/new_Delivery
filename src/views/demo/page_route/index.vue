@@ -67,10 +67,10 @@
       </el-button-group>
     </el-header>
     <el-container style="overflow:scroll;overflow-x: hidden !important; ">
-      <route-list-side v-if="table.data.length > 0" v-model="queryValue.problem"/>
+      <route-list-side v-if="show" v-model="queryValue.problem" />
       <el-main style="padding: 10px 20px" height="100%">
         <el-table
-        v-show="!show"
+          v-show="!show"
           class="card"
           :header-cell-style="{background:'#e4e5e6'}"
           v-bind="table"
@@ -89,11 +89,15 @@
         </el-table>
         <svg id="graph_route" height="100%" width="100%" ref="svg_route" v-show="show" />
       </el-main>
-      <vehicle-list-side v-if="table.data.length > 0" v-model="queryValue.problem"/>
+      <vehicle-list-side v-if="show" v-model="queryValue.problem" />
     </el-container>
     <el-footer height="auto" style="padding: 20px">
       <div style="height:0.5em"></div>
-      <el-collapse class="card" @change="handleChange" style="padding: 0.1em;background-color:#add8e6">
+      <el-collapse
+        class="card"
+        @change="handleChange"
+        style="padding: 0.1em;background-color:#add8e6"
+      >
         <el-collapse-item name="1">
           <template slot="title">
             <div style="text-align:center;color:#000;width:100%">
@@ -188,7 +192,7 @@ export default {
     AddVehicleDialog,
     AddRouteDialog,
     RouteListSide,
-    VehicleListSide
+    VehicleListSide,
   },
   data() {
     return {
@@ -247,57 +251,128 @@ export default {
       { label: "Vehicle_mileage", prop: "Vehicle_mileage" },
       { label: "Center_name", prop: "Center_name" },
     ];
+    this.coorColumns = [
+      { label: "type", prop: "type" },
+      { label: "name", prop: "name" },
+      { label: "X", prop: "X" },
+      { label: "Y", prop: "Y" },
+      { label: "demand", prop: "demand" },
+      { label: "serviceTime", prop: "serviceTime" },
+      { label: "beginTime", prop: "beginTime" },
+      { label: "endTime", prop: "endTime" },
+      { label: "Vehicle_type", prop: "Vehicle_type" },
+      { label: "Vehicle_load", prop: "Vehicle_load" },
+      { label: "Vehicle_number", prop: "Vehicle_number" },
+      { label: "Vehicle_mileage", prop: "Vehicle_mileage" },
+      { label: "Center_name", prop: "Center_name" },
+    ];
+  },
+  activated() {
+    let file = this.$route.params.uploadFile;
+    if (file) {
+      this.handleUpload(file);
+    }
   },
   methods: {
     refresh() {
       this.reload();
     },
     clear() {
-      this.table = {
-        columns: [],
-        data: [],
-        size: "mini",
-        stripe: true,
-        border: true,
-      };
+      // this.table = {
+      //   columns: [],
+      //   data: [],
+      //   size: "mini",
+      //   stripe: true,
+      //   border: true,
+      // };
       let svgChildren = d3.selectAll("svg#graph_route > *");
       svgChildren.remove();
       this.show = false;
     },
+
     handleUpload(file) {
       this.show = true;
       this.$import.xlsx(file).then(({ header, results }) => {
-
-        this.table.columns = header.map((e) => {
-          return {
-            label: e,
-            prop: e,
-          };
-        });
-
+        // 判断是否是线路格式的文件
+        let isRouteFile = true;
+        let lostLabel = null;
         for (var i in this.stdcolumns) {
-          // console.log(this.stdcolumns[i].label)
           if (!header.includes(this.stdcolumns[i].label)) {
-            var me = this;
-            this.$confirm(
-              "表头缺少字段" + me.stdcolumns[i].label + ",请检查格式",
-              "格式错误",
-              {
-                confirmButtonText: "确定",
-                showCancelButton: false,
-                type: "error",
-              }
-            );
-            return false;
+            isRouteFile = false;
+            lostLabel = this.stdcolumns[i].label;
+            break;
           }
         }
-        this.table.data = results;
-        console.log("results:", results);
-        this.tableToPreblem(results);
-        this.showGraph();
+
+        // 判断是否是坐标格式的文件
+        let isCoorFile = !isRouteFile;
+        if (isCoorFile) {
+          for (let j in this.coorColumns) {
+            if (!header.includes(this.coorColumns[j].label)) {
+              isCoorFile = false;
+              break;
+            }
+          }
+        }
+
+        // 线路查询文件
+        if (isRouteFile) {
+          this.table.columns = header.map((e) => {
+            return {
+              label: e,
+              prop: e,
+            };
+          });
+          // this.table.data = results;
+          outdata = results;
+          this.tableToPreblem(results);
+          this.showGraph();
+
+          // 坐标查询文件
+        } else if (isCoorFile) {
+          var me = this;
+          this.$confirm(
+            "该文件是坐标查询文件，是否跳转到坐标查询页面？",
+            "格式错误",
+            {
+              confirmButtonText: "确定",
+              type: "error",
+            }
+          )
+            .then(() => {
+              this.$router.push({
+                name: "page_coordinate",
+                params: {
+                  uploadFile: file,
+                },
+              });
+            })
+            .catch(() => {
+              // pass
+            })
+            .finally(() => {
+              return false;
+            });
+
+          // 格式错误
+        } else {
+          var me = this;
+          this.$confirm(
+            "表头缺少字段" + lostLabel + ",请检查格式",
+            "格式错误",
+            {
+              confirmButtonText: "确定",
+              showCancelButton: false,
+              type: "error",
+            }
+          );
+          return false;
+        }
       });
+
       return false;
     },
+
     tableToPreblem(results) {
       console.log(results);
       let problem = [];
@@ -563,13 +638,11 @@ export default {
         //   });
         // }
         edges.push({
-            source: edge.u,
-            target: edge.v,
-            value: edge.w,
-          });
+          source: edge.u,
+          target: edge.v,
+          value: edge.w,
+        });
       });
-
-
 
       let width = this.$refs["svg_route"].clientWidth * 0.6;
       let height = this.$refs["svg_route"].clientHeight;
@@ -633,33 +706,33 @@ export default {
           return "#ccc";
         })
         .attr("stroke-width", 1);
-        // .attr("marker-end", function (d, i) {
-        //   var refX = 30;
-        //   nodes.forEach(function (node) {
-        //     if (node.name === d.target.toString()) {
-        //       refX = node.group * 15;
-        //     }
-        //   });
-        //   var arrowMarker = svg
-        //     .append("marker")
-        //     .attr("id", "arrow" + i)
-        //     .attr("markerUnits", "userSpaceOnUse")
-        //     .attr("markerWidth", "16")
-        //     .attr("markerHeight", "15")
-        //     .attr("viewBox", "0 0 12 12")
-        //     .attr("refX", refX)
-        //     .attr("refY", 6)
-        //     .attr("orient", "auto")
-        //     .append("svg:path")
-        //     .attr("d", "M2,2 L10,6 L2,10 L6,6 L2,2")
-        //     .attr("fill", function () {
-        //       return "#000000";
-        //     });
-        //   if (d.vid !== undefined) {
-        //     return "url(#arrow" + i + ")";
-        //   }
-        //   return "url(#end)";
-        // });
+      // .attr("marker-end", function (d, i) {
+      //   var refX = 30;
+      //   nodes.forEach(function (node) {
+      //     if (node.name === d.target.toString()) {
+      //       refX = node.group * 15;
+      //     }
+      //   });
+      //   var arrowMarker = svg
+      //     .append("marker")
+      //     .attr("id", "arrow" + i)
+      //     .attr("markerUnits", "userSpaceOnUse")
+      //     .attr("markerWidth", "16")
+      //     .attr("markerHeight", "15")
+      //     .attr("viewBox", "0 0 12 12")
+      //     .attr("refX", refX)
+      //     .attr("refY", 6)
+      //     .attr("orient", "auto")
+      //     .append("svg:path")
+      //     .attr("d", "M2,2 L10,6 L2,10 L6,6 L2,2")
+      //     .attr("fill", function () {
+      //       return "#000000";
+      //     });
+      //   if (d.vid !== undefined) {
+      //     return "url(#arrow" + i + ")";
+      //   }
+      //   return "url(#end)";
+      // });
 
       // 边上文字
       var linksText = g
@@ -690,19 +763,19 @@ export default {
       gs.append("circle")
         // .attr("r",20)
         .attr("r", function (d, i) {
-          if (d.type == 'depot') {
+          if (d.type == "depot") {
             return 30;
-          } else if(d.type == 'customer') {
+          } else if (d.type == "customer") {
             return 22.5;
-          }  else {
+          } else {
             return 15;
           }
           // 圆圈半径
         })
         .attr("fill", function (d, i) {
-          if (d.type == 'depot') {
+          if (d.type == "depot") {
             return "#fc5454";
-          } else if (d.type == 'customer') {
+          } else if (d.type == "customer") {
             return "#02c58d";
             // return "#ccc"
           } else {
