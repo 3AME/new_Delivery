@@ -429,6 +429,27 @@ export default {
       { label: "Vehicle_mileage", prop: "Vehicle_mileage" },
       { label: "Center_name", prop: "Center_name" },
     ];
+    this.coorColumns = [
+      { label: "type", prop: "type" },
+      { label: "name", prop: "name" },
+      { label: "X", prop: "X" },
+      { label: "Y", prop: "Y" },
+      { label: "demand", prop: "demand" },
+      { label: "serviceTime", prop: "serviceTime" },
+      { label: "beginTime", prop: "beginTime" },
+      { label: "endTime", prop: "endTime" },
+      { label: "Vehicle_type", prop: "Vehicle_type" },
+      { label: "Vehicle_load", prop: "Vehicle_load" },
+      { label: "Vehicle_number", prop: "Vehicle_number" },
+      { label: "Vehicle_mileage", prop: "Vehicle_mileage" },
+      { label: "Center_name", prop: "Center_name" },
+    ];
+  },
+  activated() {
+    let file = this.$route.params.uploadFile;
+    if (file) {
+      this.handleUpload(file);
+    }
   },
   methods: {
     removeVehicle(vehicle) {
@@ -455,37 +476,85 @@ export default {
         border: true,
       };
     },
+
     handleUpload(file) {
       this.$import.xlsx(file).then(({ header, results }) => {
-        this.table.columns = header.map((e) => {
-          return {
-            label: e,
-            prop: e,
-          };
-        });
 
+        // 判断是否是线路格式的文件
+        let isRouteFile = true;
+        let lostLabel = null;
         for (var i in this.stdcolumns) {
-          // console.log(this.stdcolumns[i].label)
           if (!header.includes(this.stdcolumns[i].label)) {
-            var me = this;
-            this.$confirm(
-              "表头缺少字段" + me.stdcolumns[i].label + ",请检查格式",
-              "格式错误",
-              {
-                confirmButtonText: "确定",
-                showCancelButton: false,
-                type: "error",
-              }
-            );
-            return false;
+            isRouteFile = false;
+            lostLabel = this.stdcolumns[i].label;
+            break;
           }
         }
-        this.table.data = results;
-        console.log("results:", results);
-        this.tableToPreblem(results);
+
+        // 判断是否是坐标格式的文件
+        let isCoorFile = !isRouteFile;
+        if (isCoorFile) {
+          for (let j in this.coorColumns) {
+            if (!header.includes(this.coorColumns[j].label)) {
+              isCoorFile = false;
+              break;
+            }
+          }
+        }
+
+        // 线路查询文件
+        if (isRouteFile) {
+          this.table.columns = header.map((e) => {
+            return {
+              label: e,
+              prop: e,
+            };
+          });
+          this.table.data = results;
+          outdata = results;
+          this.tableToPreblem(results);
+
+        // 坐标查询文件
+        } else if (isCoorFile) {
+          var me = this;
+          this.$confirm(
+            "该文件是坐标查询文件，是否跳转到坐标查询页面？",
+            "格式错误",
+            {
+              confirmButtonText: "确定",
+              type: "error",
+            }
+          ).then(() => {
+            this.$router.push({
+              name: "page_coordinate", 
+              params: {
+                uploadFile: file
+              }});
+          }).catch(() => {
+            // pass
+          }).finally(() => {
+            return false;
+          });
+
+        // 格式错误
+        } else {
+          var me = this;
+          this.$confirm(
+            "表头缺少字段" + lostLabel + ",请检查格式",
+            "格式错误",
+            {
+              confirmButtonText: "确定",
+              showCancelButton: false,
+              type: "error",
+            }
+          );
+          return false;
+        }
       });
+
       return false;
     },
+
     tableToPreblem(results) {
       console.log(results);
       let problem = [];

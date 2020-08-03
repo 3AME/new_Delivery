@@ -438,20 +438,46 @@ export default {
       { label: "Vehicle_mileage", prop: "Vehicle_mileage" },
       { label: "Center_name", prop: "Center_name" },
     ];
+    this.routeColumns = [
+      { label: "type", prop: "type" },
+      { label: "name_a", prop: "name_a" },
+      { label: "demand", prop: "demand" },
+      { label: "serviceTime", prop: "serviceTime" },
+      { label: "beginTime", prop: "beginTime" },
+      { label: "endTime", prop: "endTime" },
+      { label: "Vehicle_type", prop: "Vehicle_type" },
+      { label: "Vehicle_load", prop: "Vehicle_load" },
+      { label: "Vehicle_number", prop: "Vehicle_number" },
+      // { label: "Use_cost", prop: "Use_cost" },
+      // { label: "Driving_cost", prop: "Driving_cost" },
+      // { label: "Waiting_cost", prop: "Waiting_cost" },
+      { label: "Vehicle_mileage", prop: "Vehicle_mileage" },
+      { label: "Center_name", prop: "Center_name" },
+    ];
+  },
+  activated() {
+    let file = this.$route.params.uploadFile;
+    if (file) {
+      this.handleUpload(file);
+    }
   },
   methods: {
     removeVehicle(vehicle) {
       this.vehicles.splice(this.vehicles.indexOf(vehicle), 1);
     },
+
     clearVehicle(vehicle) {
       this.vehicles.splice(0, this.vehicles.length);
     },
+
     removeDepot(depot) {
       this.polylinePath.splice(this.polylinePath.indexOf(depot), 1);
     },
+
     clearDepots() {
       this.polylinePath.splice(0, this.polylinePath.length);
     },
+
     clear() {
       this.table = {
         columns: [],
@@ -461,36 +487,85 @@ export default {
         border: true,
       };
     },
+
     handleUpload(file) {
       this.$import.xlsx(file).then(({ header, results }) => {
-        this.table.columns = header.map((e) => {
-          return {
-            label: e,
-            prop: e,
-          };
-        });
+
+        // 判断是否是坐标格式的文件
+        let isCoorFile = true;
+        let lostLabel = null;
         for (var i in this.stdcolumns) {
-          // console.log(this.stdcolumns[i].label);
           if (!header.includes(this.stdcolumns[i].label)) {
-            var me = this;
-            this.$confirm(
-              "表头缺少字段" + me.stdcolumns[i].label + ",请检查格式",
-              "格式错误",
-              {
-                confirmButtonText: "确定",
-                showCancelButton: false,
-                type: "error",
-              }
-            );
-            return false;
+            isCoorFile = false;
+            lostLabel = this.stdcolumns[i].label;
+            break;
           }
         }
-        this.table.data = results;
-        outdata = results;
-        this.tableToPreblem(results);
+
+        // 判断是否是线路格式的文件
+        let isRouteFile = !isCoorFile;
+        if (isRouteFile) {
+          for (let j in this.routeColumns) {
+            if (!header.includes(this.routeColumns[j].label)) {
+              isRouteFile = false;
+              break;
+            }
+          }
+        }
+
+        // 坐标查询文件
+        if (isCoorFile) {
+          this.table.columns = header.map((e) => {
+            return {
+              label: e,
+              prop: e,
+            };
+          });
+          this.table.data = results;
+          outdata = results;
+          this.tableToPreblem(results);
+
+        // 线路查询文件
+        } else if (isRouteFile) {
+          var me = this;
+          this.$confirm(
+            "该文件是线路查询文件，是否跳转到线路查询页面？",
+            "格式错误",
+            {
+              confirmButtonText: "确定",
+              type: "error",
+            }
+          ).then(() => {
+            this.$router.push({
+              name: "page_route", 
+              params: {
+                uploadFile: file
+              }});
+          }).catch(() => {
+            // pass
+          }).finally(() => {
+            return false;
+          });
+
+        // 格式错误
+        } else {
+          var me = this;
+          this.$confirm(
+            "表头缺少字段" + lostLabel + ",请检查格式",
+            "格式错误",
+            {
+              confirmButtonText: "确定",
+              showCancelButton: false,
+              type: "error",
+            }
+          );
+          return false;
+        }
       });
+
       return false;
     },
+
     tableToPreblem(outdata) {
       let problem = [];
       var costModeFlag = false;
@@ -570,6 +645,7 @@ export default {
       console.log("problem:" + JSON.stringify(newproblem_edges));
       this.queryValue.problem = newproblem_edges;
     },
+
     inquery() {
       if (this.queryValue.problem == null) {
         this.$confirm("还未选择文件打开哦", "温馨提示", {
@@ -586,9 +662,11 @@ export default {
         this.queryValue.show = true;
       }
     },
+
     handleChange(val) {
       console.log(val);
     },
+
     handleDownload() {
       var table = [];
       table.push(
