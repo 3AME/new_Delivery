@@ -1,5 +1,109 @@
 <template>
-  <el-container class="content-container"></el-container>
+  <el-container class="content-container">
+    <el-header height="auto" style="padding-top: 20px">
+      <div>
+        <strong style="width: 140px; color: #5673ff; padding: 10px; font-size: 24px">任务列表</strong>
+        <el-button class="btn-action" type="text" icon="el-icon-menu" style="color: #5673ff;">
+          <strong>总计（{{ querys.length }}）</strong>
+        </el-button>
+      </div>
+      <div>
+        <el-button-group class="card">
+          <el-button
+            class="btn-action"
+            type="text"
+            icon="el-icon-delete"
+            :style="'color: ' + (multipleSelection.length != 0 ? '#409eff' : '#cccccc') + ';'"
+            :disabled="multipleSelection.length == 0"
+          >删除</el-button>
+          <el-button
+            class="btn-action"
+            type="text"
+            icon="el-icon-tickets"
+            :style="'color: ' + (multipleSelection.length == 1 ? '#fcbe2d' : '#cccccc') + ';'"
+            :disabled="multipleSelection.length != 1"
+            @click="saveQuery(multipleSelection[0])"
+          >保存</el-button>
+          <el-button
+            class="btn-action"
+            type="text"
+            icon="el-icon-search"
+            :style="'color: ' + (multipleSelection.length == 1 ? '#02c58d' : '#cccccc') + ';'"
+            :disabled="multipleSelection.length != 1"
+            @click="queryProblem(multipleSelection[0])"
+          >查询</el-button>
+          <el-button
+            class="btn-action"
+            type="text"
+            icon="el-icon-search"
+            :style="'color: ' + (querys.length != 0 ? '#red' : '#cccccc') + ';'"
+            @click="deleteAll()"
+            :disabled="querys.length == 0"
+          >清空</el-button>
+        </el-button-group>
+      </div>
+    </el-header>
+    <el-main>
+      <el-table
+        class="card"
+        :data="tasks"
+        height="100%"
+        style="padding: 20px 0"
+        @selection-change="handleSelectionChange"
+      >
+        >
+        <el-table-column type="selection" width="55" align="center"></el-table-column>
+        <el-table-column prop="title" label="标题">
+          <template slot-scope="scope">
+            <i class="el-icon-s-order" style="font-size: 18px"></i>
+            <strong style="color: black; margin-left: 10px" class="line-1 hover">{{scope.row.title}}</strong>
+          </template>
+        </el-table-column>
+        <el-table-column prop="time" label="日期">
+          <template slot-scope="scope">
+            <i class="el-icon-time" style="color: #fea82d; font-size: 18px"></i>
+            <strong style="color: black; margin-left: 10px" class="line-1 hover">{{scope.row.time}}</strong>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center">
+          <template slot-scope="scope">
+            <el-button
+              class="btn-action"
+              type="text"
+              icon="el-icon-search"
+              style="color: #409eff;"
+              @click="queryProblem(scope.row)"
+            >查询</el-button>
+            <el-button
+              class="btn-action"
+              type="text"
+              icon="el-icon-delete"
+              style="color: red;"
+              @click="deleteQuery(scope.$index, scope.row)"
+            >删除</el-button>
+            <el-button
+              class="btn-action"
+              type="text"
+              icon="el-icon-download"
+              style="color: #02c58d;"
+              @click="saveQuery(scope.row)"
+            >保存</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-main>
+    <el-footer height="auto" style="text-align: center">
+      <el-pagination
+        background
+        layout="prev, pager, next, jumper"
+        :current-page.sync="currentPage"
+        :total="querys.length"
+        :page-size="20"
+        @current-change="handleCurrentChange"
+        style="padding: 20px"
+      ></el-pagination>
+    </el-footer>
+  </el-container>
 </template>
 
 <script>

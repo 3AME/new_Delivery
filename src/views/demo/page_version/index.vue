@@ -1,5 +1,5 @@
 <template>
-  <el-container class="content-container">
+  <el-container class="content-container" style="overflow:auto;overflow-x: hidden !important;">
     <el-header height="auto" style="padding: 20px">
       <div class="row justify-content-center">
         <div class="col-md-6">
@@ -10,7 +10,7 @@
         </div>
       </div>
     </el-header>
-    <el-main style="overflow:scroll;overflow-x: hidden !important;">
+    <el-main>
       <div class="col-lg-12">
         <div>
           <!-- class="card" -->
@@ -23,7 +23,7 @@
                       <span class="timeline-icon"></span>
                       <span class="year">{{ item.timestamp }}</span>
                       <div class="timeline-content" style="background-color:#f0f4f7">
-                      <!-- </div><h3 class="title">Version {{ item.versionName }}</h3></div> -->
+                        <!-- </div><h3 class="title">Version {{ item.versionName }}</h3></div> -->
                         <!-- <p class="description text-muted">微逻辑</p> -->
                         <h3 class="title">Version {{ item.versionName }}</h3>
                         <p
