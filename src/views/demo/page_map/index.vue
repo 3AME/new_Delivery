@@ -34,7 +34,7 @@
         </el-button-group>
       </div>
     </el-header>-->
-    <el-container style="overflow:scroll;overflow-x: hidden !important; margin: 10px">
+    <el-container style="overflow:auto;overflow-x: hidden !important; margin: 10px">
       <el-aside width="20%" class="aside" style="margin: 10px;">
         <div class="card" style="margin: 10px">
           <div style="text-align: center; padding: 20px">

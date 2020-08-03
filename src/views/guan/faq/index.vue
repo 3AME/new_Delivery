@@ -1,5 +1,5 @@
 <template>
-  <el-container class="content-container" style="overflow:scroll;overflow-x: hidden !important;">
+  <el-container class="content-container" style="overflow:auto;overflow-x: hidden !important;">
     <!-- <template slot="header">常见的一些问题</template> -->
     <div class="row" style="margin-right: 0px; margin-left: 0px;">
       <div class="col-lg-12">

@@ -1,5 +1,5 @@
 <template>
-  <el-container class="content-container" style="overflow:scroll;overflow-x: hidden !important;">
+  <el-container class="content-container" style="overflow:auto;overflow-x: hidden !important;">
     <el-header height="auto" style="padding: 20px">
       <el-button-group class="card">
         <el-col :span="3.2">
@@ -42,7 +42,7 @@
         >查询</el-button>
       </el-button-group>
     </el-header>
-    <el-container style="overflow:scroll;overflow-x: hidden !important; ">
+    <el-container>
       <el-aside width="20%" style="margin: 10px;" v-if="table.data.length > 0">
         <div class="card" style="margin: 10px">
           <div style="text-align: center; padding: 20px">
@@ -287,12 +287,6 @@
     </el-container>
 
     <el-footer height="auto" style="padding: 20px">
-     
-      <template slot="empty">
-        <img src="../../../assets/images/路线.png">
-        <img src="../../../assets/images/暂无数据3.png">
-      </template>
-     
       <div style="height:0.5em"></div>
       <el-collapse class="card" @change="handleChange" style="padding: 0.1em;background-color:#add8e6">
         <el-collapse-item name="1">

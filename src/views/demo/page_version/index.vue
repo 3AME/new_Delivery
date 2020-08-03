@@ -1,5 +1,5 @@
 <template>
-  <el-container class="content-container" style="overflow:scroll;overflow-x: hidden !important;">
+  <el-container class="content-container" style="overflow:auto;overflow-x: hidden !important;">
     <div class="col-lg-12">
         <div>
           <!-- class="card" -->
