@@ -23,7 +23,7 @@
     </div>
     <div>
       <el-row>
-        <el-col :span="4">
+        <!-- <el-col :span="4">
           <el-button
             class="no-drag"
             type="text"
@@ -32,7 +32,7 @@
           >
             <i class="btn el-icon-shopping-cart-2"></i>
           </el-button>
-        </el-col>
+        </el-col> -->
         <el-col :span="4">
           <el-button
             class="no-drag"
@@ -44,7 +44,7 @@
             <i class="btn el-icon-refresh"></i>
           </el-button>
         </el-col>
-        <el-col :span="4">
+        <!-- <el-col :span="4">
           <el-button
             class="no-drag"
             type="text"
@@ -54,7 +54,7 @@
           >
             <i class="btn el-icon-setting"></i>
           </el-button>
-        </el-col>
+        </el-col> -->
         <el-col :span="4">
           <el-button
             class="no-drag"
@@ -124,8 +124,8 @@ export default {
       this.$router.go(1);
     },
     refresh() {
-      this.reload();
-      // window.location.reload();
+      // this.reload();
+      window.location.reload();
     },
     setting() {
 
@@ -135,6 +135,23 @@ export default {
 </script>
 
 <style>
+.el-message-box {
+    display: inline-block;
+    width: 30%;
+    padding-bottom: 10px;
+    vertical-align: middle;
+    background-color: #FFF;
+    border-radius: 8px;
+    border: 1px solid #EBEEF5;
+    font-size: 18px;
+    -webkit-box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+    text-align: left;
+    overflow: hidden;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
 .no-drag {
   -webkit-app-region: no-drag;
 }

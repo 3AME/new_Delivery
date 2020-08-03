@@ -1,5 +1,5 @@
 <template>
-  <el-container class="content-container is-vertical" style="height: 100%; width: 100%">
+  <el-container class="content-container is-vertical" style="height: 100%; width: 100%;overflow:scroll;overflow-x: hidden !important;">
     <div style="height: 100%; width: 100%; text-align: center; display: table;">
         <div class="vertical-center">
           <img

@@ -1,5 +1,15 @@
 <template>
   <el-container class="content-container">
+    <el-header height="auto" style="padding: 20px">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="text-center">
+            <strong style="color: #5673ff; font-size: 24px">关于我们</strong>
+            <p class="text-muted">我们的目标是星辰大海</p>
+          </div>
+        </div>
+      </div>
+    </el-header>
     <el-main style="width: 100%;">
       <section id="cd-timeline" class="cd-container">
         <div style="text-align:center">
@@ -48,7 +58,7 @@
             <p style="text-intent:2em">
               车辆寓意物流配送中
               <b>运输工具</b>的形象。
-            </p> 
+            </p>
           </el-card>
           <el-card style="margin-left:1em;margin:auto;padding:0.5em" shadow="hover" >
             <img src="../../../assets/images/small/1_bak.png" height="250" style="margin:auto" />

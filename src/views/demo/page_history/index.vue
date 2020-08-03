@@ -2,7 +2,7 @@
   <el-container class="content-container">
     <el-header height="auto" style="padding-top: 20px">
       <div>
-        <strong style="width: 140px; color: #5673ff; padding: 10px; font-size: 24px">历史任务列表</strong>
+        <strong style="width: 140px; color: #5673ff; padding: 10px; font-size: 24px">任务列表</strong>
         <el-button class="btn-action" type="text" icon="el-icon-menu" style="color: #5673ff;">
           <strong>总计（{{ querys.length }}）</strong>
         </el-button>
@@ -288,40 +288,40 @@ export default {
         }
       });
     },
-    saveQuery2(index, row) {
-      var problem = row.problem;
-      var table = [];
-      var edges = problem.edges;
-      var row0 = ["物流中心(" + edges[0].x + ", " + edges[0].y + ")"];
-      table.push(row0);
+    // saveQuery2(index, row) {
+    //   var problem = row.problem;
+    //   var table = [];
+    //   var edges = problem.edges;
+    //   var row0 = ["物流中心(" + edges[0].x + ", " + edges[0].y + ")"];
+    //   table.push(row0);
 
-      var header1 = ["配送节点", "横坐标x(km)", "纵坐标y(km)", "需求量q(t)"];
+    //   var header1 = ["配送节点", "横坐标x(km)", "纵坐标y(km)", "需求量q(t)"];
 
-      table.push(header1);
+    //   table.push(header1);
 
-      for (var i = 1; i < edges.length; i++) {
-        let row = [];
-        row.push(i);
-        row.push(edges[i].x);
-        row.push(edges[i].y);
-        row.push(problem.customers[i - 1]);
-        table.push(row);
-      }
+    //   for (var i = 1; i < edges.length; i++) {
+    //     let row = [];
+    //     row.push(i);
+    //     row.push(edges[i].x);
+    //     row.push(edges[i].y);
+    //     row.push(problem.customers[i - 1]);
+    //     table.push(row);
+    //   }
 
-      // 创建book
-      var wb = xlsx.utils.book_new();
-      // json转sheet
-      var ws = xlsx.utils.aoa_to_sheet(table);
-      // sheet写入book
-      xlsx.utils.book_append_sheet(wb, ws, "query");
-      // 输出
-      ipcRenderer.send("open-save-dialog", row.title);
-      ipcRenderer.once("selectedItem", function (e, path) {
-        if (path != null) {
-          xlsx.writeFile(wb, path);
-        }
-      });
-    },
+    //   // 创建book
+    //   var wb = xlsx.utils.book_new();
+    //   // json转sheet
+    //   var ws = xlsx.utils.aoa_to_sheet(table);
+    //   // sheet写入book
+    //   xlsx.utils.book_append_sheet(wb, ws, "query");
+    //   // 输出
+    //   ipcRenderer.send("open-save-dialog", row.title);
+    //   ipcRenderer.once("selectedItem", function (e, path) {
+    //     if (path != null) {
+    //       xlsx.writeFile(wb, path);
+    //     }
+    //   });
+    // },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
       let length = this.querys.length;

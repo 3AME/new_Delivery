@@ -1,5 +1,5 @@
 <template>
-  <el-container class="content-container" style="overflow:scroll;overflow-x: hidden !important;">
+  <el-container class="content-container" style="overflow:auto;overflow-x: hidden !important;">
     <!-- <template slot="header">常见的一些问题</template> -->
     <div class="row" style="margin-right: 0px; margin-left: 0px;">
       <div class="col-lg-12">
@@ -29,7 +29,6 @@
                   </p>
                 </div>
               </div>
-            </div>
 
             <div class="col-lg-4">
               <div class="card faq-box border-primary">
@@ -37,12 +36,8 @@
                   <div class="faq-icon float-right">
                     <i class="fas fa-question-circle font-24 mt-2 text-primary"></i>
                   </div>
-                  <h5 class="text-primary">02.</h5>
-                  <h5 class="font-20 mb-3 mt-4">如何清除上一次导入的excel文件？</h5>
-                  <p class="text-muted mb-0">点击导入.xlsx/.xls按钮，自动覆盖内容，不会影响下一次查询，也可以点击清除按钮或者刷新按钮，再重新导入</p>
                 </div>
               </div>
-            </div>
 
             <div class="col-lg-4">
               <div class="card faq-box border-warning">
@@ -50,9 +45,6 @@
                   <div class="faq-icon float-right">
                     <i class="fas fa-question-circle font-24 mt-2 text-warning"></i>
                   </div>
-                  <h5 class="text-warning">03.</h5>
-                  <h5 class="font-20 mb-3 mt-4">点击查询以后没有页面跳转？</h5>
-                  <p class="text-muted mb-0">可能是因为运行环境的问题导致响应时间的差异，请耐心等待。也可能是因为数据量大，查询需要一定时间。</p>
                 </div>
               </div>
             </div>
@@ -70,7 +62,6 @@
                   <p class="text-muted mb-0">地图显示不出来可能跟你的网络原因有关，本系统通过调用百度地图API来实现地图显示，请确保你的网络环境良好。</p>
                 </div>
               </div>
-            </div>
 
             <div class="col-lg-4">
               <div class="card faq-box border-info">
@@ -83,7 +74,6 @@
                   <p class="text-muted mb-0">车辆预置有最大里程，地图选择跨省或者大范围的配送点不符合真实情况，程序无法得到解决方案，考虑检查输入.</p>
                 </div>
               </div>
-            </div>
 
             <div class="col-lg-4">
               <div class="card faq-box border-dark">
@@ -97,11 +87,12 @@
                 </div>
               </div>
             </div>
+            <!-- container-fluid -->
           </div>
-          <!-- container-fluid -->
         </div>
       </div>
-    </div>
+    </el-main>
+
     <d2-module-index-banner slot="footer" v-bind="banner" />
     <!-- </template> -->
   </el-container>
