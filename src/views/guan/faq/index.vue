@@ -91,7 +91,6 @@
           </div>
         </div>
       </div>
-    </el-main>
 
     <d2-module-index-banner slot="footer" v-bind="banner" />
     <!-- </template> -->
