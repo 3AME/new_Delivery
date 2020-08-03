@@ -68,8 +68,9 @@
     </el-header>
     <el-container style="overflow:scroll;overflow-x: hidden !important; ">
       <route-list-side v-if="table.data.length > 0" v-model="queryValue.problem"/>
-      <el-main style="padding: 10px 20px">
+      <el-main style="padding: 10px 20px" height="100%">
         <el-table
+        v-show="!show"
           class="card"
           :header-cell-style="{background:'#e4e5e6'}"
           v-bind="table"
@@ -86,6 +87,7 @@
             :label="item.label"
           ></el-table-column>
         </el-table>
+        <svg id="graph_route" height="100%" width="100%" ref="svg_route" v-show="show" />
       </el-main>
       <vehicle-list-side v-if="table.data.length > 0" v-model="queryValue.problem"/>
     </el-container>
@@ -164,6 +166,7 @@
 </template>
 
 <script>
+import * as d3 from "d3";
 import * as xlsx from "xlsx";
 import { ipcRenderer } from "electron";
 import Vue from "vue";
@@ -223,6 +226,7 @@ export default {
       // ],
       visible: false,
       visible1: false,
+      show: false,
     };
   },
   mounted() {
@@ -245,33 +249,6 @@ export default {
     ];
   },
   methods: {
-    // isDepot(id) {
-    //   let nodes = this.queryValue.problem.nodes;
-    //   for (let i = 0; i < nodes.length; i++) {
-    //     if (nodes[i].id == id) {
-    //       return node.type == "depot";
-    //     }
-    //   }
-    // },
-    // getNodeColorByType(type) {
-    //   return type == "depot"
-    //     ? "red"
-    //     : type == "customer"
-    //     ? "#02c58d"
-    //     : "#fcbe2d";
-    // },
-    // removeVehicle(vehicle) {
-    //   this.vehicles.splice(this.vehicles.indexOf(vehicle), 1);
-    // },
-    // clearVehicle(vehicle) {
-    //   this.vehicles.splice(0, this.vehicles.length);
-    // },
-    // removeDepot(depot) {
-    //   this.polylinePath.splice(this.polylinePath.indexOf(depot), 1);
-    // },
-    // clearDepots() {
-    //   this.polylinePath.splice(0, this.polylinePath.length);
-    // },
     refresh() {
       this.reload();
     },
@@ -283,9 +260,14 @@ export default {
         stripe: true,
         border: true,
       };
+      let svgChildren = d3.selectAll("svg#graph_route > *");
+      svgChildren.remove();
+      this.show = false;
     },
     handleUpload(file) {
+      this.show = true;
       this.$import.xlsx(file).then(({ header, results }) => {
+
         this.table.columns = header.map((e) => {
           return {
             label: e,
@@ -312,6 +294,7 @@ export default {
         this.table.data = results;
         console.log("results:", results);
         this.tableToPreblem(results);
+        this.showGraph();
       });
       return false;
     },
@@ -427,7 +410,6 @@ export default {
 
       console.log(this.distancePrior);
     },
-
     inquery() {
       if (this.queryValue.problem == null) {
         this.$confirm("还未选择文件打开哦", "温馨提示", {
@@ -550,6 +532,258 @@ export default {
           xlsx.writeFile(wb, path);
         }
       });
+    },
+    showGraph() {
+      let svgChildren = d3.selectAll("svg#graph_route > *");
+      svgChildren.remove();
+      var problem = this.queryValue.problem;
+
+      // 准备数据
+      var nodes = problem.nodes;
+
+      var edges = [];
+
+      problem.edges.forEach(function (edge) {
+        // var has = false;
+        // for (var i = 0; i < edges.length; i++) {
+        //   var item = edges[i];
+        //   if (
+        //     (edge.u === item.source && edge.v === item.target) ||
+        //     (edge.u === item.target && edge.v === item.source)
+        //   ) {
+        //     has = true;
+        //     break;
+        //   }
+        // }
+        // if (!has) {
+        //   edges.push({
+        //     source: edge.u,
+        //     target: edge.v,
+        //     value: edge.w,
+        //   });
+        // }
+        edges.push({
+            source: edge.u,
+            target: edge.v,
+            value: edge.w,
+          });
+      });
+
+
+
+      let width = this.$refs["svg_route"].clientWidth * 0.6;
+      let height = this.$refs["svg_route"].clientHeight;
+      // width = d3.select("svg#graph_route").clientWidth;
+      // height = d3.select("svg#graph_route").clientHeight;
+      var marge = { top: 10, bottom: 10, left: 10, right: 10 };
+
+      let svg = d3
+        .select("svg#graph_route")
+        .attr("preserveAspectRatio", "xMidYMid meet")
+        .attr("viewBox", "0 0 " + width + " " + height);
+
+      var g = svg
+        .append("g")
+        .attr("transform", "translate(" + marge.top + "," + marge.left + ")");
+
+      var legend = svg.append("g");
+
+      var zoom = d3
+        .zoom()
+        .scaleExtent([0.1, 4])
+        .on("zoom", () => {
+          g.attr("transform", d3.event.transform);
+        });
+      svg.call(zoom);
+
+      var forceSimulation = d3
+        .forceSimulation()
+        .force("path", d3.forceLink())
+        .force("charge", d3.forceManyBody())
+        .force("center", d3.forceCenter());
+      this.forceSimulation = forceSimulation;
+      // 生成节点数据
+      forceSimulation.nodes(nodes).on("tick", ticked);
+      // 生成边数据
+      forceSimulation
+        .force("path")
+        .links(edges)
+        .distance(function (d) {
+          // 每一边的长度
+          if (d.value > 9) {
+            return (Math.sqrt(d.value) + 6) * 40;
+          }
+          return d.value * 40;
+        });
+
+      // 设置图形的中心位置
+      forceSimulation
+        .force("center")
+        .x(width / 2)
+        .y(height / 2);
+
+      // 绘制边
+      var links = g
+        .append("g")
+        .selectAll("path")
+        .data(edges)
+        .enter()
+        .append("path")
+        .attr("stroke", function (d, i) {
+          return "#ccc";
+        })
+        .attr("stroke-width", 1);
+        // .attr("marker-end", function (d, i) {
+        //   var refX = 30;
+        //   nodes.forEach(function (node) {
+        //     if (node.name === d.target.toString()) {
+        //       refX = node.group * 15;
+        //     }
+        //   });
+        //   var arrowMarker = svg
+        //     .append("marker")
+        //     .attr("id", "arrow" + i)
+        //     .attr("markerUnits", "userSpaceOnUse")
+        //     .attr("markerWidth", "16")
+        //     .attr("markerHeight", "15")
+        //     .attr("viewBox", "0 0 12 12")
+        //     .attr("refX", refX)
+        //     .attr("refY", 6)
+        //     .attr("orient", "auto")
+        //     .append("svg:path")
+        //     .attr("d", "M2,2 L10,6 L2,10 L6,6 L2,2")
+        //     .attr("fill", function () {
+        //       return "#000000";
+        //     });
+        //   if (d.vid !== undefined) {
+        //     return "url(#arrow" + i + ")";
+        //   }
+        //   return "url(#end)";
+        // });
+
+      // 边上文字
+      var linksText = g
+        .append("g")
+        .selectAll("text")
+        .data(edges)
+        .enter()
+        .append("text")
+        .text(function (d) {
+          return d.value.toFixed(2);
+        });
+      // 建立用来放在每个节点和对应文字的分组<g>
+      var gs = g
+        .selectAll(".circleText")
+        .data(nodes)
+        .enter()
+        .append("g")
+        // .attr("transform", function (d, i) {
+        //   var cirX = d.x;
+        //   var cirY = d.y;
+        //   return "translate(" + cirX + "," + cirY + ")";
+        // })
+        .call(
+          d3.drag().on("start", started).on("drag", dragged).on("end", ended)
+        );
+
+      // 绘制节点
+      gs.append("circle")
+        // .attr("r",20)
+        .attr("r", function (d, i) {
+          if (d.type == 'depot') {
+            return 30;
+          } else if(d.type == 'customer') {
+            return 22.5;
+          }  else {
+            return 15;
+          }
+          // 圆圈半径
+        })
+        .attr("fill", function (d, i) {
+          if (d.type == 'depot') {
+            return "#fc5454";
+          } else if (d.type == 'customer') {
+            return "#02c58d";
+            // return "#ccc"
+          } else {
+            return "#fcbe2d";
+          }
+        });
+      // 文字
+      gs.append("text")
+        .attr("text-anchor", "middle")
+        // .attr("font-size", "14px")
+        .attr("dominant-baseline", "middle")
+        .attr("fill", function (d) {
+          return "#fff";
+        })
+        .attr("font-size", function (d) {
+          return "16px";
+        })
+        .text(function (d) {
+          return d.name;
+        });
+
+      function ticked() {
+        links.attr("fill", "transparent").attr("d", linkArc);
+
+        linksText
+          .attr("x", function (d) {
+            return (d.source.x + d.target.x) / 2;
+          })
+          .attr("y", function (d) {
+            return (d.source.y + d.target.y) / 2;
+          });
+
+        gs.attr("transform", function (d) {
+          return "translate(" + d.x + "," + d.y + ")";
+        });
+      }
+      // drag
+      function started(d) {
+        if (!d3.event.active) {
+          // 设置衰减系数，对节点位置移动过程的模拟，数值越高移动越快，数值范围[0，1]
+          forceSimulation.alphaTarget(0.8).restart();
+        }
+        d.fx = d.x;
+        d.fy = d.y;
+      }
+      function dragged(d) {
+        d.fx = d3.event.x;
+        d.fy = d3.event.y;
+      }
+      function ended(d) {
+        if (!d3.event.active) {
+          forceSimulation.alphaTarget(0);
+        }
+        d.fx = null;
+        d.fy = null;
+      }
+
+      function linkArc(d) {
+        // console.log('linkArc linkArc linkArc')
+        var dx = d.target.x - d.source.x;
+        var dy = d.target.y - d.source.y;
+        var dr = Math.sqrt(dx * dx + dy * dy);
+        var arc = 0;
+
+        return (
+          "M" +
+          d.source.x +
+          "," +
+          d.source.y +
+          "A" +
+          arc +
+          "," +
+          arc +
+          " 0 0," +
+          0 +
+          " " +
+          d.target.x +
+          "," +
+          d.target.y
+        );
+      }
     },
   },
 };

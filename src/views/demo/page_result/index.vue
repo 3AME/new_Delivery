@@ -198,7 +198,7 @@
 import * as d3 from "d3";
 import * as xlsx from "xlsx";
 import { ipcRenderer } from "electron";
-import html2canvas from "html2canvas";
+// import html2canvas from "html2canvas";
 const { spawn } = require("child_process");
 const os = require("os");
 

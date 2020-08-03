@@ -3,9 +3,6 @@
     <el-header height="auto" style="padding: 20px">
       <div>
         <strong style="width: 140px; color: #5673ff; padding: 10px; font-size: 24px">坐标查询</strong>
-        <!-- <el-button class="btn-action" type="text" icon="el-icon-menu" style="color: #5673ff;">
-          <strong>总计（{{ querys.length }}）</strong>
-        </el-button>-->
       </div>
       <div style="margin-top: 20px">
         <el-button-group class="card">
@@ -66,15 +63,14 @@
             style="color: #607d8b"
             :disabled="queryValue.problem.nodes == undefined"
           >添加车辆</el-button>
-          <!-- <add-coordinate-popover v-model="queryValue.problem.nodes"></add-coordinate-popover>
-          <add-vehicle-popover v-model="queryValue.problem.nodes" @add="addVehicle"></add-vehicle-popover>-->
         </el-button-group>
       </div>
     </el-header>
-    <el-container>
-      <coordinate-list-side v-if="table.data.length > 0" v-model="queryValue.problem"/>
-      <el-main style="padding: 10px 20px">
+    <el-container style="overflow:auto;overflow-x: hidden !important;">
+      <coordinate-list-side v-if="table.data.length > 0" v-model="queryValue.problem" />
+      <el-main style="padding: 10px 20px" height="100%">
         <el-table
+          v-if="!show"
           class="card"
           :header-cell-style="{background:'#e4e5e6'}"
           v-bind="table"
@@ -91,8 +87,9 @@
             :label="item.label"
           ></el-table-column>
         </el-table>
+        <svg id="graph_coordinate" height="100%" width="100%" ref="svg_coordinate" v-show="show" />
       </el-main>
-      <vehicle-list-side v-if="table.data.length > 0" v-model="queryValue.problem"/>
+      <vehicle-list-side v-if="table.data.length > 0" v-model="queryValue.problem" />
     </el-container>
     <el-footer height="auto" style="padding: 20px; ">
       <el-collapse
@@ -162,7 +159,7 @@
           </span>
         </el-collapse-item>
       </el-collapse>
-      </el-footer>
+    </el-footer>
     <drawer v-model="drawerValue" />
     <query-dialog v-model="queryValue"></query-dialog>
     <add-coordinate-dialog v-model="queryValue.problem.nodes" :visible.sync="visible1"></add-coordinate-dialog>
@@ -171,6 +168,7 @@
 </template>
 
 <script>
+import * as d3 from "d3";
 import * as xlsx from "xlsx";
 import { ipcRenderer } from "electron";
 import Vue from "vue";
@@ -196,7 +194,7 @@ export default {
     // VehicleDetailPopover,
     // AddCoordinatePopover,
     CoordinateListSide,
-    VehicleListSide
+    VehicleListSide,
   },
   data() {
     return {
@@ -236,6 +234,7 @@ export default {
       ],
       visible: false,
       visible1: false,
+      show: false,
     };
   },
   mounted() {
@@ -257,35 +256,6 @@ export default {
     ];
   },
   methods: {
-    addVehicle(vehicle) {
-      // this.queryValue.problem.vehicles.push({
-      //   id: this.temp_vehicle.id,
-      //   depot: this.temp_vehicle.depot,
-      //   load: this.temp_vehicle.load,
-      //   mileage: this.temp_vehicle.mileage,
-      //   count: this.temp_vehicle.count,
-      // });
-      this.queryValue.problem.vehicles.push(vehicle);
-    },
-    getNodeColorByType(type) {
-      return type == "depot"
-        ? "red"
-        : type == "customer"
-        ? "#02c58d"
-        : "#fcbe2d";
-    },
-    removeVehicle(vehicle) {
-      this.vehicles.splice(this.vehicles.indexOf(vehicle), 1);
-    },
-    clearVehicle(vehicle) {
-      this.vehicles.splice(0, this.vehicles.length);
-    },
-    removeDepot(depot) {
-      this.polylinePath.splice(this.polylinePath.indexOf(depot), 1);
-    },
-    clearDepots() {
-      this.polylinePath.splice(0, this.polylinePath.length);
-    },
     clear() {
       this.table = {
         columns: [],
@@ -294,8 +264,12 @@ export default {
         stripe: true,
         border: true,
       };
+      this.show = false;
+      let svgChildren = d3.selectAll("svg#graph_coordinate > *");
+      svgChildren.remove();
     },
     handleUpload(file) {
+      this.show = true;
       this.$import.xlsx(file).then(({ header, results }) => {
         this.table.columns = header.map((e) => {
           return {
@@ -322,6 +296,7 @@ export default {
         this.table.data = results;
         outdata = results;
         this.tableToPreblem(results);
+        this.showScatterGraph();
       });
       return false;
     },
@@ -503,6 +478,192 @@ export default {
           xlsx.writeFile(wb, path);
         }
       });
+    },
+    showScatterGraph() {
+      let svgChildren = d3.selectAll("svg#graph_coordinate > *");
+      svgChildren.remove();
+      var problem = this.queryValue.problem;
+      let data = problem.nodes;
+      console.log("data=" + JSON.stringify(data));
+
+      let width = this.$refs["svg_coordinate"].clientWidth * 0.6;
+      let height = this.$refs["svg_coordinate"].clientHeight;
+      console.log("width=" + width + " height=" + height);
+      const margin = { top: 30, right: 60, bottom: 60, left: 60 };
+
+      let svg = d3
+        .select("svg#graph_coordinate")
+        .attr("preserveAspectRatio", "xMidYMid meet")
+        .attr("viewBox", "0 0 " + width + " " + height);
+      // .attr("viewBox", "0 0 100% 100%");
+
+      // 比例尺
+      const x = d3
+        .scaleLinear()
+        .domain(d3.extent(data, (d) => d.x))
+        .nice()
+        .range([margin.left, width - margin.right]);
+      const y = d3
+        .scaleLinear()
+        .domain(d3.extent(data, (d) => d.y))
+        .nice()
+        .range([height - margin.bottom, margin.top]);
+
+      svg
+        .append("g")
+        .attr("transform", `translate(0,${height - margin.bottom})`)
+        .call(d3.axisBottom(x));
+
+      // y轴
+      svg
+        .append("g")
+        .attr("transform", `translate(${margin.left},0)`)
+        .call(d3.axisLeft(y));
+
+      // 绘制坐标点
+      svg
+        .append("g")
+        .selectAll("circle")
+        .data(data)
+        .join("circle")
+        .attr("cx", (d) => x(d.x))
+        .attr("cy", (d) => y(d.y))
+        .attr("fill", function (d, i) {
+          if (d.type == "depot") {
+            return "red";
+          } else if (d.type == "customer") {
+            return "#02c58d";
+          } else {
+            return "#fcbe2d";
+          }
+        })
+        .attr("r", 4);
+
+      svg
+        .append("g")
+        .attr("font-family", "sans-serif")
+        .attr("font-size", 12)
+        .selectAll("text")
+        .data(data)
+        .join("text")
+        .attr("class", function (d) {
+          if (d.type == "depot") {
+            return "dot-text text-depot-" + d.id;
+          }
+          return "dot-text dot-text-" + d.id;
+        })
+        .attr("x", (d) => x(d.x))
+        .attr("y", (d) => y(d.y))
+        .text((d) => {
+          // if (problem.names !== undefined) {
+          //   return problem.names[d.name];
+          // }
+          // return d.name;
+          // return "节点" + d.id + ":(" + d.x + ", " + d.y + ")";
+          return d.id + "(" + d.x + ", " + d.y + ")";
+        })
+        .call(dodge);
+
+      function dodge(text, iterations = 300) {
+        const nodes = text.nodes();
+        const left = () => text.attr("text-anchor", "middle").attr("dy", "1em");
+        const right = () =>
+          text.attr("text-anchor", "middle").attr("dy", "1em");
+        const top = () => text.attr("text-anchor", "middle").attr("dy", "1em");
+        const bottom = () =>
+          text.attr("text-anchor", "middle").attr("dy", "1em");
+        const points = nodes.map((node) => ({
+          fx: +node.getAttribute("x"),
+          fy: +node.getAttribute("y"),
+        }));
+        const labels = points.map(({ fx, fy }) => ({ x: fx, y: fy }));
+        const links = points.map((source, i) => ({
+          source,
+          target: labels[i],
+        }));
+
+        const simulation = d3
+          .forceSimulation(points.concat(labels))
+          .force("charge", d3.forceManyBody().distanceMax(80))
+          .force("link", d3.forceLink(links).distance(4).iterations(4))
+          .stop();
+
+        for (let i = 0; i < iterations; i += 1) simulation.tick();
+
+        text
+          .attr("x", (_, i) => labels[i].x)
+          .attr("y", (_, i) => labels[i].y)
+          .each(function (_, i) {
+            const a = Math.atan2(
+              labels[i].y - points[i].fy,
+              labels[i].x - points[i].fx
+            );
+            d3.select(this).call(
+              a > Math.PI / 4 && a <= (Math.PI * 3) / 4
+                ? bottom
+                : a > -Math.PI / 4 && a <= Math.PI / 4
+                ? left
+                : a > (-Math.PI * 3) / 4 && a <= (Math.PI * 3) / 4
+                ? top
+                : right
+            );
+          });
+      }
+
+      // addLegend();
+
+      function addLegend() {
+        var legend = svg.append("g");
+        var textGroup = legend.selectAll("text").data(legendTexts);
+
+        textGroup.exit().remove();
+
+        legend
+          .selectAll("text")
+          .data(legendTexts)
+          .enter()
+          .append("text")
+          .text(function (d) {
+            // return (
+            //   '车辆' +
+            //   d.id +
+            //   '：路程：' +
+            //   d.distance.toFixed(2) +
+            //   '公里 | 时间：' +
+            //   d.time.toFixed(2) +
+            //   '小时'
+            // )
+            return d.id;
+            // return d.text
+          })
+          .attr("class", "legend")
+          .attr("y", function (d, i) {
+            return i * 20 + 40;
+          })
+          .attr("x", 90)
+          .attr("fill", function (d, i) {
+            return legendColors(i);
+          });
+
+        var rectGroup = legend.selectAll("rect").data(legendTexts);
+
+        rectGroup.exit().remove();
+
+        legend
+          .selectAll("rect")
+          .data(legendTexts)
+          .enter()
+          .append("rect")
+          .attr("y", function (d, i) {
+            return i * 20 + 28;
+          })
+          .attr("x", 70)
+          .attr("width", 12)
+          .attr("height", 12)
+          .attr("fill", function (d, i) {
+            return legendColors(i);
+          });
+      }
     },
   },
 };
