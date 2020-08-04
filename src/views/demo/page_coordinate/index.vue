@@ -157,18 +157,33 @@
             </el-popover>
           </div>
         </el-aside>
-
+        
         <el-main style="padding: 10px 20px">
+          <el-card class='draguploader' v-if="table.data.length == 0">
+            <el-upload 
+              :before-upload="handleUpload"
+              drag
+              action="https://jsonplaceholder.typicode.com/posts/"
+              >
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+            </el-upload>
+          </el-card>
+          
           <el-table
             class="card"
             :header-cell-style="{background:'#e4e5e6'}"
             v-bind="table"
             height="100%"
+            v-if="table.data.length > 0"
           >
-            <template slot="empty">
+           
+            <template slot="empty" >
+              
               <img src="../../../assets/images/坐标.png" style="width: 80%" />
               <img src="../../../assets/images/暂无数据3.png" style="width: 80%" />
             </template>
+
             <el-table-column
               v-for="(item, index) in table.columns"
               :key="index"
@@ -177,6 +192,7 @@
             ></el-table-column>
           </el-table>
         </el-main>
+        <!-- <el-progress type="circle" :percentage="Math.round(100*this.file.uploaded/this.file.all)"></el-progress> -->
         <el-aside width="20%" height="100%" style="margin: 10px;" v-if="table.data.length > 0">
           <div class="card" style="margin: 10px">
             <div style="text-align: center; padding: 20px">
@@ -396,6 +412,10 @@ export default {
   },
   data() {
     return {
+      file:{
+        uploaded: 0,
+        all: 1
+      },
       drawerValue: {
         drawerShow: false,
         distancePrior: 5, //距离优先
@@ -468,12 +488,14 @@ export default {
     },
     handleUpload(file) {
       this.$import.xlsx(file).then(({ header, results }) => {
+        this.file.all=results.length
         this.table.columns = header.map((e) => {
           return {
             label: e,
             prop: e,
           };
         });
+        console.log('this.file.all',this.file.all)
         for (var i in this.stdcolumns) {
           // console.log(this.stdcolumns[i].label);
           if (!header.includes(this.stdcolumns[i].label)) {
@@ -489,17 +511,20 @@ export default {
             );
             return false;
           }
-        }
-        this.table.data = results;
-        outdata = results;
+        }        
         this.tableToPreblem(results);
+        this.table.data = results;
+
       });
       return false;
     },
     tableToPreblem(outdata) {
       let problem = [];
       var costModeFlag = false;
+      this.file.uploaded=0
       outdata.map((v) => {
+        this.file.uploaded=this.file.uploaded+1
+        console.log('this.file.uploaded',this.file.uploaded)
         let obj = {};
         obj.nodes = {
           type: v["type"],
@@ -572,8 +597,10 @@ export default {
       this.vehicles = new_vehicles;
       this.polylinePath = new_nodes;
 
-      console.log("problem:" + JSON.stringify(newproblem_edges));
+      // console.log("problem:" + JSON.stringify(newproblem_edges));
       this.queryValue.problem = newproblem_edges;
+
+
     },
     inquery() {
       if (this.queryValue.problem == null) {
@@ -619,6 +646,19 @@ export default {
   },
 };
 </script>
-<style>
+<style >
+  .draguploader {
+      /* height: 100%; */
+      /* width: 100%;             */
+    }
+    .draguploader .el-upload-dragger {
+      height: 100%;
+      width: 100%;
+      padding: 14%;     
+    }
+  .draguploader .el-upload.el-upload--text{
+    height: 100%;
+    width: 100%;
+  }
 </style>
 <style src="../../../assets/btn.css" scoped></style>
