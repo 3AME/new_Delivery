@@ -66,7 +66,7 @@
         >添加车辆</el-button>
       </el-button-group>
     </el-header>
-    <el-container style="overflow:scroll;overflow-x: hidden !important; ">
+    <el-container style="height:68%">
       <route-list-side v-if="show" v-model="queryValue.problem" />
       <el-main style="padding: 10px 20px" height="100%">
         <el-table

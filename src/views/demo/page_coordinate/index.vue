@@ -66,9 +66,11 @@
         </el-button-group>
       </div>
     </el-header>
-    <el-container style="overflow:auto;overflow-x: hidden !important;">
-      <coordinate-list-side v-if="show" v-model="queryValue.problem" />
-      <el-main style="padding: 10px 20px" height="100%">
+    <el-container style="height:68%">
+    <!-- <el-scrollbar> -->
+     <coordinate-list-side v-if="show" v-model="queryValue.problem"/>
+    <!-- </el-scrollbar> -->
+      <el-main style="padding: 10px 20px;" height="100%">
         <el-table
           v-if="!show"
           class="card"
@@ -735,5 +737,8 @@ export default {
 };
 </script>
 <style>
+el-container::-webkit-scrollbar {
+  width: 0;
+}
 </style>
 <style src="../../../assets/btn.css" scoped></style>
