@@ -69,8 +69,19 @@
     <el-container style="height:68%" id="container_route">
       <route-list-side v-if="show" v-model="queryValue.problem" @onBeforeChange="onBeforeChange"  @onChange="showGraph"/>
       <el-main style="padding: 10px 20px" height="100%">
+        <el-card class='draguploader' v-if="!show">
+          <el-upload 
+            :before-upload="handleUpload"
+            :on-change="handleUploadEnd"
+            drag
+            action="https://jsonplaceholder.typicode.com/posts/"
+            >
+              <i class="el-icon-upload"></i>
+              <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+          </el-upload>
+        </el-card>
         <el-table
-          v-show="!show"
+          v-if="!show && queryValue.problem.length > 0"
           class="card"
           :header-cell-style="{background:'#e4e5e6'}"
           v-bind="table"
@@ -166,6 +177,19 @@
     <query-dialog v-model="queryValue"></query-dialog>
     <add-route-dialog v-model="queryValue.problem" :visible.sync="visible1" @onAdd="showGraph"></add-route-dialog>
     <add-vehicle-dialog v-model="queryValue.problem" :visible.sync="visible"></add-vehicle-dialog>
+    <el-dialog
+      title="加载中"
+      :visible.sync="loading"
+      width="10%"
+      center
+      >
+      <div>
+      <img
+          :style="'width: ' + (asideCollapse ? '42px' : '72px' )+ '; height: ' + (asideCollapse ? '42px' : '72px' )"
+          src="../../../assets/images/small/1_bak.png"
+        />
+      </div>
+    </el-dialog>
   </el-container>
 </template>
 
@@ -196,6 +220,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       drawerValue: {
         drawerShow: false,
         distancePrior: 5, //距离优先
@@ -291,6 +316,7 @@ export default {
     },
 
     handleUpload(file) {
+      this.loading=true;
       this.show = true;
       this.$import.xlsx(file).then(({ header, results }) => {
         // 判断是否是线路格式的文件
@@ -477,6 +503,8 @@ export default {
       this.queryValue.problem = new_problem;
 
       console.log(this.distancePrior);
+
+      this.loading = false
     },
     inquery() {
       if (this.queryValue.problem == null) {
@@ -861,4 +889,21 @@ export default {
 </script>
 <style>
 </style>
+<style >
+  .draguploader {
+      /* height: 100%; */
+      /* width: 100%;             */
+    }
+    .draguploader .el-upload-dragger {
+      height: 100%;
+      width: 100%;
+      padding: 12%;     
+    }
+  .draguploader .el-upload.el-upload--text{
+    height: 100%;
+    width: 100%;
+  }
+  
+</style>
 <style src="../../../assets/btn.css" scoped></style>
+
