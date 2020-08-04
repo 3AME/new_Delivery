@@ -66,8 +66,8 @@
         >添加车辆</el-button>
       </el-button-group>
     </el-header>
-    <el-container style="height:68%">
-      <route-list-side v-if="show" v-model="queryValue.problem" />
+    <el-container style="height:68%" id="container_route">
+      <route-list-side v-if="show" v-model="queryValue.problem" @onBeforeChange="onBeforeChange"  @onChange="showGraph"/>
       <el-main style="padding: 10px 20px" height="100%">
         <el-table
           v-show="!show"
@@ -164,7 +164,7 @@
     </el-footer>
     <drawer v-model="drawerValue" />
     <query-dialog v-model="queryValue"></query-dialog>
-    <add-route-dialog v-model="queryValue.problem" :visible.sync="visible1"></add-route-dialog>
+    <add-route-dialog v-model="queryValue.problem" :visible.sync="visible1" @onAdd="showGraph"></add-route-dialog>
     <add-vehicle-dialog v-model="queryValue.problem" :visible.sync="visible"></add-vehicle-dialog>
   </el-container>
 </template>
@@ -601,46 +601,51 @@ export default {
         }
       });
     },
+    onBeforeChange() {
+      let svgChildren = d3.selectAll("svg#graph_route > *");
+      svgChildren.remove();
+    },
     showGraph() {
       let svgChildren = d3.selectAll("svg#graph_route > *");
       svgChildren.remove();
       var problem = this.queryValue.problem;
 
       // 准备数据
-      var nodes = problem.nodes;
+      var nodes = [];
+      let indexs = new Map();
+      problem.nodes.forEach((node, index) => {
+        indexs.set(node.id, index);
+        nodes.push({
+          type: node.type,
+          id: node.id,
+          name: node.name,
+        });
+      });
 
       var edges = [];
 
+
+
       problem.edges.forEach(function (edge) {
-        // var has = false;
-        // for (var i = 0; i < edges.length; i++) {
-        //   var item = edges[i];
-        //   if (
-        //     (edge.u === item.source && edge.v === item.target) ||
-        //     (edge.u === item.target && edge.v === item.source)
-        //   ) {
-        //     has = true;
-        //     break;
-        //   }
-        // }
-        // if (!has) {
-        //   edges.push({
-        //     source: edge.u,
-        //     target: edge.v,
-        //     value: edge.w,
-        //   });
-        // }
+        // edges.push({
+        //   source: edge.u,
+        //   target: edge.v,
+        //   value: edge.w,
+        // });
         edges.push({
-          source: edge.u,
-          target: edge.v,
+          source: indexs.get(edge.u),
+          target: indexs.get(edge.v),
           value: edge.w,
         });
       });
 
-      let width = this.$refs["svg_route"].clientWidth;
-      let height = this.$refs["svg_route"].clientHeight;
-      // width = d3.select("svg#graph_route").clientWidth;
-      // height = d3.select("svg#graph_route").clientHeight;
+      console.log('nodes=' + JSON.stringify(nodes));
+      console.log('edges=' + JSON.stringify(edges));
+
+      // let width = this.$refs["container_route"].clientWidth * 0.5;
+      // let height = this.$refs["container_route"].clientHeight;
+      let width = document.getElementById('container_route').clientWidth * 0.6;
+      let height = document.getElementById('container_route').clientHeight;
       var marge = { top: 10, bottom: 10, left: 10, right: 10 };
 
       let svg = d3

@@ -66,9 +66,9 @@
         </el-button-group>
       </div>
     </el-header>
-    <el-container style="height:68%">
+    <el-container style="height:68%" id="container_route">
     <!-- <el-scrollbar> -->
-     <coordinate-list-side v-if="show" v-model="queryValue.problem"/>
+     <coordinate-list-side v-if="show" v-model="queryValue.problem" @onChange="showGraph"/>
     <!-- </el-scrollbar> -->
       <el-main style="padding: 10px 20px;" height="100%">
         <el-table
@@ -164,7 +164,7 @@
     </el-footer>
     <drawer v-model="drawerValue" />
     <query-dialog v-model="queryValue"></query-dialog>
-    <add-coordinate-dialog v-model="queryValue.problem.nodes" :visible.sync="visible1"></add-coordinate-dialog>
+    <add-coordinate-dialog v-model="queryValue.problem.nodes" :visible.sync="visible1" @onAdd="showGraph"></add-coordinate-dialog>
     <add-vehicle-dialog v-model="queryValue.problem" :visible.sync="visible"></add-vehicle-dialog>
   </el-container>
 </template>
@@ -321,7 +321,7 @@ export default {
         // 坐标查询文件
         if (isCoorFile) {
           this.tableToPreblem(results);
-          this.showScatterGraph();
+          this.showGraph();
 
         // 线路查询文件
         } else if (isRouteFile) {
@@ -547,15 +547,17 @@ export default {
         }
       });
     },
-    showScatterGraph() {
+    showGraph() {
       let svgChildren = d3.selectAll("svg#graph_coordinate > *");
       svgChildren.remove();
       var problem = this.queryValue.problem;
       let data = problem.nodes;
       console.log("data=" + JSON.stringify(data));
 
-      let width = this.$refs["svg_coordinate"].clientWidth;
-      let height = this.$refs["svg_coordinate"].clientHeight;
+      // let width = this.$refs["svg_coordinate"].clientWidth;
+      // let height = this.$refs["svg_coordinate"].clientHeight;
+      let width = document.getElementById('container_route').clientWidth * 0.6;
+      let height = document.getElementById('container_route').clientHeight;
       console.log("width=" + width + " height=" + height);
       const margin = { top: 30, right: 60, bottom: 60, left: 60 };
 
@@ -628,7 +630,7 @@ export default {
           // }
           // return d.name;
           // return "节点" + d.id + ":(" + d.x + ", " + d.y + ")";
-          return d.id + "(" + d.x + ", " + d.y + ")";
+          return d.name + "(" + d.x + ", " + d.y + ")";
         })
         .call(dodge);
 

@@ -146,6 +146,7 @@ export default {
         y: this.temp_node.y,
       });
       this.onClose();
+      this.$emit("onAdd");
     },
   },
 };

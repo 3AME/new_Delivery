@@ -57,6 +57,7 @@ export default {
 
 body {
   background-color: rgba(0, 0, 0, 0);
+  overflow: hidden;
 }
 
 #app {

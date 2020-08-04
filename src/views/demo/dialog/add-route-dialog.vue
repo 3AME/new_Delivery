@@ -129,6 +129,7 @@ export default {
         demand: this.temp_node.demand
       });
       this.onClose();
+      this.$emit("onAdd");
     },
   },
 };
