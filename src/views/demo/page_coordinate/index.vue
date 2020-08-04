@@ -71,8 +71,19 @@
      <coordinate-list-side v-if="show" v-model="queryValue.problem"/>
     <!-- </el-scrollbar> -->
       <el-main style="padding: 10px 20px;" height="100%">
+        <el-card class='draguploader' v-if="!show">
+          <el-upload 
+            :before-upload="handleUpload"
+            :on-change="handleUploadEnd"
+            drag
+            action="https://jsonplaceholder.typicode.com/posts/"
+            >
+              <i class="el-icon-upload"></i>
+              <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+          </el-upload>
+        </el-card>
         <el-table
-          v-if="!show"
+          v-if="!show && queryValue.problem.length > 0"
           class="card"
           :header-cell-style="{background:'#e4e5e6'}"
           v-bind="table"
@@ -166,6 +177,21 @@
     <query-dialog v-model="queryValue"></query-dialog>
     <add-coordinate-dialog v-model="queryValue.problem.nodes" :visible.sync="visible1"></add-coordinate-dialog>
     <add-vehicle-dialog v-model="queryValue.problem" :visible.sync="visible"></add-vehicle-dialog>
+    
+    <el-dialog
+      title="加载中"
+      :visible.sync="loading"
+      width="10%"
+      center
+      >
+      <div>
+      <img
+          :style="'width: ' + (asideCollapse ? '42px' : '72px' )+ '; height: ' + (asideCollapse ? '42px' : '72px' )"
+          src="../../../assets/images/small/1_bak.png"
+        />
+      </div>
+    </el-dialog>
+    
   </el-container>
 </template>
 
@@ -180,6 +206,7 @@ import drawer from "../drawer/";
 import QueryDialog from "../dialog/query-dialog";
 import AddVehicleDialog from "../dialog/add-vehicle-dialog";
 import AddCoordinateDialog from "../dialog/add-coordinate-dialog";
+// import { Loading } from 'element-ui';
 // import AddCoordinatePopover from "../popover/add-coordinate-popover";
 // import VehicleDetailPopover from "../popover/popover-detail-vehicle";
 import CoordinateListSide from "../side/side-list-coordinate";
@@ -199,6 +226,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       file:{
         uploaded: 0,
         all: 1
@@ -243,7 +271,7 @@ export default {
     };
   },
   mounted() {
-    console.log("mounted");
+    // console.log("mounted");
     this.stdcolumns = [
       { label: "type", prop: "type" },
       { label: "name", prop: "name" },
@@ -291,15 +319,21 @@ export default {
       //   stripe: true,
       //   border: true,
       // };
+
       this.show = false;
       let svgChildren = d3.selectAll("svg#graph_coordinate > *");
       svgChildren.remove();
     },
-
+    handleUploadEnd() {
+      this.loading =false;
+    },
     handleUpload(file) {
+      this.loading=true;
       this.show = true;
+      var me=this
       this.$import.xlsx(file).then(({ header, results }) => {
-
+        this.file.all=results.length
+        
         // 判断是否是坐标格式的文件
         let isCoorFile = true;
         let lostLabel = null;
@@ -324,6 +358,14 @@ export default {
 
         // 坐标查询文件
         if (isCoorFile) {
+          // this.file.uploaded=0
+          // const interval=setInterval(()=>{ 
+          //   if( this.file.uploaded >= this.file.all -1){
+          //     clearInterval(interval)
+          //     return
+          //   }
+          //   this.file.uploaded = this.file.uploaded + 1 
+          // }, 200);
           this.tableToPreblem(results);
           this.showScatterGraph();
 
@@ -365,17 +407,14 @@ export default {
           return false;
         }
       });
-
       return false;
     },
 
     tableToPreblem(outdata) {
+     
       let problem = [];
       var costModeFlag = false;
-      this.file.uploaded=0
       outdata.map((v) => {
-        this.file.uploaded=this.file.uploaded+1
-        console.log('this.file.uploaded',this.file.uploaded)
         let obj = {};
         obj.nodes = {
           type: v["type"],
@@ -399,7 +438,7 @@ export default {
           drivingCost: v["Driving_cost"],
           waitingCost: v["Waiting_cost"],
         };
-        console.log("vehicles:" + JSON.stringify(obj.vehicles));
+        // console.log("vehicles:" + JSON.stringify(obj.vehicles));
         if (v["Use_cost"] || v["Driving_cost"] || v["Waiting_cost"]) {
           costModeFlag = true;
         }
@@ -416,7 +455,7 @@ export default {
         if (obj.vehicles !== undefined) {
           return obj.vehicles;
         } else {
-          console.log("value is undefined");
+          // console.log("value is undefined");
         }
       });
       for (let i = new_vehicles.length - 1; i >= 0; i--) {
@@ -447,14 +486,15 @@ export default {
         speed: this.drawerValue.speedValue,
         maxiter: this.drawerValue.maxIter,
       };
-      console.log("new_vehicles:" + JSON.stringify(new_vehicles));
+      // console.log("new_vehicles:" + JSON.stringify(new_vehicles));
       this.vehicles = new_vehicles;
       this.polylinePath = new_nodes;
 
       // console.log("problem:" + JSON.stringify(newproblem_edges));
       this.queryValue.problem = newproblem_edges;
 
-
+      
+      this.loading = false
     },
 
     inquery() {
@@ -510,7 +550,7 @@ export default {
         });
         for (let i = 0; i < this.queryValue.problem.vehicles.length; i++) {
           let vehicle = this.queryValue.problem.vehicles[i];
-          console.log("vehicle=" + JSON.stringify(vehicle));
+          // console.log("vehicle=" + JSON.stringify(vehicle));
           if (depotsId.indexOf(vehicle.depot) == -1) {
             this.$notify({
               title: "警告",
@@ -531,7 +571,7 @@ export default {
     },
 
     handleChange(val) {
-      console.log(val);
+      // console.log(val);
     },
 
     handleDownload() {
@@ -561,11 +601,11 @@ export default {
       svgChildren.remove();
       var problem = this.queryValue.problem;
       let data = problem.nodes;
-      console.log("data=" + JSON.stringify(data));
+      // console.log("data=" + JSON.stringify(data));
 
       let width = this.$refs["svg_coordinate"].clientWidth;
       let height = this.$refs["svg_coordinate"].clientHeight;
-      console.log("width=" + width + " height=" + height);
+      // console.log("width=" + width + " height=" + height);
       const margin = { top: 30, right: 60, bottom: 60, left: 60 };
 
       let svg = d3
@@ -640,7 +680,7 @@ export default {
           return d.id + "(" + d.x + ", " + d.y + ")";
         })
         .call(dodge);
-
+         
       function dodge(text, iterations = 300) {
         const nodes = text.nodes();
         const left = () => text.attr("text-anchor", "middle").attr("dy", "1em");
@@ -666,7 +706,7 @@ export default {
           .stop();
 
         for (let i = 0; i < iterations; i += 1) simulation.tick();
-
+                
         text
           .attr("x", (_, i) => labels[i].x)
           .attr("y", (_, i) => labels[i].y)
@@ -753,7 +793,7 @@ export default {
     .draguploader .el-upload-dragger {
       height: 100%;
       width: 100%;
-      padding: 14%;     
+      padding: 12%;     
     }
   .draguploader .el-upload.el-upload--text{
     height: 100%;
