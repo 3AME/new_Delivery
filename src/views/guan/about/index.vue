@@ -2,8 +2,15 @@
   <el-container class="content-container">
     <el-main style="width: 100%;">
       <section id="cd-timeline" class="cd-container">
-        <div style="text-align:center">
-          <img height="10%" alt="200x200" src="../../../assets/images/small/app_name_with_logo.png" />
+        <div style="height:2em"></div>
+        <div style="text-align:center;width:100%" >
+           <img
+            height="10%"
+            width="45%"
+            style="padding: 10px"
+            alt="200x200"
+            src="../../../assets/images/small/app_name_with_logo.png"
+          />
         </div>
         <div style="height:5em"></div>
         <!-- <el-divider></el-divider> -->
@@ -48,7 +55,7 @@
             <p style="text-intent:2em">
               车辆寓意物流配送中
               <b>运输工具</b>的形象。
-            </p> 
+            </p>
           </el-card>
           <el-card style="margin-left:1em;margin:auto;padding:0.5em" shadow="hover" >
             <img src="../../../assets/images/small/1_bak.png" height="250" style="margin:auto" />

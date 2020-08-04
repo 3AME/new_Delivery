@@ -1,7 +1,7 @@
 <template>
   <el-container class="content-container" style="overflow:auto;overflow-x: hidden !important;">
     <!-- <template slot="header">常见的一些问题</template> -->
-    <div class="row" style="margin-right: 0px; margin-left: 0px;">
+    <div class="row" style="margin-right: 2em; margin-left: 2em;">
       <div class="col-lg-12">
         <div>
           <!-- class="card" -->

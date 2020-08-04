@@ -45,7 +45,7 @@
                       height="300"
                     />
                     <!-- </div> -->
-                   
+
                     <div class="media-body">
                          <ul>
                         川流系统主要用来解决
@@ -258,7 +258,7 @@
                  <div style="text-align:center;"><img src="../../../assets/images/feature.png" height="246"></div>
               <!-- </div> -->
             </div>
-              
+
                <div class="col-lg-4">
               <div class="card m-b-30">
                   <div class="card-body">
@@ -271,7 +271,7 @@
               </div>
             </div>
             </div>
-            
+
             <div class="row">
             <div style="height:1em"></div>
              <div class="col-lg-4">
@@ -308,10 +308,10 @@
                   </div>
               </div>
             </div>
-           
+
 
             </div>
-            
+
               <!-- end col -->
             </div>
             <el-divider></el-divider>
@@ -322,7 +322,7 @@
                 </div>
               </div>
             </div>
-  
+
             <div style="height:1em"></div>
             <el-tabs type="border-card" style="background-color: #f0f4f7;width:96%;margin:auto">
               <el-tab-pane label="坐标查询" >
@@ -380,7 +380,7 @@
                   <br /><li>如果输入的节点无法查询到节点之间的距离，将会出现不能查询的提示，这是小概率事件，这可能跟你的<b>网络环境</b>有关。
                   </li>
                   <br /><li> 你可以点击设置算法参数按钮设置查询时算法的<b>距离优先参数、时间有限参数、满载率参数和车辆速度</b>。</li>
-                  <br /><li>导入数据后，你可以在界面继续进行<b>数据修改</b>，提供修改点的类型（配送中心、配送点、其它点）、需求量、车辆信息等功能。</li> 
+                  <br /><li>导入数据后，你可以在界面继续进行<b>数据修改</b>，提供修改点的类型（配送中心、配送点、其它点）、需求量、车辆信息等功能。</li>
                   </ol>
                 </p>
               </el-tab-pane>
@@ -407,7 +407,3 @@ ul{
 <style src="../../../assets/style/bootstrap/css/bootstrap.min.css" scoped></style>
 <style src="../../../assets/style/bootstrap/css/icons.css" scoped></style>
 <style src="../../../assets/style/bootstrap/css/style.css" scoped></style>
-
-
-
-
