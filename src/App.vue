@@ -11,7 +11,7 @@
         class="card"
         style="padding: 0px; margin: 0px; background-color: #f6f7fb;border: 1px solid grey;"
       >
-        <router-view v-if="isRouterAlive"></router-view>
+        <router-view v-if="isRouterAlive" ></router-view>
       </el-main>
     </el-container>
   </div>
@@ -57,6 +57,7 @@ export default {
 
 body {
   background-color: rgba(0, 0, 0, 0);
+  overflow: hidden;
 }
 
 #app {
