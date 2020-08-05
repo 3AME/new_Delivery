@@ -39,7 +39,7 @@
       :key="index"
       title="修改车辆信息"
       :name="vehicle.id"
-      trigger="hover"
+      trigger="click"
       placement="right"
     >
       <el-row style="padding: 10px">
@@ -71,7 +71,7 @@
       <el-row style="padding: 10px">
         <el-col :span="8">车辆载重：</el-col>
         <el-col :span="16">
-          <el-input-number v-model="vehicle.load" :min="1" :max="10" label="车辆载重" size="mini"></el-input-number>
+          <el-input-number v-model="vehicle.load" :min="1" :max="100" label="车辆载重" size="mini"></el-input-number>
         </el-col>
       </el-row>
       <el-row style="padding: 10px">

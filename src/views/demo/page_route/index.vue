@@ -3,9 +3,6 @@
     <el-header height="auto" style="padding: 20px">
       <div>
         <strong style="width: 140px; color: #5673ff; padding: 10px; font-size: 24px">路线查询</strong>
-        <!-- <el-button class="btn-action" type="text" icon="el-icon-menu" style="color: #5673ff;">
-          <strong>总计（{{ querys.length }}）</strong>
-        </el-button>-->
       </div>
       <el-button-group class="card" style="margin-top: 20px">
         <el-col :span="3.2">
@@ -67,37 +64,32 @@
       </el-button-group>
     </el-header>
     <el-container style="height:68%" id="container_route">
-      <route-list-side v-if="show" v-model="queryValue.problem" @onBeforeChange="onBeforeChange"  @onChange="showGraph"/>
+      <route-list-side
+        v-if="show"
+        v-model="queryValue.problem"
+        @onBeforeChange="onBeforeChange"
+        @onChange="showGraph"
+        @onAddEdge="onAddEdge"
+        @onShowDetail="onShowDetail"
+      />
       <el-main style="padding: 10px 20px" height="100%">
-        <el-card class='draguploader' v-if="!show">
-          <el-upload 
+        <div class="draguploader card" v-if="!show">
+          <el-upload
             :before-upload="handleUpload"
             :on-change="handleUploadEnd"
             drag
             action="https://jsonplaceholder.typicode.com/posts/"
-            >
+            style="height: 100%;"
+          >
+            <div style="left: 0; top: 0; right: 0; bottom: 0; margin: auto;">
               <i class="el-icon-upload"></i>
-              <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+              <div class="el-upload__text">
+                将文件拖到此处，或
+                <em>点击选取文件</em>
+              </div>
+            </div>
           </el-upload>
-        </el-card>
-        <el-table
-          v-if="!show && queryValue.problem.length > 0"
-          class="card"
-          :header-cell-style="{background:'#e4e5e6'}"
-          v-bind="table"
-          height="100%"
-        >
-          <template slot="empty">
-            <img src="../../../assets/images/路线.png" width="30%" />
-            <img src="../../../assets/images/暂无数据3.png" width="80%" />
-          </template>
-          <el-table-column
-            v-for="(item, index) in table.columns"
-            :key="index"
-            :prop="item.prop"
-            :label="item.label"
-          ></el-table-column>
-        </el-table>
+        </div>
         <svg id="graph_route" height="100%" width="100%" ref="svg_route" v-show="show" />
       </el-main>
       <vehicle-list-side v-if="show" v-model="queryValue.problem" />
@@ -177,14 +169,11 @@
     <query-dialog v-model="queryValue"></query-dialog>
     <add-route-dialog v-model="queryValue.problem" :visible.sync="visible1" @onAdd="showGraph"></add-route-dialog>
     <add-vehicle-dialog v-model="queryValue.problem" :visible.sync="visible"></add-vehicle-dialog>
-    <el-dialog
-      title="加载中"
-      :visible.sync="loading"
-      width="10%"
-      center
-      >
+    <add-edge-dialog v-model="queryValue.problem" :visible.sync="visible2" :node="add_node" @add="showGraph"/>
+    <detail-edge-dialog v-model="queryValue.problem" :visible.sync="visible3" :node="add_node" :edge="temp_edge" @save="onSaveEdge"/>
+    <el-dialog title="加载中" :visible.sync="loading" width="10%" center>
       <div>
-      <img
+        <img
           :style="'width: ' + (asideCollapse ? '42px' : '72px' )+ '; height: ' + (asideCollapse ? '42px' : '72px' )"
           src="../../../assets/images/small/1_bak.png"
         />
@@ -206,6 +195,8 @@ import AddRouteDialog from "../dialog/add-route-dialog";
 import AddVehicleDialog from "../dialog/add-vehicle-dialog";
 import RouteListSide from "../side/side-list-route";
 import VehicleListSide from "../side/side-list-vehicle";
+import AddEdgeDialog from "../dialog/add-edge-dialog";
+import DetailEdgeDialog from "../dialog/detail-edge-dialog";
 Vue.use(pluginExport);
 Vue.use(pluginImport);
 export default {
@@ -217,6 +208,8 @@ export default {
     AddRouteDialog,
     RouteListSide,
     VehicleListSide,
+    AddEdgeDialog,
+    DetailEdgeDialog
   },
   data() {
     return {
@@ -237,24 +230,13 @@ export default {
         isHistory: false,
         type: "route",
       },
-      table: {
-        columns: [],
-        data: [],
-        size: "mini",
-        stripe: true,
-        border: true,
-      },
       stdcolumns: [],
-      // polylinePath: [],
-      // vehicles: [],
-      // need_options: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
-      // node_types: [
-      //   { type: "depot", title: "中心节点" },
-      //   { type: "customer", title: "子节点" },
-      //   { type: "other", title: "其它节点" },
-      // ],
       visible: false,
       visible1: false,
+      visible2: false,
+      visible3: false,
+      add_node: {},
+      temp_edge: {},
       show: false,
     };
   },
@@ -299,24 +281,44 @@ export default {
     }
   },
   methods: {
+    onAddEdge(node) {
+      this.add_node = node;
+      this.visible2 = true;
+    },
+    onShowDetail(val) {
+      console.log('onShowDetail val=' + JSON.stringify(val));
+      console.log('onShowDetail edge=' + JSON.stringify(val.edge));
+      console.log('onShowDetail node=' + JSON.stringify(val.node));
+      this.temp_edge = val.edge;
+      this.add_node = val.node;
+      this.visible3 = true;
+    },
+    onSaveEdge(oldEdge, newEdge) {
+      for (let i = this.queryValue.problem.edges.length - 1; i >= 0; i--) {
+        let edge = this.queryValue.problem.edges[i];
+        if ((edge.u == oldEdge.u && edge.v == oldEdge.v) || (edge.u == oldEdge.v && edge.v == oldEdge.u)) {
+          this.queryValue.problem.edges.splice(i, 1);
+        }
+      }
+      this.queryValue.problem.edges.push({
+        u: newEdge.u,
+        v: newEdge.v,
+        w: newEdge.w
+      });
+      this.showGraph();
+    },
     refresh() {
       this.reload();
     },
     clear() {
-      // this.table = {
-      //   columns: [],
-      //   data: [],
-      //   size: "mini",
-      //   stripe: true,
-      //   border: true,
-      // };
+      this.queryValue.problem = {};
       let svgChildren = d3.selectAll("svg#graph_route > *");
       svgChildren.remove();
       this.show = false;
     },
 
     handleUpload(file) {
-      this.loading=true;
+      this.loading = true;
       this.show = true;
       this.$import.xlsx(file).then(({ header, results }) => {
         // 判断是否是线路格式的文件
@@ -504,7 +506,7 @@ export default {
 
       console.log(this.distancePrior);
 
-      this.loading = false
+      this.loading = false;
     },
     inquery() {
       if (this.queryValue.problem == null) {
@@ -652,8 +654,6 @@ export default {
 
       var edges = [];
 
-
-
       problem.edges.forEach(function (edge) {
         // edges.push({
         //   source: edge.u,
@@ -667,13 +667,13 @@ export default {
         });
       });
 
-      console.log('nodes=' + JSON.stringify(nodes));
-      console.log('edges=' + JSON.stringify(edges));
+      console.log("nodes=" + JSON.stringify(nodes));
+      console.log("edges=" + JSON.stringify(edges));
 
       // let width = this.$refs["container_route"].clientWidth * 0.5;
       // let height = this.$refs["container_route"].clientHeight;
-      let width = document.getElementById('container_route').clientWidth * 0.6;
-      let height = document.getElementById('container_route').clientHeight;
+      let width = document.getElementById("container_route").clientWidth * 0.6;
+      let height = document.getElementById("container_route").clientHeight;
       var marge = { top: 10, bottom: 10, left: 10, right: 10 };
 
       let svg = d3
@@ -684,8 +684,6 @@ export default {
       var g = svg
         .append("g")
         .attr("transform", "translate(" + marge.top + "," + marge.left + ")");
-
-      var legend = svg.append("g");
 
       var zoom = d3
         .zoom()
@@ -890,20 +888,19 @@ export default {
 <style>
 </style>
 <style >
-  .draguploader {
-      /* height: 100%; */
-      /* width: 100%;             */
-    }
-    .draguploader .el-upload-dragger {
-      height: 100%;
-      width: 100%;
-      padding: 12%;     
-    }
-  .draguploader .el-upload.el-upload--text{
-    height: 100%;
-    width: 100%;
-  }
-  
+.draguploader {
+  /* height: 100%; */
+  /* width: 100%;             */
+}
+.draguploader .el-upload-dragger {
+  height: 100%;
+  width: 100%;
+  padding: 12%;
+}
+.draguploader .el-upload.el-upload--text {
+  height: 100%;
+  width: 100%;
+}
 </style>
 <style src="../../../assets/btn.css" scoped></style>
 

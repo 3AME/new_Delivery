@@ -67,39 +67,27 @@
       </div>
     </el-header>
     <el-container style="height:68%" id="container_route">
-    <!-- <el-scrollbar> -->
-     <coordinate-list-side v-if="show" v-model="queryValue.problem" @onChange="showGraph"/>
-    <!-- </el-scrollbar> -->
+      <!-- <el-scrollbar> -->
+      <coordinate-list-side v-if="show" v-model="queryValue.problem" @onChange="showGraph" />
+      <!-- </el-scrollbar> -->
       <el-main style="padding: 10px 20px;" height="100%">
-        <el-card class='draguploader' v-if="!show">
+        <div class="draguploader card" v-if="!show">
           <el-upload
             :before-upload="handleUpload"
             :on-change="handleUploadEnd"
             drag
             action="https://jsonplaceholder.typicode.com/posts/"
-            >
+            style="height: 100%; "
+          >
+            <div style="left: 0; top: 0; right: 0; bottom: 0; margin: auto;">
               <i class="el-icon-upload"></i>
-              <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+              <div class="el-upload__text">
+                将文件拖到此处，或
+                <em>点击选取文件</em>
+              </div>
+            </div>
           </el-upload>
-        </el-card>
-        <el-table
-          v-if="!show && queryValue.problem.length > 0"
-          class="card"
-          :header-cell-style="{background:'#e4e5e6'}"
-          v-bind="table"
-          height="100%"
-        >
-          <template slot="empty">
-            <img src="../../../assets/images/坐标.png" style="width: 80%" />
-            <img src="../../../assets/images/暂无数据3.png" style="width: 80%" />
-          </template>
-          <el-table-column
-            v-for="(item, index) in table.columns"
-            :key="index"
-            :prop="item.prop"
-            :label="item.label"
-          ></el-table-column>
-        </el-table>
+        </div>
         <svg id="graph_coordinate" height="100%" width="100%" ref="svg_coordinate" v-show="show" />
       </el-main>
       <vehicle-list-side v-if="show" v-model="queryValue.problem" />
@@ -175,23 +163,21 @@
     </el-footer>
     <drawer v-model="drawerValue" />
     <query-dialog v-model="queryValue"></query-dialog>
-    <add-coordinate-dialog v-model="queryValue.problem.nodes" :visible.sync="visible1" @onAdd="showGraph"></add-coordinate-dialog>
+    <add-coordinate-dialog
+      v-model="queryValue.problem.nodes"
+      :visible.sync="visible1"
+      @onAdd="showGraph"
+    ></add-coordinate-dialog>
     <add-vehicle-dialog v-model="queryValue.problem" :visible.sync="visible"></add-vehicle-dialog>
 
-    <el-dialog
-      title="加载中"
-      :visible.sync="loading"
-      width="10%"
-      center
-      >
+    <el-dialog title="加载中" :visible.sync="loading" width="10%" center>
       <div>
-      <img
+        <img
           :style="'width: ' + (asideCollapse ? '42px' : '72px' )+ '; height: ' + (asideCollapse ? '42px' : '72px' )"
           src="../../../assets/images/small/1_bak.png"
         />
       </div>
     </el-dialog>
-
   </el-container>
 </template>
 
@@ -227,9 +213,9 @@ export default {
   data() {
     return {
       loading: false,
-      file:{
+      file: {
         uploaded: 0,
-        all: 1
+        all: 1,
       },
       drawerValue: {
         drawerShow: false,
@@ -248,13 +234,13 @@ export default {
         isHistory: false,
         type: "coordinate",
       },
-      table: {
-        columns: [],
-        data: [],
-        size: "mini",
-        stripe: true,
-        border: true,
-      },
+      // table: {
+      //   columns: [],
+      //   data: [],
+      //   size: "mini",
+      //   stripe: true,
+      //   border: true,
+      // },
       stdcolumns: [],
       polylinePath: [],
       vehicles: [],
@@ -312,27 +298,20 @@ export default {
   },
   methods: {
     clear() {
-      // this.table = {
-      //   columns: [],
-      //   data: [],
-      //   size: "mini",
-      //   stripe: true,
-      //   border: true,
-      // };
-
       this.show = false;
+      this.queryValue.problem = {};
       let svgChildren = d3.selectAll("svg#graph_coordinate > *");
       svgChildren.remove();
     },
     handleUploadEnd() {
-      this.loading =false;
+      this.loading = false;
     },
     handleUpload(file) {
-      this.loading=true;
+      this.loading = true;
       this.show = true;
-      var me=this
+      var me = this;
       this.$import.xlsx(file).then(({ header, results }) => {
-        this.file.all=results.length
+        this.file.all = results.length;
 
         // 判断是否是坐标格式的文件
         let isCoorFile = true;
@@ -369,7 +348,7 @@ export default {
           this.tableToPreblem(results);
           this.showGraph();
 
-        // 线路查询文件
+          // 线路查询文件
         } else if (isRouteFile) {
           this.show = false;
           var me = this;
@@ -380,19 +359,23 @@ export default {
               confirmButtonText: "确定",
               type: "error",
             }
-          ).then(() => {
-            this.$router.push({
-              name: "page_route",
-              params: {
-                uploadFile: file
-              }});
-          }).catch(() => {
-            // pass
-          }).finally(() => {
-            return false;
-          });
+          )
+            .then(() => {
+              this.$router.push({
+                name: "page_route",
+                params: {
+                  uploadFile: file,
+                },
+              });
+            })
+            .catch(() => {
+              // pass
+            })
+            .finally(() => {
+              return false;
+            });
 
-        // 格式错误
+          // 格式错误
         } else {
           var me = this;
           this.$confirm(
@@ -411,7 +394,6 @@ export default {
     },
 
     tableToPreblem(outdata) {
-
       let problem = [];
       var costModeFlag = false;
       outdata.map((v) => {
@@ -493,8 +475,7 @@ export default {
       // console.log("problem:" + JSON.stringify(newproblem_edges));
       this.queryValue.problem = newproblem_edges;
 
-
-      this.loading = false
+      this.loading = false;
     },
 
     inquery() {
@@ -605,8 +586,8 @@ export default {
 
       // let width = this.$refs["svg_coordinate"].clientWidth;
       // let height = this.$refs["svg_coordinate"].clientHeight;
-      let width = document.getElementById('container_route').clientWidth * 0.6;
-      let height = document.getElementById('container_route').clientHeight;
+      let width = document.getElementById("container_route").clientWidth * 0.6;
+      let height = document.getElementById("container_route").clientHeight;
       console.log("width=" + width + " height=" + height);
       const margin = { top: 30, right: 60, bottom: 60, left: 60 };
 
@@ -788,24 +769,23 @@ export default {
 };
 </script>
 <style >
-  .draguploader {
-      /* height: 100%; */
-      /* width: 100%;             */
-    }
-    .draguploader .el-upload-dragger {
-      height: 100%;
-      width: 100%;
-      padding: 12%;
-    }
-  .draguploader .el-upload.el-upload--text{
-    height: 100%;
-    width: 100%;
-  }
-
+.draguploader {
+  height: 100%;
+  width: 100%;
+}
+.draguploader .el-upload-dragger {
+  height: 100%;
+  width: 100%;
+  /* padding: 12%; */
+}
+.draguploader .el-upload.el-upload--text {
+  height: 100%;
+  width: 100%;
+}
 </style>
 <style scoped>
 el-container::-webkit-scrollbar {
-    width: 0;
-  }
+  width: 0;
+}
 </style>>
 <style src="../../../assets/btn.css" scoped></style>
