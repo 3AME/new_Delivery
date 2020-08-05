@@ -317,6 +317,7 @@ export default {
       this.show = false;
     },
 
+    // [TODO] 格式更新
     handleUpload(file) {
       this.loading = true;
       this.show = true;
@@ -508,6 +509,27 @@ export default {
 
       this.loading = false;
     },
+
+    problemToSheet(data, sheetFormat) {
+      let aoa = [];
+      aoa.push(
+        sheetFormat.map((it) => {
+          return it.label;
+        })
+      );
+      if (data) {
+        for (let node of data) {
+          let row = [];
+          for (let col of sheetFormat) {
+            row.push(node[col.field]);
+          }
+          aoa.push(row);
+        }
+      }
+      let worksheet = xlsx.utils.aoa_to_sheet(aoa);
+      return worksheet;
+    },
+
     inquery() {
       if (this.queryValue.problem == null) {
         this.$confirm("还未选择文件打开哦", "温馨提示", {

@@ -39,7 +39,7 @@
             type="text"
             icon="el-icon-tickets"
             style="color: #fcbe2d"
-          >格式模板</el-button>
+          >{{queryValue.problem.nodes == undefined ? "格式模板" : "导出查询"}}</el-button>
           <el-button
             class="btn-action"
             @click="drawerValue.drawerShow = true"
@@ -197,8 +197,12 @@ import AddCoordinateDialog from "../dialog/add-coordinate-dialog";
 // import VehicleDetailPopover from "../popover/popover-detail-vehicle";
 import CoordinateListSide from "../side/side-list-coordinate";
 import VehicleListSide from "../side/side-list-vehicle";
+
+import sheetFormat from "../../../util/sheet-format";
+
 Vue.use(pluginExport);
 Vue.use(pluginImport);
+
 export default {
   components: {
     drawer,
@@ -302,10 +306,14 @@ export default {
       this.queryValue.problem = {};
       let svgChildren = d3.selectAll("svg#graph_coordinate > *");
       svgChildren.remove();
+      this.queryValue.problem = {};
     },
+
     handleUploadEnd() {
       this.loading = false;
     },
+
+    // [TODO] 格式更新
     handleUpload(file) {
       this.loading = true;
       this.show = true;
@@ -345,6 +353,8 @@ export default {
           //   }
           //   this.file.uploaded = this.file.uploaded + 1
           // }, 200);
+          this.loading=true;
+          this.show = true;
           this.tableToPreblem(results);
           this.showGraph();
 
@@ -478,6 +488,26 @@ export default {
       this.loading = false;
     },
 
+    problemToSheet(data, sheetFormat) {
+      let aoa = [];
+      aoa.push( // 表头
+        sheetFormat.map((it) => {
+          return it.label;
+        })
+      );
+      if (data) { // 记录
+        for (let node of data) {
+          let row = [];
+          for (let col of sheetFormat) {
+            row.push(node[col.field]);
+          }
+          aoa.push(row);
+        }
+      }
+      let worksheet = xlsx.utils.aoa_to_sheet(aoa);
+      return worksheet;
+    },
+
     inquery() {
       if (this.queryValue.problem == null) {
         this.$confirm("还未选择文件打开哦", "温馨提示", {
@@ -556,27 +586,26 @@ export default {
     },
 
     handleDownload() {
-      var table = [];
-      table.push(
-        this.stdcolumns.map((item) => {
-          return item.label;
-        })
-      );
-
-      // 创建book
-      var wb = xlsx.utils.book_new();
-      // json转sheet
-      var ws = xlsx.utils.aoa_to_sheet(table);
-      // sheet写入book
-      xlsx.utils.book_append_sheet(wb, ws, "query");
-      // 输出
+      let workbook = xlsx.utils.book_new();
+      let sheets = sheetFormat.CoordinateFile;
+      console.log(sheets);
+      xlsx.utils.book_append_sheet(
+        workbook,
+        this.problemToSheet(this.queryValue.problem.nodes, sheets.nodes),
+        "点信息");
+      xlsx.utils.book_append_sheet(
+        workbook,
+        this.problemToSheet(this.queryValue.problem.vehicles, sheets.vehicles),
+        "车辆信息");
+      // 导出
       ipcRenderer.send("open-save-dialog", "坐标查询文件");
       ipcRenderer.once("selectedItem", function (e, path) {
         if (path != null) {
-          xlsx.writeFile(wb, path);
+          xlsx.writeFile(workbook, path);
         }
       });
     },
+
     showGraph() {
       let svgChildren = d3.selectAll("svg#graph_coordinate > *");
       svgChildren.remove();
