@@ -336,6 +336,7 @@ export default {
 
     // [TODO] 格式更新
     handleUpload(file) {
+      var me=this
       this.$import.xlsx(file).then(({ header, results }) => {
         this.file.all=results.length
 
