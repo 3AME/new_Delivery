@@ -2,8 +2,15 @@
   <el-container class="content-container">
     <el-main style="width: 100%;">
       <section id="cd-timeline" class="cd-container">
-        <div style="text-align:center">
-          <img height="10%" alt="200x200" src="../../../assets/images/small/app_name_with_logo.png" />
+        <div style="height:2em"></div>
+        <div style="text-align:center;width:100%">
+          <img
+            height="10%"
+            width="45%"
+            style="padding: 10px"
+            alt="200x200"
+            src="../../../assets/images/small/app_name_with_logo.png"
+          />
         </div>
         <div style="height:5em"></div>
         <!-- <el-divider></el-divider> -->
@@ -36,23 +43,34 @@
         </div>
         <div style="height:3em"></div>
         <div class="row">
-          <el-card shadow="hover" :body-style="{ padding: '3em' }" style="margin:auto;padding:0.5em">
-            <br />
-            <p style="text-intent:2em">该系统的logo由蓝底白车构成。</p>
-            <p style="text-intent:2em">系统的主色调为蓝色，logo与系统的主题相辉映。</p>
-            <p style="text-intent:2em">
-              借用蓝色博大的特性，强调川流配送的
-              <b>效率性</b>，同时，蓝色是理性的代表，符合用户使用的
-              <b>决策心理。</b>
-            </p>
-            <p style="text-intent:2em">
-              车辆寓意物流配送中
-              <b>运输工具</b>的形象。
-            </p>
+          <el-card
+            shadow="hover"
+            :body-style="{ padding: '3em' }"
+            style="margin:auto;padding:0.5em;width:100%"
+          >
+            <img
+              src="../../../assets/images/small/1_bak.png"
+              height="200"
+              style="margin:auto"
+            />
+            <ul style="margin-left:16em;margin-top:-12em;text-intend:2em">
+              <br />
+              <p style="text-intent:2em">该系统的logo由蓝底白车构成。</p>
+              <p style="text-intent:2em">系统的主色调为蓝色，logo与系统的主题相辉映。</p>
+              <p style="text-intent:2em">
+                借用蓝色博大的特性，强调川流配送的
+                <b>效率性</b>，同时，蓝色是理性的代表，符合用户使用的
+                <b>决策心理。</b>
+              </p>
+              <p style="text-intent:2em">
+                车辆寓意物流配送中
+                <b>运输工具</b>的形象。
+              </p>
+            </ul>
           </el-card>
-          <el-card style="margin-left:1em;margin:auto;padding:0.5em" shadow="hover" >
+          <!-- <el-card style="margin-left:1em;margin:auto;padding:0.5em;width:30%" shadow="hover">
             <img src="../../../assets/images/small/1_bak.png" height="250" style="margin:auto" />
-          </el-card>
+          </el-card>-->
         </div>
         <div style="height:5em"></div>
         <!-- <el-divider></el-divider> -->

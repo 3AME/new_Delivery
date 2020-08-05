@@ -1,5 +1,5 @@
 <template>
-  <el-aside width="20%" style="margin: 10px;">
+  <el-aside width="20%" height="100%" style="margin: 10px;">
     <div class="card" style="margin: 10px">
       <div style="text-align: center; padding: 20px">
         <img width="40%" src="../../../assets/images/small/地点.png" />
@@ -20,7 +20,7 @@
               trigger="hover"
               v-if="value.nodes.length > 0"
             >
-              <p style="padding: 10px">确定清空坐标列表？</p>
+              <p style="padding: 10px">确定清空路线列表？</p>
               <div style="text-align: right; margin: 0; padding: 10px">
                 <el-button type="primary" size="mini" @click="clearDepots()">确定</el-button>
               </div>
@@ -46,6 +46,8 @@
         :name="index"
         trigger="hover"
         placement="right"
+        @show="onShow(path)"
+        @hide="onHide(path)"
       >
         <el-row style="padding: 10px">
           <el-col :span="8">节点ID：</el-col>
@@ -63,6 +65,7 @@
               default-first-option
               placeholder="节点类型"
               size="mini"
+              @change="onSelectChange"
             >
               <el-option
                 v-for="item in node_types"
@@ -119,7 +122,7 @@
               <i
                 class="el-icon-delete"
                 style="float: right; color: red;"
-                @click="removeDepot(path)"
+                @click="removeDepotSync(path)"
               ></i>
             </el-col>
           </el-row>
@@ -138,15 +141,50 @@ export default {
   },
   data() {
     return {
+      temp_node: {
+        type: "customer",
+        id: 1,
+        name: "",
+        demand: 0.5,
+      },
       need_options: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
       node_types: [
         { type: "depot", title: "中心节点" },
         { type: "customer", title: "子节点" },
         { type: "other", title: "其它节点" },
       ],
-    }
+    };
   },
   methods: {
+    onShow(node) {
+      this.temp_node.type = node.type;
+      this.temp_node.id = node.id;
+      this.temp_node.name = node.name;
+      this.temp_node.demand = node.demand;
+    },
+    onHide(node) {
+      if (this.temp_node.id != node.id) {
+        return;
+      }
+      console.log('onHide node=' + JSON.stringify(node));
+      console.log('onhide temp_node=' + JSON.stringify(this.temp_node));
+      if (
+        this.temp_node.type != node.type ||
+        this.temp_node.name != node.name ||
+        this.temp_node.demand != node.demand
+      ) {
+        // node.type = this.temp_node.type;
+        // node.name = this.temp_node.name;
+        // node.demand = this.temp_node.demand;
+        this.onChange();
+      }
+    },
+    onSelectChange(select) {
+      console.log("onSelectChange select=" + select);
+      if (select != this.temp_node.type) {
+        this.onChange();
+      }
+    },
     getNodeColorByType(type) {
       return type == "depot"
         ? "red"
@@ -154,11 +192,33 @@ export default {
         ? "#02c58d"
         : "#fcbe2d";
     },
+    removeDepotSync(depot) {
+      // this.$emit("onBeforeChange");
+      this.removeDepot(depot);
+      this.onChange();
+    },
     removeDepot(depot) {
+      // this.$emit("onBeforeChange");
+      console.log("depot=" + JSON.stringify(depot));
+      console.log("edges=" + JSON.stringify(this.value));
       this.value.nodes.splice(this.value.nodes.indexOf(depot), 1);
+      for (let i = this.value.edges.length - 1; i >= 0; i--) {
+        var item = this.value.edges[i];
+        if (item.u === depot.id || item.v === depot.id) {
+          this.value.edges.splice(i, 1);
+          console.log("remove i=" + i);
+        }
+      }
+      console.log("edges=" + JSON.stringify(this.value));
     },
     clearDepots() {
+      // this.$emit("onBeforeChange");
       this.value.nodes.splice(0, this.value.nodes.length);
+      this.value.edges.splice(0, this.value.edges.length);
+      this.onChange();
+    },
+    onChange() {
+      this.$emit("onChange");
     },
   },
 };

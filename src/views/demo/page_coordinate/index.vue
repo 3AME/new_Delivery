@@ -39,7 +39,7 @@
             type="text"
             icon="el-icon-tickets"
             style="color: #fcbe2d"
-          >格式模板</el-button>
+          >{{queryValue.problem.nodes == undefined ? "格式模板" : "导出查询"}}</el-button>
           <el-button
             class="btn-action"
             @click="drawerValue.drawerShow = true"
@@ -66,11 +66,24 @@
         </el-button-group>
       </div>
     </el-header>
-    <el-container style="overflow:auto;overflow-x: hidden !important;">
-      <coordinate-list-side v-if="show" v-model="queryValue.problem" />
-      <el-main style="padding: 10px 20px" height="100%">
+    <el-container style="height:68%" id="container_route">
+    <!-- <el-scrollbar> -->
+     <coordinate-list-side v-if="show" v-model="queryValue.problem" @onChange="showGraph"/>
+    <!-- </el-scrollbar> -->
+      <el-main style="padding: 10px 20px;" height="100%">
+        <el-card class='draguploader' v-if="!show">
+          <el-upload
+            :before-upload="handleUpload"
+            :on-change="handleUploadEnd"
+            drag
+            action="https://jsonplaceholder.typicode.com/posts/"
+            >
+              <i class="el-icon-upload"></i>
+              <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+          </el-upload>
+        </el-card>
         <el-table
-          v-if="!show"
+          v-if="!show && queryValue.problem.length > 0"
           class="card"
           :header-cell-style="{background:'#e4e5e6'}"
           v-bind="table"
@@ -162,8 +175,23 @@
     </el-footer>
     <drawer v-model="drawerValue" />
     <query-dialog v-model="queryValue"></query-dialog>
-    <add-coordinate-dialog v-model="queryValue.problem.nodes" :visible.sync="visible1"></add-coordinate-dialog>
+    <add-coordinate-dialog v-model="queryValue.problem.nodes" :visible.sync="visible1" @onAdd="showGraph"></add-coordinate-dialog>
     <add-vehicle-dialog v-model="queryValue.problem" :visible.sync="visible"></add-vehicle-dialog>
+
+    <el-dialog
+      title="加载中"
+      :visible.sync="loading"
+      width="10%"
+      center
+      >
+      <div>
+      <img
+          :style="'width: ' + (asideCollapse ? '42px' : '72px' )+ '; height: ' + (asideCollapse ? '42px' : '72px' )"
+          src="../../../assets/images/small/1_bak.png"
+        />
+      </div>
+    </el-dialog>
+
   </el-container>
 </template>
 
@@ -178,12 +206,17 @@ import drawer from "../drawer/";
 import QueryDialog from "../dialog/query-dialog";
 import AddVehicleDialog from "../dialog/add-vehicle-dialog";
 import AddCoordinateDialog from "../dialog/add-coordinate-dialog";
+// import { Loading } from 'element-ui';
 // import AddCoordinatePopover from "../popover/add-coordinate-popover";
 // import VehicleDetailPopover from "../popover/popover-detail-vehicle";
 import CoordinateListSide from "../side/side-list-coordinate";
 import VehicleListSide from "../side/side-list-vehicle";
+
+import sheetFormat from "../../../util/sheet-format";
+
 Vue.use(pluginExport);
 Vue.use(pluginImport);
+
 export default {
   components: {
     drawer,
@@ -197,6 +230,11 @@ export default {
   },
   data() {
     return {
+      loading: false,
+      file:{
+        uploaded: 0,
+        all: 1
+      },
       drawerValue: {
         drawerShow: false,
         distancePrior: 5, //距离优先
@@ -237,7 +275,7 @@ export default {
     };
   },
   mounted() {
-    console.log("mounted");
+    // console.log("mounted");
     this.stdcolumns = [
       { label: "type", prop: "type" },
       { label: "name", prop: "name" },
@@ -285,14 +323,21 @@ export default {
       //   stripe: true,
       //   border: true,
       // };
+
       this.show = false;
       let svgChildren = d3.selectAll("svg#graph_coordinate > *");
       svgChildren.remove();
+      this.queryValue.problem = {};
     },
 
+    handleUploadEnd() {
+      this.loading =false;
+    },
+
+    // [TODO] 格式更新
     handleUpload(file) {
-      this.show = true;
       this.$import.xlsx(file).then(({ header, results }) => {
+        this.file.all=results.length
 
         // 判断是否是坐标格式的文件
         let isCoorFile = true;
@@ -318,8 +363,18 @@ export default {
 
         // 坐标查询文件
         if (isCoorFile) {
+          // this.file.uploaded=0
+          // const interval=setInterval(()=>{
+          //   if( this.file.uploaded >= this.file.all -1){
+          //     clearInterval(interval)
+          //     return
+          //   }
+          //   this.file.uploaded = this.file.uploaded + 1
+          // }, 200);
+          this.loading=true;
+          this.show = true;
           this.tableToPreblem(results);
-          this.showScatterGraph();
+          this.showGraph();
 
         // 线路查询文件
         } else if (isRouteFile) {
@@ -359,11 +414,11 @@ export default {
           return false;
         }
       });
-
       return false;
     },
 
     tableToPreblem(outdata) {
+
       let problem = [];
       var costModeFlag = false;
       outdata.map((v) => {
@@ -390,7 +445,7 @@ export default {
           drivingCost: v["Driving_cost"],
           waitingCost: v["Waiting_cost"],
         };
-        console.log("vehicles:" + JSON.stringify(obj.vehicles));
+        // console.log("vehicles:" + JSON.stringify(obj.vehicles));
         if (v["Use_cost"] || v["Driving_cost"] || v["Waiting_cost"]) {
           costModeFlag = true;
         }
@@ -407,7 +462,7 @@ export default {
         if (obj.vehicles !== undefined) {
           return obj.vehicles;
         } else {
-          console.log("value is undefined");
+          // console.log("value is undefined");
         }
       });
       for (let i = new_vehicles.length - 1; i >= 0; i--) {
@@ -438,12 +493,35 @@ export default {
         speed: this.drawerValue.speedValue,
         maxiter: this.drawerValue.maxIter,
       };
-      console.log("new_vehicles:" + JSON.stringify(new_vehicles));
+      // console.log("new_vehicles:" + JSON.stringify(new_vehicles));
       this.vehicles = new_vehicles;
       this.polylinePath = new_nodes;
 
-      console.log("problem:" + JSON.stringify(newproblem_edges));
+      // console.log("problem:" + JSON.stringify(newproblem_edges));
       this.queryValue.problem = newproblem_edges;
+
+
+      this.loading = false
+    },
+
+    problemToSheet(data, sheetFormat) {
+      let aoa = [];
+      aoa.push( // 表头
+        sheetFormat.map((it) => {
+          return it.label;
+        })
+      );
+      if (data) { // 记录
+        for (let node of data) {
+          let row = [];
+          for (let col of sheetFormat) {
+            row.push(node[col.field]);
+          }
+          aoa.push(row);
+        }
+      }
+      let worksheet = xlsx.utils.aoa_to_sheet(aoa);
+      return worksheet;
     },
 
     inquery() {
@@ -499,7 +577,7 @@ export default {
         });
         for (let i = 0; i < this.queryValue.problem.vehicles.length; i++) {
           let vehicle = this.queryValue.problem.vehicles[i];
-          console.log("vehicle=" + JSON.stringify(vehicle));
+          // console.log("vehicle=" + JSON.stringify(vehicle));
           if (depotsId.indexOf(vehicle.depot) == -1) {
             this.$notify({
               title: "警告",
@@ -520,40 +598,41 @@ export default {
     },
 
     handleChange(val) {
-      console.log(val);
+      // console.log(val);
     },
 
     handleDownload() {
-      var table = [];
-      table.push(
-        this.stdcolumns.map((item) => {
-          return item.label;
-        })
-      );
-
-      // 创建book
-      var wb = xlsx.utils.book_new();
-      // json转sheet
-      var ws = xlsx.utils.aoa_to_sheet(table);
-      // sheet写入book
-      xlsx.utils.book_append_sheet(wb, ws, "query");
-      // 输出
+      let workbook = xlsx.utils.book_new();
+      let sheets = sheetFormat.CoordinateFile;
+      console.log(sheets);
+      xlsx.utils.book_append_sheet(
+        workbook,
+        this.problemToSheet(this.queryValue.problem.nodes, sheets.nodes), 
+        "点信息");
+      xlsx.utils.book_append_sheet(
+        workbook,
+        this.problemToSheet(this.queryValue.problem.vehicles, sheets.vehicles), 
+        "车辆信息");
+      // 导出
       ipcRenderer.send("open-save-dialog", "坐标查询文件");
       ipcRenderer.once("selectedItem", function (e, path) {
         if (path != null) {
-          xlsx.writeFile(wb, path);
+          xlsx.writeFile(workbook, path);
         }
       });
     },
-    showScatterGraph() {
+
+    showGraph() {
       let svgChildren = d3.selectAll("svg#graph_coordinate > *");
       svgChildren.remove();
       var problem = this.queryValue.problem;
       let data = problem.nodes;
-      console.log("data=" + JSON.stringify(data));
+      // console.log("data=" + JSON.stringify(data));
 
-      let width = this.$refs["svg_coordinate"].clientWidth;
-      let height = this.$refs["svg_coordinate"].clientHeight;
+      // let width = this.$refs["svg_coordinate"].clientWidth;
+      // let height = this.$refs["svg_coordinate"].clientHeight;
+      let width = document.getElementById('container_route').clientWidth * 0.6;
+      let height = document.getElementById('container_route').clientHeight;
       console.log("width=" + width + " height=" + height);
       const margin = { top: 30, right: 60, bottom: 60, left: 60 };
 
@@ -626,7 +705,7 @@ export default {
           // }
           // return d.name;
           // return "节点" + d.id + ":(" + d.x + ", " + d.y + ")";
-          return d.id + "(" + d.x + ", " + d.y + ")";
+          return d.name + "(" + d.x + ", " + d.y + ")";
         })
         .call(dodge);
 
@@ -734,6 +813,25 @@ export default {
   },
 };
 </script>
-<style>
+<style >
+  .draguploader {
+      /* height: 100%; */
+      /* width: 100%;             */
+    }
+    .draguploader .el-upload-dragger {
+      height: 100%;
+      width: 100%;
+      padding: 12%;
+    }
+  .draguploader .el-upload.el-upload--text{
+    height: 100%;
+    width: 100%;
+  }
+
 </style>
+<style scoped>
+el-container::-webkit-scrollbar {
+    width: 0;
+  }
+</style>>
 <style src="../../../assets/btn.css" scoped></style>

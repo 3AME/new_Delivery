@@ -18,12 +18,6 @@
         >添加车辆</el-button>
         <el-button
           class="btn-action"
-          type="text"
-          icon="el-icon-tickets"
-          style="color: #fcbe2d;"
-        >添加地点</el-button>
-        <el-button
-          class="btn-action"
           @click="drawerValue.drawerShow = true"
           type="text"
           icon="el-icon-set-up"

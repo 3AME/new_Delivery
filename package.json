@@ -37,7 +37,6 @@
     "flex.css": "^1.1.7",
     "fuse.js": "^3.4.6",
     "hotkeys-js": "^3.7.3",
-    "html2canvas": "^1.0.0-rc.5",
     "js-cookie": "^2.2.1",
     "lodash": "^4.17.15",
     "lowdb": "^1.0.0",
