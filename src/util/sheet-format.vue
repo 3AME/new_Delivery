@@ -4,133 +4,168 @@ export default {
         nodes: [
             {
                 label: "type",
-                prop: "",
-                field: "type"
+                field: "type",
+                required: true
             },
             {
                 label: "name",
-                prop: "",
-                field: "name"
+                field: "id",
+                required: true
+            },
+            {
+                label: "name",
+                field: "name",
+                required: true
             },
             {
                 label: "X",
-                prop: "",
-                field: "x"
+                field: "x",
+                required: true
             },
             {
                 label: "Y",
-                prop: "",
-                field: "y"
+                field: "y",
+                required: true
             },
             {
                 label: "demand",
-                prop: "",
-                field: "demand"
+                field: "demand",
+                required: false,
+                default: 0
             },
             {
                 label: "serviceTime",
-                prop: "",
-                field: "service_time"
+                field: "service_time",
+                required: false,
+                default: 0
             },
             {
                 label: "beginTime",
-                prop: "",
-                field: "tw_beg"
+                field: "tw_beg",
+                required: false,
+                default: -1
             },
             {
                 label: "endTime",
-                prop: "",
-                field: "tw_end"
+                field: "tw_end",
+                required: false,
+                default: -1
             }
         ],
         vehicles: [
             {
                 label: "Vehicle_type",
-                prop: "",
-                field: "id"
+                field: "id",
+                required: true
             },
             {
                 label: "Vehicle_load",
-                prop: "",
-                field: "load"
+                field: "load",
+                required: true
             },
             {
                 label: "Vehicle_number",
-                prop: "",
-                field: "count"
+                field: "count",
+                required: false,
+                default: -1
             },
             {
                 label: "Vehicle_mileage",
-                prop: "",
-                field: "mileage"
+                field: "mileage",
+                required: false,
+                default: -1
             },
             {
                 label: "Center_name",
-                prop: "",
-                field: "depot"
-            }
+                field: "depot",
+                required: false
+            },
+            {
+                label: "Use_cost",
+                field: "useCost",
+                required: false
+            },
+            {
+                label: "Driving_cost",
+                field: "drivingCost",
+                required: false
+            },
+            {
+                label: "Waiting_cost",
+                field: "waitingCost",
+                required: false
+            },
         ]
     },
     RouteFile: {
         nodes: [
             {
                 label: "type",
-                prop: "",
                 field: "type"
             },
             {
                 label: "name_a",
-                prop: "",
                 field: "name"
             },
             {
                 label: "demand",
-                prop: "",
                 field: "demand"
             },
             {
                 label: "serviceTime",
-                prop: "",
                 field: "service_time"
             },
             {
                 label: "beginTime",
-                prop: "",
                 field: "tw_beg"
             },
             {
                 label: "endTime",
-                prop: "",
                 field: "tw_end"
             },
         ],
         vehicles: [
             {
                 label: "Vehicle_type",
-                prop: "",
                 field: "id"
             },
             {
                 label: "Vehicle_load",
-                prop: "",
                 field: "load"
             },
             {
                 label: "Vehicle_number",
-                prop: "",
                 field: "count"
             },
             {
                 label: "Vehicle_mileage",
-                prop: "",
                 field: "mileage"
             },
             {
                 label: "Center_name",
-                prop: "",
                 field: "depot"
             },
         ]
+    },
+    _CheckFormat: function(ds, fmt) {
+        let first = ds[0];
+        if (!first) {
+            return false;
+        }
+        for (let i in fmt) {
+            if (fmt[i].required && !first.hasOwnProperty(fmt[i].label)) {
+                return false;
+            }
+        }
+        return true;
+    },
+    IsCoordinateFile: function(dsNodes, dsVehicles) {
+        return this._CheckFormat(dsNodes, this.CoordinateFile.nodes)
+            && this._CheckFormat(dsVehicles, this.CoordinateFile.vehicles);
+    },
+    IsRouteFile: function(dsNodes, dsVehicles) {
+        return this._CheckFormat(dsNodes, this.RouteFile.nodes)
+            && this._CheckFormat(dsVehicles, this.RouteFile.vehicles);
     }
 };
 </script>
