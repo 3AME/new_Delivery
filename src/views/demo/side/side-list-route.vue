@@ -44,10 +44,11 @@
         :key="path.id"
         title="修改地点信息"
         :name="index"
-        trigger="hover"
+        trigger="click"
         placement="right"
         @show="onShow(path)"
         @hide="onHide(path)"
+        style="width: 30%;"
       >
         <el-row style="padding: 10px">
           <el-col :span="8">节点ID：</el-col>
@@ -96,6 +97,28 @@
             >
               <el-option v-for="item in need_options" :key="item" :label="item" :value="item"></el-option>
             </el-select>
+          </el-col>
+        </el-row>
+        <el-row style="padding: 10px;">
+          <el-col :span="8">路线信息：</el-col>
+          <el-col :span="16">
+            <!-- <el-tag
+              v-for="(tag, index) in routeTags"
+              :key="index"
+              closable
+              :disable-transitions="false"
+              @close="onTagClose(tag, path)"
+              @click="onShowDetail(tag, path)"
+            >{{tag.u == path.id ? tag.v : tag.u}}</el-tag> -->
+            <el-tag
+              v-for="(tag, index) in routeTags"
+              :key="index"
+              closable
+              :disable-transitions="false"
+              @close="onTagClose(tag, path)"
+              @click="onShowDetail(tag, path)"
+            >{{tag.name}}</el-tag>
+            <el-button v-if="routeTags.length != value.nodes.length - 1" class="button-new-tag" size="small" @click="onAddEdge(path)">+ 添加路线</el-button>
           </el-col>
         </el-row>
         <div style="text-align: center; padding: 10px">
@@ -153,21 +176,77 @@ export default {
         { type: "customer", title: "子节点" },
         { type: "other", title: "其它节点" },
       ],
+      routeTags: [],
+      visible: false,
     };
   },
   methods: {
+    initRouteTags(node) {
+      // this.routeTags = this.value.edges.filter((edge) => {
+      //   return edge.u == node.id || edge.v == node.id;
+      // });
+      let names = new Map();
+      this.value.nodes.forEach(node => {
+        names.set(node.id, node.name);
+      })
+      this.routeTags = [];
+      let temp = new Set();
+      this.value.edges.forEach(edge => {
+        if (edge.u == node.id) {
+          if (!temp.has(edge.v)) {
+            temp.add(edge.v);
+            this.routeTags.push({
+              u: edge.u,
+              v: edge.v,
+              w: edge.w,
+              name: names.get(edge.v)
+            });
+          }
+        } else if (edge.v == node.id) {
+          if (!temp.has(edge.u)) {
+            temp.add(edge.u);
+            this.routeTags.push({
+              u: edge.u,
+              v: edge.v,
+              w: edge.w,
+              name: names.get(edge.u)
+            });
+          }
+        }
+      });
+      console.log('temp=' + JSON.stringify(Array.from(temp)));
+      console.log('routeTas=' + JSON.stringify(this.routeTags));
+
+      // this.value.nodes.forEach(node => {
+      //   if (temp.has(node.id)) {
+      //     this.routeTags.push(node);
+      //   }
+      // });
+    },
     onShow(node) {
       this.temp_node.type = node.type;
       this.temp_node.id = node.id;
       this.temp_node.name = node.name;
       this.temp_node.demand = node.demand;
+      let tags = [];
+      console.log("edges=" + JSON.stringify(this.value.edges));
+      this.initRouteTags(node);
+      // this.value.edges.forEach(edge => {
+      //   if (edge.u == node.id || edge.v == node.id) {
+      //     routeTags.push({
+      //       start: edge.u,
+      //       end: edge.v,
+      //       len: edge.w
+      //     });
+      //   }
+      // });
     },
     onHide(node) {
       if (this.temp_node.id != node.id) {
         return;
       }
-      console.log('onHide node=' + JSON.stringify(node));
-      console.log('onhide temp_node=' + JSON.stringify(this.temp_node));
+      console.log("onHide node=" + JSON.stringify(node));
+      console.log("onhide temp_node=" + JSON.stringify(this.temp_node));
       if (
         this.temp_node.type != node.type ||
         this.temp_node.name != node.name ||
@@ -179,11 +258,27 @@ export default {
         this.onChange();
       }
     },
+    onAddEdge(node) {
+      this.$emit("onAddEdge", node);
+    },
     onSelectChange(select) {
       console.log("onSelectChange select=" + select);
       if (select != this.temp_node.type) {
+        this.temp_node.type = select;
         this.onChange();
       }
+    },
+    onTagClose(tag, node) {
+      this.routeTags.splice(this.routeTags.indexOf(tag), 1);
+      this.value.edges.splice(this.value.edges.indexOf(tag), 1);
+      // this.initRouteTags(node);
+      this.onChange();
+    },
+    onShowDetail(tag, node) {
+      this.$emit("onShowDetail", {
+        edge: tag,
+        node: node
+      });
     },
     getNodeColorByType(type) {
       return type == "depot"
@@ -225,4 +320,27 @@ export default {
 </script>
 
 <style>
+.el-tag {
+  margin: 5px;
+}
+
+.el-tag + .el-tag {
+  margin-left: 5px;
+}
+
+.el-popover {
+  position: absolute;
+  background: #fff;
+  width: 40%;
+  border: 1px solid #ebeef5;
+  padding: 12px;
+  z-index: 2000;
+  color: #606266;
+  line-height: 1.4;
+  text-align: justify;
+  font-size: 14px;
+  -webkit-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  word-break: break-all;
+}
 </style>

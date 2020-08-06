@@ -57,7 +57,7 @@
         :key="path.id"
         title="修改地点信息"
         :name="index"
-        trigger="hover"
+        trigger="click"
         placement="right"
         @show="onShow(path)"
         @hide="onHide(path)"
@@ -153,11 +153,8 @@
 </template>
 
 <script>
-// import CoordinateDetailPopover from "../popover/popover-detail-coordinate";
+
 export default {
-  // components: {
-  //   CoordinateDetailPopover
-  // },
   props: {
     value: {
       type: Object,
@@ -212,6 +209,7 @@ export default {
     onSelectChange(select) {
       console.log("onSelectChange select=" + select);
       if (select != this.temp_node.type) {
+        this.temp_node.type = select;
         this.onChange();
       }
     },
