@@ -171,12 +171,10 @@
     <add-vehicle-dialog v-model="queryValue.problem" :visible.sync="visible"></add-vehicle-dialog>
     <add-edge-dialog v-model="queryValue.problem" :visible.sync="visible2" :node="add_node" @add="showGraph"/>
     <detail-edge-dialog v-model="queryValue.problem" :visible.sync="visible3" :node="add_node" :edge="temp_edge" @save="onSaveEdge"/>
-    <el-dialog title="加载中" :visible.sync="loading" width="10%" center>
-      <div>
-        <img
-          :style="'width: ' + (asideCollapse ? '42px' : '72px' )+ '; height: ' + (asideCollapse ? '42px' : '72px' )"
-          src="../../../assets/images/small/1_bak.png"
-        />
+    <el-dialog title="加载中" :show-close="false"
+    :visible.sync="loading" width="20%" center>
+      <div class="cssload-container">
+        <div class="cssload-item cssload-moon"></div>
       </div>
     </el-dialog>
   </el-container>
@@ -881,4 +879,5 @@ export default {
 }
 </style>
 <style src="../../../assets/btn.css" scoped></style>
+<style src="../../../assets/spinner.css" scoped></style>
 

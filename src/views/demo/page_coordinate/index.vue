@@ -170,12 +170,10 @@
     ></add-coordinate-dialog>
     <add-vehicle-dialog v-model="queryValue.problem" :visible.sync="visible"></add-vehicle-dialog>
 
-    <el-dialog title="加载中" :visible.sync="loading" width="10%" center>
-      <div>
-        <img
-          :style="'width: ' + (asideCollapse ? '42px' : '72px' )+ '; height: ' + (asideCollapse ? '42px' : '72px' )"
-          src="../../../assets/images/small/1_bak.png"
-        />
+    <el-dialog title="加载中" :show-close="false"
+    :visible.sync="loading" width="20%" center>
+      <div class="cssload-container">
+        <div class="cssload-item cssload-moon"></div>
       </div>
     </el-dialog>
   </el-container>
@@ -285,6 +283,8 @@ export default {
 
     handleUploadEnd() {
       this.loading = false;
+      console.log('this.loading = false;',this.loading);
+
     },
 
     // [TODO] 格式更新
@@ -307,8 +307,14 @@ export default {
       if (sheetFormat.IsCoordinateFile(dsNodes, dsVehicles)) {
         this.loading = true;
         this.show = true;
-        this.sheetsToProblem(dsNodes, dsVehicles);
-        this.showGraph();
+        var me=this       
+        setTimeout(function(){
+          me.sheetsToProblem(dsNodes, dsVehicles);
+          me.showGraph();
+          setTimeout(function()  {
+            me.loading=false
+          }, 0);
+        }, 0);
         return false;
       } else if (sheetFormat.IsRouteFile(dsNodes, dsVehicles)) {
         this.show = false;
@@ -400,7 +406,6 @@ export default {
 
       this.queryValue.problem = problem;
 
-      this.loading = false
     },
 
     problemToSheet(data, sheetFormat) {
@@ -735,3 +740,4 @@ el-container::-webkit-scrollbar {
 }
 </style>>
 <style src="../../../assets/btn.css" scoped></style>
+<style src="../../../assets/spinner.css" scoped></style>
