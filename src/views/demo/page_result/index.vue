@@ -221,7 +221,6 @@ export default {
     };
   },
   mounted() {
-    console.log("mounted");
     this.hideRoute = false;
 
     let me = this;
@@ -249,6 +248,7 @@ export default {
     let costSvg = d3.selectAll("svg#cost_svg > *");
     // console.log("d3.selectAll()=" + svgChildren.size());
     let queryValue = this.$route.query.queryValue;
+    console.log(queryValue);
     if (
       svgChildren.size() > 0 &&
       this.problemName === queryValue.name
