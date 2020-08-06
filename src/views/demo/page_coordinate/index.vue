@@ -260,7 +260,7 @@ export default {
       visible: false,
       visible1: false,
       show: false,
-      asideCollapse: false
+      asideCollapse: true
     };
   },
 
@@ -305,7 +305,7 @@ export default {
           return false;
       }
       if (sheetFormat.IsCoordinateFile(dsNodes, dsVehicles)) {
-        this.loading=true;
+        this.loading = true;
         this.show = true;
         this.sheetsToProblem(dsNodes, dsVehicles);
         this.showGraph();
@@ -350,9 +350,9 @@ export default {
     sheetsToProblem(dsNodes, dsVehicles) {
       let problem = {
         "routeMode": false,
-        "nodes": undefined,
+        "nodes": [],
         "edges": "euc2d",
-        "vehicles": undefined,
+        "vehicles": [],
         "distancePrior": this.drawerValue.distancePrior,
         "timePrior": this.drawerValue.timePrior,
         "loadPrior": this.drawerValue.loadPrior,
@@ -389,7 +389,7 @@ export default {
           }
         }
         if (tmp["Use_cost"] || tmp["Driving_cost"] || tmp["Waiting_cost"]) {
-          // problem[""]
+          problem["costMode"] = true;
         }
         aVehicles.push(tmp);
       }

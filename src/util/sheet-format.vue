@@ -101,49 +101,85 @@ export default {
         nodes: [
             {
                 label: "type",
-                field: "type"
+                field: "type",
+                required: true
             },
             {
                 label: "name_a",
-                field: "name"
+                field: "name",
+                required: true
+            },
+            {
+                label: "name_a",
+                field: "id",
+                required: true
             },
             {
                 label: "demand",
-                field: "demand"
+                field: "demand",
+                required: true
             },
             {
                 label: "serviceTime",
-                field: "service_time"
+                field: "service_time",
+                required: false,
+                default: 0
             },
             {
                 label: "beginTime",
-                field: "tw_beg"
+                field: "tw_beg",
+                required: false,
+                default: -1
             },
             {
                 label: "endTime",
-                field: "tw_end"
+                field: "tw_end",
+                required: false,
+                default: -1
             },
         ],
         vehicles: [
             {
                 label: "Vehicle_type",
-                field: "id"
+                field: "id",
+                required: true
             },
             {
                 label: "Vehicle_load",
-                field: "load"
+                field: "load",
+                required: true
             },
             {
                 label: "Vehicle_number",
-                field: "count"
+                field: "count",
+                required: false,
+                default: -1
             },
             {
                 label: "Vehicle_mileage",
-                field: "mileage"
+                field: "mileage",
+                required: false,
+                default: -1
             },
             {
                 label: "Center_name",
-                field: "depot"
+                field: "depot",
+                required: false
+            },
+                        {
+                label: "Use_cost",
+                field: "useCost",
+                required: false
+            },
+            {
+                label: "Driving_cost",
+                field: "drivingCost",
+                required: false
+            },
+            {
+                label: "Waiting_cost",
+                field: "waitingCost",
+                required: false
             },
         ]
     },
