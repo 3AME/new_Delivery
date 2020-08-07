@@ -287,7 +287,6 @@ export default {
 
     },
 
-    // [TODO] 格式更新
     handleUpload(file) {
       let workbook = xlsx.read(file.path, {type: 'file'});
       let dsNodes = xlsx.utils.sheet_to_json(workbook.Sheets['点信息']);
@@ -371,7 +370,7 @@ export default {
         let tmp = {};
         for (let j in sheetFormat.CoordinateFile.nodes) {
           let it = sheetFormat.CoordinateFile.nodes[j];
-          if (dsNodes[i][it.label]) {
+          if (typeof(dsNodes[i][it.label]) != undefined) {
             tmp[it.field] = dsNodes[i][it.label];
           } 
           else if (!it.required && it.default) {
@@ -383,11 +382,11 @@ export default {
       problem["nodes"] = aNodes;
 
       let aVehicles = [];
-      for (let i in dsVehicles) {
+      for (let i = 0; i < dsVehicles.length; i++) {
         let tmp = {};
-        for (let j in sheetFormat.CoordinateFile.vehicles) {
+        for (let j = 0; j < sheetFormat.CoordinateFile.vehicles.length; j++) {
           let it = sheetFormat.CoordinateFile.vehicles[j];
-          if (dsVehicles[i][it.label]) {
+          if (typeof(dsVehicles[i][it.label]) != undefined) {
             tmp[it.field] = dsVehicles[i][it.label];
           } 
           else if (!it.required && it.default) {
@@ -476,11 +475,9 @@ export default {
           return;
         }
 
-        console.log(depots);
         let depotsId = depots.map((depot) => {
           return depot.id;
         });
-        console.log(depotsId);
         for (let i = 0; i < this.queryValue.problem.vehicles.length; i++) {
           let vehicle = this.queryValue.problem.vehicles[i];
           console.log("vehicle=" + JSON.stringify(vehicle));

@@ -247,37 +247,6 @@ export default {
 
   mounted() {
     console.log("mounted");
-    this.stdcolumns = [
-      { label: "type", prop: "type" },
-      { label: "name_a", prop: "name_a" },
-      { label: "demand", prop: "demand" },
-      { label: "serviceTime", prop: "serviceTime" },
-      { label: "beginTime", prop: "beginTime" },
-      { label: "endTime", prop: "endTime" },
-      { label: "Vehicle_type", prop: "Vehicle_type" },
-      { label: "Vehicle_load", prop: "Vehicle_load" },
-      { label: "Vehicle_number", prop: "Vehicle_number" },
-      // { label: "Use_cost", prop: "Use_cost" },
-      // { label: "Driving_cost", prop: "Driving_cost" },
-      // { label: "Waiting_cost", prop: "Waiting_cost" },
-      { label: "Vehicle_mileage", prop: "Vehicle_mileage" },
-      { label: "Center_name", prop: "Center_name" },
-    ];
-    this.coorColumns = [
-      { label: "type", prop: "type" },
-      { label: "name", prop: "name" },
-      { label: "X", prop: "X" },
-      { label: "Y", prop: "Y" },
-      { label: "demand", prop: "demand" },
-      { label: "serviceTime", prop: "serviceTime" },
-      { label: "beginTime", prop: "beginTime" },
-      { label: "endTime", prop: "endTime" },
-      { label: "Vehicle_type", prop: "Vehicle_type" },
-      { label: "Vehicle_load", prop: "Vehicle_load" },
-      { label: "Vehicle_number", prop: "Vehicle_number" },
-      { label: "Vehicle_mileage", prop: "Vehicle_mileage" },
-      { label: "Center_name", prop: "Center_name" },
-    ];
   },
 
   activated() {
@@ -329,14 +298,14 @@ export default {
     },
 
     handleUploadEnd() {
-
+      this.loading = false;
     },
 
     handleUpload(file) {
       let workbook = xlsx.read(file.path, {type: 'file'});
       let dsNodes = xlsx.utils.sheet_to_json(workbook.Sheets['点信息']);
       let dsVehicles = xlsx.utils.sheet_to_json(workbook.Sheets['车辆信息']);
-      if (!dsNodes || !dsVehicles) {
+      if (!dsNodes || !dsVehicles || dsNodes.length == 0 || dsVehicles.length == 0) {
           this.$confirm(
             "查询文件必须包含点信息和车辆信息",
             "格式错误",
@@ -350,8 +319,8 @@ export default {
       }
       if (sheetFormat.IsRouteFile(dsNodes, dsVehicles)) {
         this.loading = true;
-        this.show = true;
         this.sheetsToProblem(dsNodes, dsVehicles);
+        this.show = true;
         this.showGraph();
         return false;
       } else if (sheetFormat.IsCoordinateFile(dsNodes, dsVehicles)) {
@@ -393,7 +362,7 @@ export default {
 
     sheetsToProblem(dsNodes, dsVehicles) {
       let problem = {
-        "routeMode": false,
+        "routeMode": true,
         "costMode": false,
         "nodes": [],
         "edges": [],
@@ -410,7 +379,7 @@ export default {
         let tmp = {};
         for (let j in sheetFormat.RouteFile.nodes) {
           let it = sheetFormat.RouteFile.nodes[j];
-          if (dsNodes[i][it.label]) {
+          if (typeof(dsNodes[i][it.label]) != undefined) {
             tmp[it.field] = dsNodes[i][it.label];
           } 
           else if (!it.required && it.default) {
@@ -422,11 +391,11 @@ export default {
       problem["nodes"] = aNodes;
 
       let aVehicles = [];
-      for (let i in dsVehicles) {
+      for (let i = 0; i < dsVehicles.length; i++) {
         let tmp = {};
-        for (let j in sheetFormat.RouteFile.vehicles) {
+        for (let j = 0; j < sheetFormat.RouteFile.vehicles.length; j++) {
           let it = sheetFormat.RouteFile.vehicles[j];
-          if (dsVehicles[i][it.label]) {
+          if (typeof(dsVehicles[i][it.label]) != undefined) {
             tmp[it.field] = dsVehicles[i][it.label];
           } 
           else if (!it.required && it.default) {
@@ -442,10 +411,10 @@ export default {
 
       // 导入边，假设邻接矩阵是对称矩阵
       let aEdges = [];
-      for (let i in dsNodes) {
+      for (let i = 0; i < dsNodes.length; i++) {
         for (let j = 0; j < i; j++) {
-          if (dsNodes[i][j.toString()]) {
-            aEdges.push({"u": i, "v": j, "w": dsNodes[i][j.toString()]});
+          if (dsNodes[i][j]) {
+            aEdges.push({"u": i, "v": j, "w": dsNodes[i][j]});
           } 
         }
       }
@@ -455,7 +424,6 @@ export default {
       this.polylinePath = problem["nodes"];
 
       this.queryValue.problem = problem;
-      console.log(problem);
 
       this.loading = false
     },
@@ -533,6 +501,7 @@ export default {
         let depotsId = depots.map((depot) => {
           return depot.id;
         });
+        console.log(depotsId);
         for (let i = 0; i < this.queryValue.problem.vehicles.length; i++) {
           let vehicle = this.queryValue.problem.vehicles[i];
           console.log("vehicle=" + JSON.stringify(vehicle));

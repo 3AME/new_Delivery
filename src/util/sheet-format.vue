@@ -164,9 +164,9 @@ export default {
             {
                 label: "Center_name",
                 field: "depot",
-                required: false
+                required: true
             },
-                        {
+            {
                 label: "Use_cost",
                 field: "useCost",
                 required: false
