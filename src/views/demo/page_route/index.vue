@@ -76,7 +76,6 @@
         <div class="draguploader card" v-if="!show">
           <el-upload
             :before-upload="handleUpload"
-            :on-change="handleUploadEnd"
             drag
             action="https://jsonplaceholder.typicode.com/posts/"
             style="height: 100%;"
@@ -297,10 +296,6 @@ export default {
       this.show = false;
     },
 
-    handleUploadEnd() {
-      this.loading = false;
-    },
-
     handleUpload(file) {
       let workbook = xlsx.read(file.path, {type: 'file'});
       let dsNodes = xlsx.utils.sheet_to_json(workbook.Sheets['点信息']);
@@ -318,10 +313,16 @@ export default {
           return false;
       }
       if (sheetFormat.IsRouteFile(dsNodes, dsVehicles)) {
-        this.loading = true;
-        this.sheetsToProblem(dsNodes, dsVehicles);
+        this.loading=true;
         this.show = true;
-        this.showGraph();
+        var me=this       
+        setTimeout(function(){
+          me.sheetsToProblem(dsNodes, dsVehicles);
+          me.showGraph();
+          setTimeout(function()  {
+            me.loading=false
+          }, 0);
+        }, 0);
         return false;
       } else if (sheetFormat.IsCoordinateFile(dsNodes, dsVehicles)) {
         this.show = false;
