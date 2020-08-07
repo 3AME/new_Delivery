@@ -3,6 +3,15 @@
     <el-header height="auto" style="padding: 20px">
       <div>
         <strong style="width: 140px; color: #5673ff; padding: 10px; font-size: 24px">坐标查询</strong>
+        <el-button
+          v-if="fileName != undefined"
+          class="btn-action"
+          type="text"
+          icon="el-icon-document"
+          style="color: #5673ff;"
+        >
+          <strong>{{ fileName }}</strong>
+        </el-button>
       </div>
       <div style="margin-top: 20px">
         <el-button-group class="card">
@@ -199,6 +208,7 @@ import CoordinateListSide from "../side/side-list-coordinate";
 import VehicleListSide from "../side/side-list-vehicle";
 
 import sheetFormat from "../../../util/sheet-format";
+import p2eu from "../../../util/problem-to-excel-utils";
 
 Vue.use(pluginExport);
 Vue.use(pluginImport);
@@ -258,6 +268,7 @@ export default {
       visible: false,
       visible1: false,
       show: false,
+      fileName: undefined,
     };
   },
   mounted() {
@@ -303,10 +314,10 @@ export default {
   methods: {
     clear() {
       this.show = false;
-      this.queryValue.problem = {};
       let svgChildren = d3.selectAll("svg#graph_coordinate > *");
       svgChildren.remove();
       this.queryValue.problem = {};
+      this.fileName = undefined;
     },
 
     handleUploadEnd() {
@@ -315,6 +326,7 @@ export default {
 
     // [TODO] 格式更新
     handleUpload(file) {
+      this.fileName = file.name;
       this.loading = true;
       this.show = true;
       var me = this;
@@ -353,7 +365,7 @@ export default {
           //   }
           //   this.file.uploaded = this.file.uploaded + 1
           // }, 200);
-          this.loading=true;
+          this.loading = true;
           this.show = true;
           this.tableToPreblem(results);
           this.showGraph();
@@ -488,26 +500,6 @@ export default {
       this.loading = false;
     },
 
-    problemToSheet(data, sheetFormat) {
-      let aoa = [];
-      aoa.push( // 表头
-        sheetFormat.map((it) => {
-          return it.label;
-        })
-      );
-      if (data) { // 记录
-        for (let node of data) {
-          let row = [];
-          for (let col of sheetFormat) {
-            row.push(node[col.field]);
-          }
-          aoa.push(row);
-        }
-      }
-      let worksheet = xlsx.utils.aoa_to_sheet(aoa);
-      return worksheet;
-    },
-
     inquery() {
       if (this.queryValue.problem == null) {
         this.$confirm("还未选择文件打开哦", "温馨提示", {
@@ -586,24 +578,11 @@ export default {
     },
 
     handleDownload() {
-      let workbook = xlsx.utils.book_new();
-      let sheets = sheetFormat.CoordinateFile;
-      console.log(sheets);
-      xlsx.utils.book_append_sheet(
-        workbook,
-        this.problemToSheet(this.queryValue.problem.nodes, sheets.nodes),
-        "点信息");
-      xlsx.utils.book_append_sheet(
-        workbook,
-        this.problemToSheet(this.queryValue.problem.vehicles, sheets.vehicles),
-        "车辆信息");
-      // 导出
-      ipcRenderer.send("open-save-dialog", "坐标查询文件");
-      ipcRenderer.once("selectedItem", function (e, path) {
-        if (path != null) {
-          xlsx.writeFile(workbook, path);
-        }
-      });
+      p2eu.coordinateToExcel(
+        this,
+        this.queryValue.problem,
+        this.fileName == undefined ? "坐标查询文件" : this.fileName
+      );
     },
 
     showGraph() {
@@ -684,11 +663,6 @@ export default {
         .attr("x", (d) => x(d.x))
         .attr("y", (d) => y(d.y))
         .text((d) => {
-          // if (problem.names !== undefined) {
-          //   return problem.names[d.name];
-          // }
-          // return d.name;
-          // return "节点" + d.id + ":(" + d.x + ", " + d.y + ")";
           return d.name + "(" + d.x + ", " + d.y + ")";
         })
         .call(dodge);
@@ -736,61 +710,6 @@ export default {
                 ? top
                 : right
             );
-          });
-      }
-
-      // addLegend();
-
-      function addLegend() {
-        var legend = svg.append("g");
-        var textGroup = legend.selectAll("text").data(legendTexts);
-
-        textGroup.exit().remove();
-
-        legend
-          .selectAll("text")
-          .data(legendTexts)
-          .enter()
-          .append("text")
-          .text(function (d) {
-            // return (
-            //   '车辆' +
-            //   d.id +
-            //   '：路程：' +
-            //   d.distance.toFixed(2) +
-            //   '公里 | 时间：' +
-            //   d.time.toFixed(2) +
-            //   '小时'
-            // )
-            return d.id;
-            // return d.text
-          })
-          .attr("class", "legend")
-          .attr("y", function (d, i) {
-            return i * 20 + 40;
-          })
-          .attr("x", 90)
-          .attr("fill", function (d, i) {
-            return legendColors(i);
-          });
-
-        var rectGroup = legend.selectAll("rect").data(legendTexts);
-
-        rectGroup.exit().remove();
-
-        legend
-          .selectAll("rect")
-          .data(legendTexts)
-          .enter()
-          .append("rect")
-          .attr("y", function (d, i) {
-            return i * 20 + 28;
-          })
-          .attr("x", 70)
-          .attr("width", 12)
-          .attr("height", 12)
-          .attr("fill", function (d, i) {
-            return legendColors(i);
           });
       }
     },

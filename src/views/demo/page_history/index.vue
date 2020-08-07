@@ -109,6 +109,7 @@
 <script>
 import * as xlsx from "xlsx";
 import { ipcRenderer } from "electron";
+import p2eu from "../../../util/problem-to-excel-utils";
 export default {
   data() {
     return {
@@ -191,137 +192,109 @@ export default {
     },
     saveQuery(row) {
       var problem = row.problem;
-      var table = [];
-
-      let depots = problem.nodes.filter((node) => {
-        return node.type == "depot";
-      });
-
-      if (!problem.routeMode) {
-        depots.forEach((node) => {
-          let row0 = [
-            "物流中心" + node.id + "(" + node.x + ", " + node.y + ")",
-          ];
-          table.push(row0);
-        });
-
-        var header1 = ["配送节点", "横坐标x(km)", "纵坐标y(km)", "需求量q(t)"];
-
-        table.push(header1);
-
-        problem.nodes.forEach((node, i) => {
-          if (node.type === "customer") {
-            let row = [];
-            row.push(node.id);
-            row.push(node.x);
-            row.push(node.y);
-            row.push(node.demand);
-            table.push(row);
-          }
-        });
+      if (problem.routeMode) {
+        p2eu.routeToExcel(problem, row.title);
       } else {
-        depots.forEach((node) => {
-          let row0 = [
-            "物流中心" + node.id + "(" + node.x + ", " + node.y + ")",
-          ];
-          table.push(row0);
-        });
-
-        let row0 = ["各配送点与配送中心的距离（/KM）"];
-        table.push(row0);
-
-        let header1 = ["配送节点"];
-        problem.nodes.forEach((node) => {
-          header1.push(node.id);
-        });
-        table.push(header1);
-
-        problem.nodes.forEach((node, i) => {
-          let row = [];
-          row.push(node.id);
-          for (let j = 0; j < problem.nodes.length; j++) {
-            if (i === j) {
-              row.push(0);
-            } else {
-              row.push("");
-            }
-          }
-          table.push(row);
-        });
-
-        problem.nodes.forEach((node, i) => {
-          let row = table[i + 2];
-          problem.edges.forEach((item, j) => {
-            if (item.u === node.id) {
-              row[item.v + 1] = item.w;
-              table[item.v + 2][item.u + 1] = item.w;
-            }
-          });
-        });
-
-        table.push([]);
-
-        table.push(["各配送点需求量（T）"]);
-        var row1 = ["配送点"];
-        var row2 = ["需求量（T)"];
-        problem.nodes.forEach((node, i) => {
-          if (node.type === "customer") {
-            row1.push(node.id);
-            row2.push(node.demand);
-          }
-        });
-        table.push(row1);
-        table.push(row2);
+        p2eu.coordinateToExcel(problem, row.title);
       }
 
-      // 创建book
-      var wb = xlsx.utils.book_new();
-      // json转sheet
-      var ws = xlsx.utils.aoa_to_sheet(table);
-      // sheet写入book
-      xlsx.utils.book_append_sheet(wb, ws, "query");
-      // 输出
-      ipcRenderer.send("open-save-dialog", row.title);
-      ipcRenderer.once("selectedItem", function (e, path) {
-        if (path != null) {
-          xlsx.writeFile(wb, path);
-        }
-      });
+      // var table = [];
+
+      // let depots = problem.nodes.filter((node) => {
+      //   return node.type == "depot";
+      // });
+
+      // if (!problem.routeMode) {
+      //   depots.forEach((node) => {
+      //     let row0 = [
+      //       "物流中心" + node.id + "(" + node.x + ", " + node.y + ")",
+      //     ];
+      //     table.push(row0);
+      //   });
+
+      //   var header1 = ["配送节点", "横坐标x(km)", "纵坐标y(km)", "需求量q(t)"];
+
+      //   table.push(header1);
+
+      //   problem.nodes.forEach((node, i) => {
+      //     if (node.type === "customer") {
+      //       let row = [];
+      //       row.push(node.id);
+      //       row.push(node.x);
+      //       row.push(node.y);
+      //       row.push(node.demand);
+      //       table.push(row);
+      //     }
+      //   });
+      // } else {
+      //   depots.forEach((node) => {
+      //     let row0 = [
+      //       "物流中心" + node.id + "(" + node.x + ", " + node.y + ")",
+      //     ];
+      //     table.push(row0);
+      //   });
+
+      //   let row0 = ["各配送点与配送中心的距离（/KM）"];
+      //   table.push(row0);
+
+      //   let header1 = ["配送节点"];
+      //   problem.nodes.forEach((node) => {
+      //     header1.push(node.id);
+      //   });
+      //   table.push(header1);
+
+      //   problem.nodes.forEach((node, i) => {
+      //     let row = [];
+      //     row.push(node.id);
+      //     for (let j = 0; j < problem.nodes.length; j++) {
+      //       if (i === j) {
+      //         row.push(0);
+      //       } else {
+      //         row.push("");
+      //       }
+      //     }
+      //     table.push(row);
+      //   });
+
+      //   problem.nodes.forEach((node, i) => {
+      //     let row = table[i + 2];
+      //     problem.edges.forEach((item, j) => {
+      //       if (item.u === node.id) {
+      //         row[item.v + 1] = item.w;
+      //         table[item.v + 2][item.u + 1] = item.w;
+      //       }
+      //     });
+      //   });
+
+      //   table.push([]);
+
+      //   table.push(["各配送点需求量（T）"]);
+      //   var row1 = ["配送点"];
+      //   var row2 = ["需求量（T)"];
+      //   problem.nodes.forEach((node, i) => {
+      //     if (node.type === "customer") {
+      //       row1.push(node.id);
+      //       row2.push(node.demand);
+      //     }
+      //   });
+      //   table.push(row1);
+      //   table.push(row2);
+      // }
+
+      // // 创建book
+      // var wb = xlsx.utils.book_new();
+      // // json转sheet
+      // var ws = xlsx.utils.aoa_to_sheet(table);
+      // // sheet写入book
+      // xlsx.utils.book_append_sheet(wb, ws, "query");
+      // // 输出
+      // ipcRenderer.send("open-save-dialog", row.title);
+      // ipcRenderer.once("selectedItem", function (e, path) {
+      //   if (path != null) {
+      //     xlsx.writeFile(wb, path);
+      //   }
+      // });
     },
-    // saveQuery2(index, row) {
-    //   var problem = row.problem;
-    //   var table = [];
-    //   var edges = problem.edges;
-    //   var row0 = ["物流中心(" + edges[0].x + ", " + edges[0].y + ")"];
-    //   table.push(row0);
-
-    //   var header1 = ["配送节点", "横坐标x(km)", "纵坐标y(km)", "需求量q(t)"];
-
-    //   table.push(header1);
-
-    //   for (var i = 1; i < edges.length; i++) {
-    //     let row = [];
-    //     row.push(i);
-    //     row.push(edges[i].x);
-    //     row.push(edges[i].y);
-    //     row.push(problem.customers[i - 1]);
-    //     table.push(row);
-    //   }
-
-    //   // 创建book
-    //   var wb = xlsx.utils.book_new();
-    //   // json转sheet
-    //   var ws = xlsx.utils.aoa_to_sheet(table);
-    //   // sheet写入book
-    //   xlsx.utils.book_append_sheet(wb, ws, "query");
-    //   // 输出
-    //   ipcRenderer.send("open-save-dialog", row.title);
-    //   ipcRenderer.once("selectedItem", function (e, path) {
-    //     if (path != null) {
-    //       xlsx.writeFile(wb, path);
-    //     }
-    //   });
-    // },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
       let length = this.querys.length;

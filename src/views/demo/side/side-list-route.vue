@@ -7,7 +7,7 @@
       <div style="padding: 10px; border-bottom: 1px solid #EBEEF5;">
         <el-row>
           <el-col :span="16">
-            <span style="font-size: 24px;">坐标列表</span>
+            <span style="font-size: 24px;">地点列表</span>
           </el-col>
 
           <el-col
@@ -288,12 +288,10 @@ export default {
         : "#fcbe2d";
     },
     removeDepotSync(depot) {
-      // this.$emit("onBeforeChange");
       this.removeDepot(depot);
       this.onChange();
     },
     removeDepot(depot) {
-      // this.$emit("onBeforeChange");
       console.log("depot=" + JSON.stringify(depot));
       console.log("edges=" + JSON.stringify(this.value));
       this.value.nodes.splice(this.value.nodes.indexOf(depot), 1);
@@ -307,7 +305,6 @@ export default {
       console.log("edges=" + JSON.stringify(this.value));
     },
     clearDepots() {
-      // this.$emit("onBeforeChange");
       this.value.nodes.splice(0, this.value.nodes.length);
       this.value.edges.splice(0, this.value.edges.length);
       this.onChange();

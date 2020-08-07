@@ -3,6 +3,15 @@
     <el-header height="auto" style="padding: 20px">
       <div>
         <strong style="width: 140px; color: #5673ff; padding: 10px; font-size: 24px">路线查询</strong>
+        <el-button
+          v-if="fileName != undefined"
+          class="btn-action"
+          type="text"
+          icon="el-icon-document"
+          style="color: #5673ff;"
+        >
+          <strong>{{ fileName }}</strong>
+        </el-button>
       </div>
       <el-button-group class="card" style="margin-top: 20px">
         <el-col :span="3.2">
@@ -36,7 +45,7 @@
           type="text"
           icon="el-icon-tickets"
           style="color: #fcbe2d"
-        >格式模板</el-button>
+        >{{queryValue.problem.nodes == undefined ? "格式模板" : "导出查询"}}</el-button>
         <el-button
           class="btn-action"
           @click="drawerValue.drawerShow = true"
@@ -67,7 +76,6 @@
       <route-list-side
         v-if="show"
         v-model="queryValue.problem"
-        @onBeforeChange="onBeforeChange"
         @onChange="showGraph"
         @onAddEdge="onAddEdge"
         @onShowDetail="onShowDetail"
@@ -169,8 +177,19 @@
     <query-dialog v-model="queryValue"></query-dialog>
     <add-route-dialog v-model="queryValue.problem" :visible.sync="visible1" @onAdd="showGraph"></add-route-dialog>
     <add-vehicle-dialog v-model="queryValue.problem" :visible.sync="visible"></add-vehicle-dialog>
-    <add-edge-dialog v-model="queryValue.problem" :visible.sync="visible2" :node="add_node" @add="showGraph"/>
-    <detail-edge-dialog v-model="queryValue.problem" :visible.sync="visible3" :node="add_node" :edge="temp_edge" @save="onSaveEdge"/>
+    <add-edge-dialog
+      v-model="queryValue.problem"
+      :visible.sync="visible2"
+      :node="add_node"
+      @add="showGraph"
+    />
+    <detail-edge-dialog
+      v-model="queryValue.problem"
+      :visible.sync="visible3"
+      :node="add_node"
+      :edge="temp_edge"
+      @save="onSaveEdge"
+    />
     <el-dialog title="加载中" :visible.sync="loading" width="10%" center>
       <div>
         <img
@@ -197,6 +216,9 @@ import RouteListSide from "../side/side-list-route";
 import VehicleListSide from "../side/side-list-vehicle";
 import AddEdgeDialog from "../dialog/add-edge-dialog";
 import DetailEdgeDialog from "../dialog/detail-edge-dialog";
+
+import p2eu from "../../../util/problem-to-excel-utils";
+
 Vue.use(pluginExport);
 Vue.use(pluginImport);
 export default {
@@ -209,7 +231,7 @@ export default {
     RouteListSide,
     VehicleListSide,
     AddEdgeDialog,
-    DetailEdgeDialog
+    DetailEdgeDialog,
   },
   data() {
     return {
@@ -238,6 +260,7 @@ export default {
       add_node: {},
       temp_edge: {},
       show: false,
+      fileName: undefined,
     };
   },
   mounted() {
@@ -286,9 +309,9 @@ export default {
       this.visible2 = true;
     },
     onShowDetail(val) {
-      console.log('onShowDetail val=' + JSON.stringify(val));
-      console.log('onShowDetail edge=' + JSON.stringify(val.edge));
-      console.log('onShowDetail node=' + JSON.stringify(val.node));
+      console.log("onShowDetail val=" + JSON.stringify(val));
+      console.log("onShowDetail edge=" + JSON.stringify(val.edge));
+      console.log("onShowDetail node=" + JSON.stringify(val.node));
       this.temp_edge = val.edge;
       this.add_node = val.node;
       this.visible3 = true;
@@ -296,14 +319,17 @@ export default {
     onSaveEdge(oldEdge, newEdge) {
       for (let i = this.queryValue.problem.edges.length - 1; i >= 0; i--) {
         let edge = this.queryValue.problem.edges[i];
-        if ((edge.u == oldEdge.u && edge.v == oldEdge.v) || (edge.u == oldEdge.v && edge.v == oldEdge.u)) {
+        if (
+          (edge.u == oldEdge.u && edge.v == oldEdge.v) ||
+          (edge.u == oldEdge.v && edge.v == oldEdge.u)
+        ) {
           this.queryValue.problem.edges.splice(i, 1);
         }
       }
       this.queryValue.problem.edges.push({
         u: newEdge.u,
         v: newEdge.v,
-        w: newEdge.w
+        w: newEdge.w,
       });
       this.showGraph();
     },
@@ -315,10 +341,13 @@ export default {
       let svgChildren = d3.selectAll("svg#graph_route > *");
       svgChildren.remove();
       this.show = false;
+      this.fileName = undefined;
     },
 
     // [TODO] 格式更新
     handleUpload(file) {
+      console.log("file=" + file);
+      this.fileName = file.name;
       this.loading = true;
       this.show = true;
       this.$import.xlsx(file).then(({ header, results }) => {
@@ -509,27 +538,6 @@ export default {
 
       this.loading = false;
     },
-
-    problemToSheet(data, sheetFormat) {
-      let aoa = [];
-      aoa.push(
-        sheetFormat.map((it) => {
-          return it.label;
-        })
-      );
-      if (data) {
-        for (let node of data) {
-          let row = [];
-          for (let col of sheetFormat) {
-            row.push(node[col.field]);
-          }
-          aoa.push(row);
-        }
-      }
-      let worksheet = xlsx.utils.aoa_to_sheet(aoa);
-      return worksheet;
-    },
-
     inquery() {
       if (this.queryValue.problem == null) {
         this.$confirm("还未选择文件打开哦", "温馨提示", {
@@ -614,48 +622,11 @@ export default {
       console.log(val);
     },
     handleDownload() {
-      // var columns = [];
-      // for (var i in this.stdcolumns) {
-      //   columns.push({
-      //     label: this.stdcolumns[i].label,
-      //     prop: this.stdcolumns[i].prop
-      //   });
-      // }
-      // columns.push({ label: "0", prop: "0" });
-      // columns.push({ label: "1", prop: "1" });
-      // columns.push({ label: "...", prop: "..." });
-      // console.log("columns:", columns);
-      // this.$export.excel({
-      //   title: "路线查询文件",
-      //   columns
-      // });
-
-      var table = [];
-      let row = this.stdcolumns.map((item) => {
-        return item.label;
-      });
-      row.push("0");
-      row.push("1");
-      row.push("...");
-      table.push(row);
-
-      // 创建book
-      var wb = xlsx.utils.book_new();
-      // json转sheet
-      var ws = xlsx.utils.aoa_to_sheet(table);
-      // sheet写入book
-      xlsx.utils.book_append_sheet(wb, ws, "query");
-      // 输出
-      ipcRenderer.send("open-save-dialog", "路线查询文件");
-      ipcRenderer.once("selectedItem", function (e, path) {
-        if (path != null) {
-          xlsx.writeFile(wb, path);
-        }
-      });
-    },
-    onBeforeChange() {
-      let svgChildren = d3.selectAll("svg#graph_route > *");
-      svgChildren.remove();
+      p2eu.routeToExcel(
+        this,
+        this.queryValue.problem,
+        this.fileName == undefined ? "路线查询文件" : this.fileName
+      );
     },
     showGraph() {
       let svgChildren = d3.selectAll("svg#graph_route > *");
@@ -677,11 +648,6 @@ export default {
       var edges = [];
 
       problem.edges.forEach(function (edge) {
-        // edges.push({
-        //   source: edge.u,
-        //   target: edge.v,
-        //   value: edge.w,
-        // });
         edges.push({
           source: indexs.get(edge.u),
           target: indexs.get(edge.v),
@@ -692,8 +658,6 @@ export default {
       console.log("nodes=" + JSON.stringify(nodes));
       console.log("edges=" + JSON.stringify(edges));
 
-      // let width = this.$refs["container_route"].clientWidth * 0.5;
-      // let height = this.$refs["container_route"].clientHeight;
       let width = document.getElementById("container_route").clientWidth * 0.6;
       let height = document.getElementById("container_route").clientHeight;
       var marge = { top: 10, bottom: 10, left: 10, right: 10 };
@@ -752,33 +716,6 @@ export default {
           return "#ccc";
         })
         .attr("stroke-width", 1);
-      // .attr("marker-end", function (d, i) {
-      //   var refX = 30;
-      //   nodes.forEach(function (node) {
-      //     if (node.name === d.target.toString()) {
-      //       refX = node.group * 15;
-      //     }
-      //   });
-      //   var arrowMarker = svg
-      //     .append("marker")
-      //     .attr("id", "arrow" + i)
-      //     .attr("markerUnits", "userSpaceOnUse")
-      //     .attr("markerWidth", "16")
-      //     .attr("markerHeight", "15")
-      //     .attr("viewBox", "0 0 12 12")
-      //     .attr("refX", refX)
-      //     .attr("refY", 6)
-      //     .attr("orient", "auto")
-      //     .append("svg:path")
-      //     .attr("d", "M2,2 L10,6 L2,10 L6,6 L2,2")
-      //     .attr("fill", function () {
-      //       return "#000000";
-      //     });
-      //   if (d.vid !== undefined) {
-      //     return "url(#arrow" + i + ")";
-      //   }
-      //   return "url(#end)";
-      // });
 
       // 边上文字
       var linksText = g

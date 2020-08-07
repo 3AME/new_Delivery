@@ -3,9 +3,6 @@
     <el-header height="auto" style="padding: 20px">
       <div>
         <strong style="width: 140px; color: #5673ff; padding: 10px; font-size: 24px">地图查询</strong>
-        <!-- <el-button class="btn-action" type="text" icon="el-icon-menu" style="color: #5673ff;">
-          <strong>总计（{{ querys.length }}）</strong>
-        </el-button>-->
       </div>
       <el-button-group class="card" style="margin-top: 20px">
         <el-button
@@ -16,6 +13,14 @@
           style="color: #409eff;"
           :disabled="queryValue.problem.nodes.length == 0"
         >添加车辆</el-button>
+        <el-button
+          class="btn-action"
+          type="text"
+          icon="el-icon-delete"
+          @click="saveProblem"
+          style="color: #409eff;"
+          :disabled="queryValue.problem.nodes.length == 0"
+        >保存</el-button>
         <el-button
           class="btn-action"
           @click="drawerValue.drawerShow = true"
@@ -109,7 +114,9 @@
             </el-row>
             <el-row style="padding: 10px">
               <el-col :span="8">节点名：</el-col>
-              <el-col :span="16">{{ path.name }}</el-col>
+              <el-col :span="16">
+                <el-input size="mini" v-model="path.name" autidocomplete="off" clearable></el-input>
+              </el-col>
             </el-row>
             <el-row style="padding: 10px">
               <el-col :span="8">需求量</el-col>
@@ -243,144 +250,7 @@
           </el-row>
         </el-footer>-->
       </el-container>
-      <el-aside width="20%" height="100%" style="margin: 10px;">
-        <div class="card" style="margin: 10px">
-          <div style="text-align: center; padding: 20px">
-            <img width="40%" src="../../../assets/images/small/车辆.png" />
-          </div>
-          <div style="padding: 10px; border-bottom: 1px solid #EBEEF5;">
-            <el-row>
-              <el-col :span="16">
-                <span style="font-size: 24px;">车辆列表</span>
-              </el-col>
-
-              <el-col
-                :span="8"
-                style="left: 0; right: 0; top: 0; bottom: 0; margin: auto; position: absolute; top: 50%; transform: translate(100%, -25%);"
-              >
-                <el-popover
-                  placement="bottom"
-                  width="240"
-                  trigger="hover"
-                  v-if="queryValue.problem.vehicles.length > 0"
-                >
-                  <p style="padding: 10px">确定清空车辆列表？</p>
-                  <div style="text-align: right; margin: 0; padding: 10px">
-                    <el-button type="primary" size="mini" @click="clearVehicle">确定</el-button>
-                  </div>
-                  <i
-                    slot="reference"
-                    class="el-icon-delete"
-                    style="float: right; font-size: 12px; color: red;"
-                  >清空</i>
-                </el-popover>
-              </el-col>
-            </el-row>
-          </div>
-          <div v-if="queryValue.problem.vehicles.length == 0" class="box-card">
-            <div style="font-size: 16px; color: #999; text-align: center; padding: 100px 0;">
-              <img width="80%" src="../../../assets/images/small/暂无数据.png" />
-              <p>什么都没有</p>
-            </div>
-          </div>
-          <el-popover
-            v-for="(vehicle, index) in queryValue.problem.vehicles"
-            :key="index"
-            title="修改车辆信息"
-            :name="vehicle.id"
-            trigger="hover"
-            placement="right"
-          >
-            <el-row style="padding: 10px">
-              <el-col :span="8">车辆类型：</el-col>
-              <el-col :span="16">
-                <el-input
-                  width="50%"
-                  size="mini"
-                  v-model="vehicle.id"
-                  autidocomplete="off"
-                  clearable
-                ></el-input>
-              </el-col>
-            </el-row>
-            <el-row style="padding: 10px">
-              <el-col :span="8">运输中心：</el-col>
-              <el-col :span="16">
-                <el-select
-                  v-model="vehicle.depot"
-                  filterable
-                  allow-create
-                  default-first-option
-                  placeholder="运输中心"
-                  size="mini"
-                >
-                  <el-option
-                    v-for="item in queryValue.problem.nodes.filter(node => {return node.type == 'depot'})"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id"
-                  ></el-option>
-                </el-select>
-              </el-col>
-            </el-row>
-            <el-row style="padding: 10px">
-              <el-col :span="8">车辆载重：</el-col>
-              <el-col :span="16">
-                <el-input-number v-model="vehicle.load" :min="1" :max="10" label="车辆载重" size="mini"></el-input-number>
-              </el-col>
-            </el-row>
-            <el-row style="padding: 10px">
-              <el-col :span="8">车辆里程：</el-col>
-              <el-col :span="16">
-                <el-input-number
-                  v-model="vehicle.mileage"
-                  :step="5"
-                  :min="10"
-                  :max="120"
-                  label="车辆里程"
-                  size="mini"
-                ></el-input-number>
-              </el-col>
-            </el-row>
-            <el-row style="padding: 10px">
-              <el-col :span="8">车辆数量：</el-col>
-              <el-col :span="16">
-                <el-input-number
-                  v-model="vehicle.count"
-                  :min="1"
-                  :max="10"
-                  label="车辆里程"
-                  size="mini"
-                ></el-input-number>
-              </el-col>
-            </el-row>
-            <div style="text-align: center; padding: 10px">
-              <i
-                @click="removeVehicle(vehicle)"
-                class="i-tag el-icon-delete"
-                style="font-size: 18px; color: red;"
-              ></i>
-            </div>
-            <div slot="reference" class="el-card__header">
-              <el-row type="flex" justify="space-around">
-                <el-col :span="4">
-                  <i class="el-icon-truck" style="font-size: 20px; float: left; color: #409eff"></i>
-                </el-col>
-                <el-col :span="16">
-                  <span style="font-size: 12px;padding: 0 8px">车辆类型：{{ vehicle.id }}</span>
-                </el-col>
-                <el-col :span="4">
-                  <i
-                    class="el-icon-delete"
-                    style="float: right; color: red;"
-                    @click="removeVehicle(vehicle)"
-                  ></i>
-                </el-col>
-              </el-row>
-            </div>
-          </el-popover>
-        </div>
-      </el-aside>
+      <vehicle-list-side v-model="queryValue.problem" />
     </el-container>
     <drawer v-model="drawerValue" />
     <query-dialog v-model="queryValue"></query-dialog>
@@ -398,6 +268,11 @@ import BmMarker from "vue-baidu-map/components/overlays/Marker";
 import drawer from "../drawer/";
 import QueryDialog from "../dialog/query-dialog";
 import AddVehicleDialog from "../dialog/add-vehicle-dialog";
+// import RouteListSide from "../side/side-list-route";
+import VehicleListSide from "../side/side-list-vehicle";
+
+import p2eu from "../../../util/problem-to-excel-utils";
+
 export default {
   inject: ["reload"], //注入依赖
   name: "ele-form-bmap",
@@ -411,6 +286,8 @@ export default {
     drawer,
     QueryDialog,
     AddVehicleDialog,
+    // RouteListSide,
+    VehicleListSide,
   },
   data() {
     return {
@@ -429,6 +306,7 @@ export default {
         problem: {
           nodes: [],
           vehicles: [],
+          edges: [],
         },
         time: "",
         isHistory: false,
@@ -539,6 +417,9 @@ export default {
       // this.reload();
       window.location.reload();
     },
+    saveProblem() {
+      p2eu.routeToExcel(this, this.queryValue.problem, "地图查询");
+    },
     query() {
       if (this.queryValue.problem.nodes.length < 3) {
         this.$notify({
@@ -615,7 +496,7 @@ export default {
         routeMode: true,
         names: names,
         nodes: this.queryValue.problem.nodes,
-        edges: [],
+        edges: this.queryValue.problem.edges,
         vehicles: this.queryValue.problem.vehicles,
         distancePrior: this.drawerValue.distancePrior,
         timePrior: this.drawerValue.timePrior,
@@ -624,15 +505,15 @@ export default {
         maxiter: this.drawerValue.maxIter,
       };
       console.log("drivingPath=" + JSON.stringify(this.drivingPath));
-      this.drivingPath.forEach(function (path, i) {
-        var start = names.indexOf(path.start.name);
-        var end = names.indexOf(path.end.name);
-        problem.edges.push({
-          u: start,
-          v: end,
-          w: path.len / 1000,
-        });
-      });
+      // this.drivingPath.forEach(function (path, i) {
+      //   var start = names.indexOf(path.start.name);
+      //   var end = names.indexOf(path.end.name);
+      //   problem.edges.push({
+      //     u: start,
+      //     v: end,
+      //     w: path.len / 1000,
+      //   });
+      // });
 
       // for (var i = 0; i < this.polylinePath.length; i++) {
       //   problem.nodes.push({
@@ -706,6 +587,8 @@ export default {
             console.log(rs.surroundingPois); // 附近的POI点(array)
             console.log(rs.business); // 商圈字段，代表此点所属的商圈(string)
 
+            let id = me.generateId();
+
             let name = "地点(" + point.lng + ", " + point.lat + ")";
             me.activeName = "1";
             me.queryValue.problem.nodes.forEach(function (item) {
@@ -722,20 +605,25 @@ export default {
                   lat: item.lat,
                   city: item.city,
                 },
+                u: id,
+                v: item.id,
+                w: 0,
               };
               console.log("pppppppppppp=" + JSON.stringify(p));
               // me.drivingPath.push(p)
               me.tempDrivingPath.push(p);
             });
             if (me.tempDrivingPath.length > 0) {
-              me.drivingPath.push(me.tempDrivingPath[0]);
+              let edge = me.tempDrivingPath[0];
+              me.drivingPath.push(edge);
+              me.queryValue.problem.edges.push(edge);
             }
             me.activeNode = me.drivingPath.length;
             // console.log('size=' + me.drivingPath.length)
             // console.log('me.drivingPath=' + JSON.stringify(me.drivingPath))
             // console.log('lng=' + point.lng + ' lat=' + point.lat)
-            var path = {
-              id: me.generateId(),
+            let path = {
+              id: id,
               name: name,
               lng: point.lng,
               lat: point.lat,
@@ -802,6 +690,7 @@ export default {
         name,
         function (point) {
           if (point) {
+            let id = me.generateId();
             me.activeName = "1";
             me.queryValue.problem.nodes.forEach(function (item) {
               // me.drivingPath.push({
@@ -819,13 +708,18 @@ export default {
                   lng: item.lng,
                   lat: item.lat,
                 },
+                u: id,
+                v: item.id,
+                w: 0,
               };
               console.log("pppppppppppp=" + JSON.stringify(p));
               // me.drivingPath.push(p)
               me.tempDrivingPath.push(p);
             });
             if (me.tempDrivingPath.length > 0) {
-              me.drivingPath.push(me.tempDrivingPath[0]);
+              let edge = me.tempDrivingPath[0];
+              me.drivingPath.push(edge);
+              me.queryValue.problem.edges.push(edge);
             }
             me.activeNode = me.drivingPath.length;
             // console.log('size=' + me.drivingPath.length)
@@ -851,11 +745,18 @@ export default {
     },
     searchComplete(r) {
       console.log("searchComplete r=" + JSON.stringify(r));
-      this.drivingPath[this.drivingPath.length - 1].len = r.taxiFare.distance;
-      // this.tempDrivingPath[0].len = r.taxiFare.distance
+      let distance = r.taxiFare.distance / 1000;
+      this.drivingPath[this.drivingPath.length - 1].len = distance;
+      this.queryValue.problem.edges[
+        this.queryValue.problem.edges.length - 1
+      ].w = distance;
+
       this.tempDrivingPath.splice(0, 1);
       if (this.tempDrivingPath.length > 0) {
-        this.drivingPath.push(this.tempDrivingPath[0]);
+        // this.drivingPath.push(this.tempDrivingPath[0]);
+        let edge = this.tempDrivingPath[0];
+        this.drivingPath.push(edge);
+        this.queryValue.problem.edges.push(edge);
       }
     },
     // 移除Tag

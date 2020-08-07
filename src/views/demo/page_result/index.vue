@@ -688,13 +688,6 @@ export default {
       xlsx.utils.book_append_sheet(wb, ws, "query");
 
       return wb;
-      // // 输出
-      // ipcRenderer.send("open-save-dialog", row.title);
-      // ipcRenderer.once("selectedItem", function(e, path) {
-      //   if (path != null) {
-      //     xlsx.writeFile(wb, path);
-      //   }
-      // });
     },
     saveResult(isExcel) {
       let fileName;
@@ -1461,11 +1454,11 @@ export default {
         .links(edges)
         .distance(function (d) {
           // 每一边的长度
-          // return Math.sqrt(d.value) * 40;
-          if (d.value > 9) {
-            return (Math.sqrt(d.value) + 6) * 40;
-          }
-          return d.value * 40;
+          // if (d.value > 9) {
+          //   return (Math.sqrt(d.value) + 6) * 40;
+          // }
+          // return d.value * 40;
+          return (Math.sqrt(d.value) + 6) * 40;
         });
 
       // 设置图形的中心位置
