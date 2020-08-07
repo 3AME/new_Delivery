@@ -210,7 +210,7 @@ export default {
       forceSimulation: undefined,
       myChart: undefined,
       result: undefined,
-      problem: undefined,
+      problem: {},
       problemName: undefined,
       hideRoute: false,
       routes: [],
@@ -221,7 +221,6 @@ export default {
     };
   },
   mounted() {
-    console.log("mounted");
     this.hideRoute = false;
 
     let me = this;
@@ -249,6 +248,7 @@ export default {
     let costSvg = d3.selectAll("svg#cost_svg > *");
     // console.log("d3.selectAll()=" + svgChildren.size());
     let queryValue = this.$route.query.queryValue;
+    console.log(queryValue);
     if (
       svgChildren.size() > 0 &&
       this.problemName === queryValue.name
@@ -280,6 +280,7 @@ export default {
     goBack() {
       this.$router.go(-1);
     },
+
     solve(
       queryValue, // VRP问题描述
       npop = 2,
@@ -537,6 +538,7 @@ export default {
         }
       });
     },
+
     toggleRoute() {
       let visibility = this.hideRoute ? "hidden" : "visible";
       if (this.problem.routeMode) {
@@ -554,6 +556,7 @@ export default {
         });
       }
     },
+
     toggleVisible(route, i) {
       route.checked = !route.checked;
       this.onCheckedChange(route, i);
@@ -563,6 +566,7 @@ export default {
       // console.log("size=" + size + " length=" + this.routes.length);
       this.checked = size == this.routes.length;
     },
+
     onCheckedChange(route, i) {
       let visibility = route.checked ? "visible" : "hidden";
       d3.selectAll(".link-edge-route-" + i).attr("visibility", visibility);
@@ -576,12 +580,14 @@ export default {
         });
       }
     },
+
     onCheckboxChange(checked) {
       this.routes.forEach((route, i) => {
         route.checked = checked;
         this.onCheckedChange(route, i);
       });
     },
+
     saveProblem() {
       var problem = this.problem;
       var table = [];
@@ -689,6 +695,7 @@ export default {
 
       return wb;
     },
+
     saveResult(isExcel) {
       let fileName;
       let sourse = null;
@@ -762,6 +769,7 @@ export default {
         }
       });
     },
+
     // 散点图
     showScatterGraph() {
       var problem = this.problem;
@@ -1219,6 +1227,7 @@ export default {
           });
       }
     },
+
     // 力导向图
     showGraph() {
       var problem = this.problem;
@@ -1729,6 +1738,7 @@ export default {
           });
       }
     },
+    
     showCurveGraph() {
       // console.log("msgs=" + JSON.stringify(this.msgs));
       let width = this.$refs["test_svg"].clientWidth;

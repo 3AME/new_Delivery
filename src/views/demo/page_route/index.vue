@@ -84,7 +84,6 @@
         <div class="draguploader card" v-if="!show">
           <el-upload
             :before-upload="handleUpload"
-            :on-change="handleUploadEnd"
             drag
             action="https://jsonplaceholder.typicode.com/posts/"
             style="height: 100%;"
@@ -180,22 +179,19 @@
     <add-edge-dialog
       v-model="queryValue.problem"
       :visible.sync="visible2"
-      :node="add_node"
+      :node="temp_node"
       @add="showGraph"
     />
     <detail-edge-dialog
       v-model="queryValue.problem"
       :visible.sync="visible3"
-      :node="add_node"
+      :node="temp_node"
       :edge="temp_edge"
       @save="onSaveEdge"
     />
-    <el-dialog title="加载中" :visible.sync="loading" width="10%" center>
-      <div>
-        <img
-          :style="'width: ' + (asideCollapse ? '42px' : '72px' )+ '; height: ' + (asideCollapse ? '42px' : '72px' )"
-          src="../../../assets/images/small/1_bak.png"
-        />
+    <el-dialog title="加载中" :show-close="false" :visible.sync="loading" width="20%" center>
+      <div class="cssload-container">
+        <div class="cssload-item cssload-moon"></div>
       </div>
     </el-dialog>
   </el-container>
@@ -218,9 +214,11 @@ import AddEdgeDialog from "../dialog/add-edge-dialog";
 import DetailEdgeDialog from "../dialog/detail-edge-dialog";
 
 import p2eu from "../../../util/problem-to-excel-utils";
+import sheetFormat from "../../../util/sheet-format";
 
 Vue.use(pluginExport);
 Vue.use(pluginImport);
+
 export default {
   inject: ["reload"], //注入依赖
   components: {
@@ -233,6 +231,7 @@ export default {
     AddEdgeDialog,
     DetailEdgeDialog,
   },
+
   data() {
     return {
       loading: false,
@@ -257,65 +256,40 @@ export default {
       visible1: false,
       visible2: false,
       visible3: false,
-      add_node: {},
+      temp_node: {},
       temp_edge: {},
       show: false,
       fileName: undefined,
+      asideCollapse: true,
     };
   },
+
   mounted() {
     console.log("mounted");
-    this.stdcolumns = [
-      { label: "type", prop: "type" },
-      { label: "name_a", prop: "name_a" },
-      { label: "demand", prop: "demand" },
-      { label: "serviceTime", prop: "serviceTime" },
-      { label: "beginTime", prop: "beginTime" },
-      { label: "endTime", prop: "endTime" },
-      { label: "Vehicle_type", prop: "Vehicle_type" },
-      { label: "Vehicle_load", prop: "Vehicle_load" },
-      { label: "Vehicle_number", prop: "Vehicle_number" },
-      // { label: "Use_cost", prop: "Use_cost" },
-      // { label: "Driving_cost", prop: "Driving_cost" },
-      // { label: "Waiting_cost", prop: "Waiting_cost" },
-      { label: "Vehicle_mileage", prop: "Vehicle_mileage" },
-      { label: "Center_name", prop: "Center_name" },
-    ];
-    this.coorColumns = [
-      { label: "type", prop: "type" },
-      { label: "name", prop: "name" },
-      { label: "X", prop: "X" },
-      { label: "Y", prop: "Y" },
-      { label: "demand", prop: "demand" },
-      { label: "serviceTime", prop: "serviceTime" },
-      { label: "beginTime", prop: "beginTime" },
-      { label: "endTime", prop: "endTime" },
-      { label: "Vehicle_type", prop: "Vehicle_type" },
-      { label: "Vehicle_load", prop: "Vehicle_load" },
-      { label: "Vehicle_number", prop: "Vehicle_number" },
-      { label: "Vehicle_mileage", prop: "Vehicle_mileage" },
-      { label: "Center_name", prop: "Center_name" },
-    ];
   },
+
   activated() {
     let file = this.$route.params.uploadFile;
     if (file) {
       this.handleUpload(file);
     }
   },
+
   methods: {
     onAddEdge(node) {
-      this.add_node = node;
+      this.temp_node = node;
       this.visible2 = true;
     },
+
     onShowDetail(val) {
       console.log("onShowDetail val=" + JSON.stringify(val));
       console.log("onShowDetail edge=" + JSON.stringify(val.edge));
       console.log("onShowDetail node=" + JSON.stringify(val.node));
       this.temp_edge = val.edge;
-      this.add_node = val.node;
+      this.temp_node = val.node;
       this.visible3 = true;
     },
+
     onSaveEdge(oldEdge, newEdge) {
       for (let i = this.queryValue.problem.edges.length - 1; i >= 0; i--) {
         let edge = this.queryValue.problem.edges[i];
@@ -333,9 +307,11 @@ export default {
       });
       this.showGraph();
     },
+
     refresh() {
       this.reload();
     },
+
     clear() {
       this.queryValue.problem = {};
       let svgChildren = d3.selectAll("svg#graph_route > *");
@@ -344,202 +320,139 @@ export default {
       this.fileName = undefined;
     },
 
-    // [TODO] 格式更新
     handleUpload(file) {
-      console.log("file=" + file);
-      this.fileName = file.name;
-      this.loading = true;
-      this.show = true;
-      this.$import.xlsx(file).then(({ header, results }) => {
-        // 判断是否是线路格式的文件
-        let isRouteFile = true;
-        let lostLabel = null;
-        for (var i in this.stdcolumns) {
-          if (!header.includes(this.stdcolumns[i].label)) {
-            isRouteFile = false;
-            lostLabel = this.stdcolumns[i].label;
-            break;
+      let workbook = xlsx.read(file.path, { type: "file" });
+      let dsNodes = xlsx.utils.sheet_to_json(workbook.Sheets["结点信息"]);
+      let dsVehicles = xlsx.utils.sheet_to_json(workbook.Sheets["车辆信息"]);
+      if (
+        !dsNodes ||
+        !dsVehicles ||
+        dsNodes.length == 0 ||
+        dsVehicles.length == 0
+      ) {
+        this.$confirm("查询文件必须包含点信息和车辆信息", "格式错误", {
+          confirmButtonText: "确定",
+          showCancelButton: false,
+          type: "error",
+        });
+        return false;
+      }
+      if (sheetFormat.IsRouteFile(dsNodes, dsVehicles)) {
+        this.loading = true;
+        this.show = true;
+        var me = this;
+        setTimeout(function () {
+          me.sheetsToProblem(dsNodes, dsVehicles);
+          me.showGraph();
+          setTimeout(function () {
+            me.loading = false;
+          }, 0);
+        }, 0);
+        return false;
+      } else if (sheetFormat.IsCoordinateFile(dsNodes, dsVehicles)) {
+        this.show = false;
+        var me = this;
+        this.$confirm(
+          "该文件是坐标查询文件，是否跳转到坐标查询页面？",
+          "格式错误",
+          {
+            confirmButtonText: "确定",
+            type: "error",
           }
-        }
-
-        // 判断是否是坐标格式的文件
-        let isCoorFile = !isRouteFile;
-        if (isCoorFile) {
-          for (let j in this.coorColumns) {
-            if (!header.includes(this.coorColumns[j].label)) {
-              isCoorFile = false;
-              break;
-            }
-          }
-        }
-
-        // 线路查询文件
-        if (isRouteFile) {
-          this.tableToPreblem(results);
-          this.showGraph();
-
-          // 坐标查询文件
-        } else if (isCoorFile) {
-          this.show = false;
-          var me = this;
-          this.$confirm(
-            "该文件是坐标查询文件，是否跳转到坐标查询页面？",
-            "格式错误",
-            {
-              confirmButtonText: "确定",
-              type: "error",
-            }
-          )
-            .then(() => {
-              this.$router.push({
-                name: "page_coordinate",
-                params: {
-                  uploadFile: file,
-                },
-              });
-            })
-            .catch(() => {
-              // pass
-            })
-            .finally(() => {
-              return false;
+        )
+          .then(() => {
+            this.$router.push({
+              name: "page_coordinate",
+              params: {
+                uploadFile: file,
+              },
             });
-
-          // 格式错误
-        } else {
-          var me = this;
-          this.$confirm(
-            "表头缺少字段" + lostLabel + ",请检查格式",
-            "格式错误",
-            {
-              confirmButtonText: "确定",
-              showCancelButton: false,
-              type: "error",
-            }
-          );
-          return false;
-        }
-      });
-
+          })
+          .catch(() => {
+            // pass
+          })
+          .finally(() => {
+            return false;
+          });
+      } else {
+        var me = this;
+        this.$confirm("查询文件格式不正确", "格式错误", {
+          confirmButtonText: "确定",
+          showCancelButton: false,
+          type: "error",
+        });
+        return false;
+      }
       return false;
     },
 
-    tableToPreblem(results) {
-      console.log(results);
-      let problem = [];
-      var costModeFlag = false;
-      results.map((v) => {
-        // let i = num_node
-        let obj = {};
-        obj.nodes = {
-          type: v["type"],
-          id: v["name_a"],
-          name: "" + v["name_a"],
-          demand: v["demand"],
-          service_time: v["serviceTime"],
-          tw_beg: v["beginTime"],
-          tw_end: v["endTime"],
-        };
-        // obj.edge = { u: v['begin'], v: v['end'], w: v['load_length'] }
-        obj.list = { list_num: v["name_a"] };
-        obj.vehicles = {
-          id: v["Vehicle_type"],
-          depot: v["Center_name"],
-          load: v["Vehicle_load"],
-          count: v["Vehicle_number"],
-          useCost: v["Use_cost"],
-          drivingCost: v["Driving_cost"],
-          waitingCost: v["Waiting_cost"],
-          mileage: v["Vehicle_mileage"],
-          // count: 5
-        };
-        if (v["Use_cost"] || v["Driving_cost"] || v["Waiting_cost"]) {
-          costModeFlag = true;
-        }
-        obj.distancePrior = 5;
-        obj.timePrior = 1;
-        obj.loadPrior = 4;
-        problem.push(obj);
-      });
-      console.log(problem);
-      // eslint-disable-next-line camelcase
-      let new_results = [];
-      for (var i = 0; i < results.length; i++) {
-        results.map((v) => {
-          let obj = {};
-          obj = { u: v["name_a"], v: i, w: v[i] };
-          if (obj.w == undefined || obj.w < 0 || obj.u == obj.v) {
-          } else {
-            new_results.push(obj);
-          }
-        });
-      }
-      console.log(new_results);
-      // eslint-disable-next-line camelcase
-      let new_list = problem.map((obj) => {
-        return obj.list;
-      });
-      console.log(new_list);
-      let new_nodes = problem.map((obj) => {
-        return obj.nodes;
-      });
-      console.log("nodes:");
-      console.log(new_nodes);
-      for (let i = new_nodes.length - 1; i >= 0; i--) {
-        if (new_nodes[i].type === undefined || new_nodes[i].id === undefined) {
-          new_nodes.splice(i, 2); // 删除excel数据中出现的undefined
-        }
-      }
-      console.log(new_nodes);
-
-      let new_vehicles = problem.map((obj) => {
-        if (obj.vehicles !== undefined) {
-          return obj.vehicles;
-        } else {
-          console.log("value is undefined");
-        }
-      });
-      // new_vehicles.splice(0);
-      console.log(new_vehicles);
-      for (let i = new_vehicles.length - 1; i >= 0; i--) {
-        if (
-          new_vehicles[i].load === undefined
-          // ||new_vehicles[i].count === undefined
-        ) {
-          new_vehicles.splice(i, 2); // 删除excel数据中出现的undefined
-        }
-      }
-      console.log(new_vehicles);
-      // eslint-disable-next-line camelcase
-      let new_test = {
-        distancePrior: 5, // 路程加权
-        timePrior: 1, // 用时加权
-        loadPrior: 4, // 满载率加权
-      };
-      console.log(new_test);
-      var new_problem = {
+    sheetsToProblem(dsNodes, dsVehicles) {
+      let problem = {
         routeMode: true,
-        costMode: costModeFlag,
-        nodes: new_nodes,
-        edges: new_results,
-        vehicles: new_vehicles,
+        costMode: false,
+        nodes: [],
+        edges: [],
+        vehicles: [],
         distancePrior: this.drawerValue.distancePrior,
         timePrior: this.drawerValue.timePrior,
         loadPrior: this.drawerValue.loadPrior,
         speed: this.drawerValue.speedValue,
         maxiter: this.drawerValue.maxIter,
       };
-      console.log(new_problem);
-      // this.vehicles = new_vehicles;
-      // this.polylinePath = new_nodes;
-      this.queryValue.problem = new_problem;
 
-      console.log(this.distancePrior);
+      let aNodes = [];
+      for (let i in dsNodes) {
+        let tmp = {};
+        for (let j in sheetFormat.RouteFile.nodes) {
+          let it = sheetFormat.RouteFile.nodes[j];
+          if (typeof dsNodes[i][it.label] != undefined) {
+            tmp[it.field] = dsNodes[i][it.label];
+          } else if (!it.required && it.default) {
+            tmp[it.field] = it.default;
+          }
+        }
+        aNodes.push(tmp);
+      }
+      problem["nodes"] = aNodes;
+
+      let aVehicles = [];
+      for (let i = 0; i < dsVehicles.length; i++) {
+        let tmp = {};
+        for (let j = 0; j < sheetFormat.RouteFile.vehicles.length; j++) {
+          let it = sheetFormat.RouteFile.vehicles[j];
+          if (typeof dsVehicles[i][it.label] != undefined) {
+            tmp[it.field] = dsVehicles[i][it.label];
+          } else if (!it.required && it.default) {
+            tmp[it.field] = it.default;
+          }
+        }
+        if (tmp["Use_cost"] || tmp["Driving_cost"] || tmp["Waiting_cost"]) {
+          problem["costMode"] = true;
+        }
+        aVehicles.push(tmp);
+      }
+      problem["vehicles"] = aVehicles;
+
+      // 导入边，假设邻接矩阵是对称矩阵
+      let aEdges = [];
+      for (let i = 0; i < dsNodes.length; i++) {
+        for (let j = 0; j < i; j++) {
+          if (dsNodes[i][j]) {
+            aEdges.push({ u: i, v: j, w: dsNodes[i][j] });
+          }
+        }
+      }
+      problem["edges"] = aEdges;
+
+      this.vehicles = problem["vehicles"];
+      this.polylinePath = problem["nodes"];
+
+      this.queryValue.problem = problem;
 
       this.loading = false;
     },
     inquery() {
-      if (this.queryValue.problem == null) {
+      if (JSON.stringify(this.queryValue.problem) === "{}") {
         this.$confirm("还未选择文件打开哦", "温馨提示", {
           confirmButtonText: "确定",
           showCancelButton: false,
@@ -591,6 +504,7 @@ export default {
         let depotsId = depots.map((depot) => {
           return depot.id;
         });
+        console.log(depotsId);
         for (let i = 0; i < this.queryValue.problem.vehicles.length; i++) {
           let vehicle = this.queryValue.problem.vehicles[i];
           console.log("vehicle=" + JSON.stringify(vehicle));
@@ -618,9 +532,11 @@ export default {
         this.speed_value = "";
       }
     },
+
     handleChange(val) {
       console.log(val);
     },
+
     handleDownload() {
       p2eu.routeToExcel(
         this,
@@ -628,6 +544,7 @@ export default {
         this.fileName == undefined ? "路线查询文件" : this.fileName
       );
     },
+
     showGraph() {
       let svgChildren = d3.selectAll("svg#graph_route > *");
       svgChildren.remove();
@@ -862,4 +779,5 @@ export default {
 }
 </style>
 <style src="../../../assets/btn.css" scoped></style>
+<style src="../../../assets/spinner.css" scoped></style>
 

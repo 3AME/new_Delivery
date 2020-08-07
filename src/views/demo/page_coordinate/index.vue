@@ -31,7 +31,7 @@
             type="text"
             icon="el-icon-search"
             style="color: #02c58d"
-            :disabled="queryValue.problem.nodes == undefined"
+            :disabled="!queryValue.problem"
           >查询</el-button>
 
           <el-button
@@ -40,7 +40,7 @@
             icon="el-icon-delete"
             @click="clear"
             style="color: #fc5454"
-            :disabled="queryValue.problem.nodes == undefined"
+            :disabled="!queryValue.problem"
           >清除数据</el-button>
           <el-button
             class="btn-action"
@@ -48,7 +48,7 @@
             type="text"
             icon="el-icon-tickets"
             style="color: #fcbe2d"
-          >{{queryValue.problem.nodes == undefined ? "格式模板" : "导出查询"}}</el-button>
+          >{{!queryValue.problem.nodes ? "格式模板" : "导出查询"}}</el-button>
           <el-button
             class="btn-action"
             @click="drawerValue.drawerShow = true"
@@ -62,7 +62,7 @@
             type="text"
             icon="el-icon-set-up"
             style="color: #607d8b"
-            :disabled="queryValue.problem.nodes == undefined"
+            :disabled="!queryValue.problem"
           >添加节点</el-button>
           <el-button
             class="btn-action"
@@ -70,7 +70,7 @@
             type="text"
             icon="el-icon-set-up"
             style="color: #607d8b"
-            :disabled="queryValue.problem.nodes == undefined"
+            :disabled="!queryValue.problem"
           >添加车辆</el-button>
         </el-button-group>
       </div>
@@ -179,12 +179,10 @@
     ></add-coordinate-dialog>
     <add-vehicle-dialog v-model="queryValue.problem" :visible.sync="visible"></add-vehicle-dialog>
 
-    <el-dialog title="加载中" :visible.sync="loading" width="10%" center>
-      <div>
-        <img
-          :style="'width: ' + (asideCollapse ? '42px' : '72px' )+ '; height: ' + (asideCollapse ? '42px' : '72px' )"
-          src="../../../assets/images/small/1_bak.png"
-        />
+    <el-dialog title="加载中" :show-close="false"
+    :visible.sync="loading" width="20%" center>
+      <div class="cssload-container">
+        <div class="cssload-item cssload-moon"></div>
       </div>
     </el-dialog>
   </el-container>
@@ -209,6 +207,7 @@ import VehicleListSide from "../side/side-list-vehicle";
 
 import sheetFormat from "../../../util/sheet-format";
 import p2eu from "../../../util/problem-to-excel-utils";
+import { readFileSync } from 'fs';
 
 Vue.use(pluginExport);
 Vue.use(pluginImport);
@@ -224,6 +223,7 @@ export default {
     CoordinateListSide,
     VehicleListSide,
   },
+
   data() {
     return {
       loading: false,
@@ -248,13 +248,6 @@ export default {
         isHistory: false,
         type: "coordinate",
       },
-      // table: {
-      //   columns: [],
-      //   data: [],
-      //   size: "mini",
-      //   stripe: true,
-      //   border: true,
-      // },
       stdcolumns: [],
       polylinePath: [],
       vehicles: [],
@@ -269,48 +262,21 @@ export default {
       visible1: false,
       show: false,
       fileName: undefined,
+      asideCollapse: true
     };
   },
+
   mounted() {
     // console.log("mounted");
-    this.stdcolumns = [
-      { label: "type", prop: "type" },
-      { label: "name", prop: "name" },
-      { label: "X", prop: "X" },
-      { label: "Y", prop: "Y" },
-      { label: "demand", prop: "demand" },
-      { label: "serviceTime", prop: "serviceTime" },
-      { label: "beginTime", prop: "beginTime" },
-      { label: "endTime", prop: "endTime" },
-      { label: "Vehicle_type", prop: "Vehicle_type" },
-      { label: "Vehicle_load", prop: "Vehicle_load" },
-      { label: "Vehicle_number", prop: "Vehicle_number" },
-      { label: "Vehicle_mileage", prop: "Vehicle_mileage" },
-      { label: "Center_name", prop: "Center_name" },
-    ];
-    this.routeColumns = [
-      { label: "type", prop: "type" },
-      { label: "name_a", prop: "name_a" },
-      { label: "demand", prop: "demand" },
-      { label: "serviceTime", prop: "serviceTime" },
-      { label: "beginTime", prop: "beginTime" },
-      { label: "endTime", prop: "endTime" },
-      { label: "Vehicle_type", prop: "Vehicle_type" },
-      { label: "Vehicle_load", prop: "Vehicle_load" },
-      { label: "Vehicle_number", prop: "Vehicle_number" },
-      // { label: "Use_cost", prop: "Use_cost" },
-      // { label: "Driving_cost", prop: "Driving_cost" },
-      // { label: "Waiting_cost", prop: "Waiting_cost" },
-      { label: "Vehicle_mileage", prop: "Vehicle_mileage" },
-      { label: "Center_name", prop: "Center_name" },
-    ];
   },
+
   activated() {
     let file = this.$route.params.uploadFile;
     if (file) {
       this.handleUpload(file);
     }
   },
+
   methods: {
     clear() {
       this.show = false;
@@ -322,86 +288,17 @@ export default {
 
     handleUploadEnd() {
       this.loading = false;
+      console.log('this.loading = false;',this.loading);
+
     },
 
-    // [TODO] 格式更新
     handleUpload(file) {
-      this.fileName = file.name;
-      this.loading = true;
-      this.show = true;
-      var me = this;
-      this.$import.xlsx(file).then(({ header, results }) => {
-        this.file.all = results.length;
-
-        // 判断是否是坐标格式的文件
-        let isCoorFile = true;
-        let lostLabel = null;
-        for (var i in this.stdcolumns) {
-          if (!header.includes(this.stdcolumns[i].label)) {
-            isCoorFile = false;
-            lostLabel = this.stdcolumns[i].label;
-            break;
-          }
-        }
-
-        // 判断是否是线路格式的文件
-        let isRouteFile = !isCoorFile;
-        if (isRouteFile) {
-          for (let j in this.routeColumns) {
-            if (!header.includes(this.routeColumns[j].label)) {
-              isRouteFile = false;
-              break;
-            }
-          }
-        }
-
-        // 坐标查询文件
-        if (isCoorFile) {
-          // this.file.uploaded=0
-          // const interval=setInterval(()=>{
-          //   if( this.file.uploaded >= this.file.all -1){
-          //     clearInterval(interval)
-          //     return
-          //   }
-          //   this.file.uploaded = this.file.uploaded + 1
-          // }, 200);
-          this.loading = true;
-          this.show = true;
-          this.tableToPreblem(results);
-          this.showGraph();
-
-          // 线路查询文件
-        } else if (isRouteFile) {
-          this.show = false;
-          var me = this;
+      let workbook = xlsx.read(file.path, {type: 'file'});
+      let dsNodes = xlsx.utils.sheet_to_json(workbook.Sheets['点信息']);
+      let dsVehicles = xlsx.utils.sheet_to_json(workbook.Sheets['车辆信息']);
+      if (!dsNodes || !dsVehicles) {
           this.$confirm(
-            "该文件是线路查询文件，是否跳转到线路查询页面？",
-            "格式错误",
-            {
-              confirmButtonText: "确定",
-              type: "error",
-            }
-          )
-            .then(() => {
-              this.$router.push({
-                name: "page_route",
-                params: {
-                  uploadFile: file,
-                },
-              });
-            })
-            .catch(() => {
-              // pass
-            })
-            .finally(() => {
-              return false;
-            });
-
-          // 格式错误
-        } else {
-          var me = this;
-          this.$confirm(
-            "表头缺少字段" + lostLabel + ",请检查格式",
+            "查询文件必须包含点信息和车辆信息",
             "格式错误",
             {
               confirmButtonText: "确定",
@@ -410,98 +307,113 @@ export default {
             }
           );
           return false;
-        }
-      });
+      }
+      if (sheetFormat.IsCoordinateFile(dsNodes, dsVehicles)) {
+        this.loading = true;
+        this.show = true;
+        var me=this
+        setTimeout(function(){
+          me.sheetsToProblem(dsNodes, dsVehicles);
+          me.showGraph();
+          setTimeout(function()  {
+            me.loading=false
+          }, 0);
+        }, 0);
+        return false;
+      } else if (sheetFormat.IsRouteFile(dsNodes, dsVehicles)) {
+        this.show = false;
+        var me = this;
+        this.$confirm(
+          "该文件是线路查询文件，是否跳转到线路查询页面？",
+          "格式错误",
+          {
+            confirmButtonText: "确定",
+            type: "error",
+          }
+        ).then(() => {
+          this.$router.push({
+            name: "page_route",
+            params: {
+              uploadFile: file
+            }});
+        }).catch(() => {
+          // pass
+        }).finally(() => {
+          return false;
+        });
+      } else {
+        var me = this;
+        this.$confirm(
+          "查询文件格式不正确",
+          "格式错误",
+          {
+            confirmButtonText: "确定",
+            showCancelButton: false,
+            type: "error",
+          }
+        );
+        return false;
+      }
       return false;
     },
 
-    tableToPreblem(outdata) {
-      let problem = [];
-      var costModeFlag = false;
-      outdata.map((v) => {
-        let obj = {};
-        obj.nodes = {
-          type: v["type"],
-          id: v["name"],
-          name: "" + v["name"],
-          demand: v["demand"],
-          service_time: v["serviceTime"],
-          tw_beg: v["beginTime"],
-          tw_end: v["endTime"],
-          x: v["X"],
-          y: v["Y"],
-        };
-        // obj.edges = { x: v['X'], y: v['Y'] }
-        obj.vehicles = {
-          id: v["Vehicle_type"],
-          depot: v["Center_name"],
-          load: v["Vehicle_load"],
-          count: v["Vehicle_number"],
-          mileage: v["Vehicle_mileage"],
-          useCost: v["Use_cost"],
-          drivingCost: v["Driving_cost"],
-          waitingCost: v["Waiting_cost"],
-        };
-        // console.log("vehicles:" + JSON.stringify(obj.vehicles));
-        if (v["Use_cost"] || v["Driving_cost"] || v["Waiting_cost"]) {
-          costModeFlag = true;
-        }
-        problem.push(obj);
-      });
-      // eslint-disable-next-line camelcase
-      let new_nodes = problem.map((obj) => {
-        return obj.nodes;
-      });
-      let newproblem_edges = "euc2d";
+    sheetsToProblem(dsNodes, dsVehicles) {
+      let problem = {
+        "routeMode": false,
+        "nodes": [],
+        "edges": "euc2d",
+        "vehicles": [],
+        "distancePrior": this.drawerValue.distancePrior,
+        "timePrior": this.drawerValue.timePrior,
+        "loadPrior": this.drawerValue.loadPrior,
+        "speed": this.drawerValue.speedValue,
+        "maxiter": this.drawerValue.maxIter
+      };
 
-      // eslint-disable-next-line camelcase
-      let new_vehicles = problem.map((obj) => {
-        if (obj.vehicles !== undefined) {
-          return obj.vehicles;
-        } else {
-          // console.log("value is undefined");
+      let aNodes = [];
+      for (let i in dsNodes) {
+        let tmp = {};
+        for (let j in sheetFormat.CoordinateFile.nodes) {
+          let it = sheetFormat.CoordinateFile.nodes[j];
+          if (typeof(dsNodes[i][it.label]) != undefined) {
+            tmp[it.field] = dsNodes[i][it.label];
+          }
+          else if (!it.required && it.default) {
+            tmp[it.field] = it.default;
+          }
         }
-      });
-      for (let i = new_vehicles.length - 1; i >= 0; i--) {
-        if (
-          new_vehicles[i].load === undefined ||
-          new_vehicles[i].id === undefined
-        ) {
-          new_vehicles.splice(i, 2); // 删除excel数据中出现的undefined
-        }
+        aNodes.push(tmp);
       }
-      // eslint-disable-next-line camelcase
-      let new_test = {
-        distancePrior: 5, // 路程加权
-        timePrior: 1, // 用时加权
-        loadPrior: 4, // 满载率加权
-      };
-      // eslint-disable-next-line camelcase
+      problem["nodes"] = aNodes;
 
-      newproblem_edges = {
-        routeMode: false,
-        costMode: costModeFlag,
-        nodes: new_nodes,
-        edges: newproblem_edges,
-        vehicles: new_vehicles,
-        distancePrior: this.drawerValue.distancePrior,
-        timePrior: this.drawerValue.timePrior,
-        loadPrior: this.drawerValue.loadPrior,
-        speed: this.drawerValue.speedValue,
-        maxiter: this.drawerValue.maxIter,
-      };
-      // console.log("new_vehicles:" + JSON.stringify(new_vehicles));
-      this.vehicles = new_vehicles;
-      this.polylinePath = new_nodes;
+      let aVehicles = [];
+      for (let i = 0; i < dsVehicles.length; i++) {
+        let tmp = {};
+        for (let j = 0; j < sheetFormat.CoordinateFile.vehicles.length; j++) {
+          let it = sheetFormat.CoordinateFile.vehicles[j];
+          if (typeof(dsVehicles[i][it.label]) != undefined) {
+            tmp[it.field] = dsVehicles[i][it.label];
+          }
+          else if (!it.required && it.default) {
+            tmp[it.field] = it.default;
+          }
+        }
+        if (tmp["Use_cost"] || tmp["Driving_cost"] || tmp["Waiting_cost"]) {
+          problem["costMode"] = true;
+        }
+        aVehicles.push(tmp);
+      }
+      problem["vehicles"] = aVehicles;
 
-      // console.log("problem:" + JSON.stringify(newproblem_edges));
-      this.queryValue.problem = newproblem_edges;
+      this.vehicles = problem["vehicles"];
+      this.polylinePath = problem["nodes"];
 
-      this.loading = false;
+      this.queryValue.problem = problem;
+
     },
 
     inquery() {
-      if (this.queryValue.problem == null) {
+      if (JSON.stringify(this.queryValue.problem) === '{}') {
         this.$confirm("还未选择文件打开哦", "温馨提示", {
           confirmButtonText: "确定",
           showCancelButton: false,
@@ -553,7 +465,7 @@ export default {
         });
         for (let i = 0; i < this.queryValue.problem.vehicles.length; i++) {
           let vehicle = this.queryValue.problem.vehicles[i];
-          // console.log("vehicle=" + JSON.stringify(vehicle));
+          console.log("vehicle=" + JSON.stringify(vehicle));
           if (depotsId.indexOf(vehicle.depot) == -1) {
             this.$notify({
               title: "警告",
@@ -737,3 +649,4 @@ el-container::-webkit-scrollbar {
 }
 </style>>
 <style src="../../../assets/btn.css" scoped></style>
+<style src="../../../assets/spinner.css" scoped></style>
