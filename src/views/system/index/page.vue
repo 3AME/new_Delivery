@@ -1,10 +1,10 @@
 <template>
-  <el-container class="content-container is-vertical" style="height: 100%; width: 100%;overflow:scroll;overflow-x: hidden !important;">
+  <el-container class="content-container is-vertical" style="height: 100%; width: 100%; overflow:auto; overflow-x: hidden !important;">
     <div style="height: 100%; width: 100%; text-align: center; display: table;">
         <div class="vertical-center">
           <img
             class="rounded-circle"
-            height="10%"
+            height="15%"
             style="padding: 10px"
             alt="200x200"
             src="../../../assets/images/small/app_name_with_logo.png"

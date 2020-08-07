@@ -12,15 +12,12 @@ import router from './router'
 import { menuHeader, menuAside } from '@/menu'
 import { frameInRoutes } from '@/router/routes'
 import BaiduMap from 'vue-baidu-map'
-import pluginImport from '@d2-projects/vue-table-import'
 // eslint-disable-next-line import/no-webpack-loader-syntax
 require('script-loader!file-saver')// 保存文件用
 // eslint-disable-next-line import/no-webpack-loader-syntax
 require('script-loader!@/excel/Blob')// 转二进制用
 // eslint-disable-next-line import/no-webpack-loader-syntax
 require('script-loader!xlsx/dist/xlsx.core.min')// xlsx核心
-
-Vue.use(pluginImport)
 
 Vue.use(BaiduMap, {
   /* Visit http://lbsyun.baidu.com/apiconsole/key for details about app key. */

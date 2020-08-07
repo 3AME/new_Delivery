@@ -86,7 +86,9 @@ export default {
       console.log("time=" + time);
       this.value.time = time;
       let name;
-      if (this.value.type === "coordinate") {
+      if (this.value.fileName) {
+        name = this.value.fileName + ' ';
+      } else if (this.value.type === "coordinate") {
         name = "坐标查询";
       } else if (this.value.type === "map") {
         name = "地图查询";

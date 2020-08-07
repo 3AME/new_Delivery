@@ -11,7 +11,7 @@
         class="card"
         style="padding: 0px; margin: 0px; background-color: #f6f7fb;border: 1px solid grey;"
       >
-        <router-view v-if="isRouterAlive" ></router-view>
+        <router-view v-if="isRouterAlive"></router-view>
       </el-main>
     </el-container>
   </div>
@@ -74,7 +74,7 @@ body {
 
 #app .content-container {
   background: #fff;
-  position: absolute;
+  // position: absolute;
   border-bottom-right-radius: 12px;
   // top: 0px;
   // right: 0px;
@@ -87,6 +87,15 @@ body {
   overflow: hidden;
   height: 100%;
   width: 100%;
+}
+
+#app .el-menu {
+  border-right: solid 0px #e6e6e6;
+  list-style: none;
+  position: relative;
+  margin: 0;
+  padding-left: 0;
+  background-color: transparent;
 }
 
 #app .btn-action {

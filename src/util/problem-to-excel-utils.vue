@@ -88,18 +88,18 @@ export default {
   //   xlsx.utils.book_append_sheet(
   //     workbook,
   //     xlsx.utils.aoa_to_sheet(aoa),
-  //     "结点信息"
+  //     "节点信息"
   //   );
 
   //   xlsx.utils.book_append_sheet(
   //     workbook,
-  //     this.templateToSheet(this.problem.vehicles, sheets.vehicles),
+  //     this._TemplateToSheet(this.problem.vehicles, sheets.vehicles),
   //     "车辆信息"
   //   );
 
-  //   this.writeFile(null, workbook, fileName);
+  //   this._WriteFile(null, workbook, fileName);
   // },
-  templateToSheet(data, sheetFormat) {
+  _TemplateToSheet(data, sheetFormat) {
     let aoa = [];
     aoa.push(
       // 表头
@@ -131,15 +131,15 @@ export default {
     let sheets = sheetFormat.CoordinateFile;
     xlsx.utils.book_append_sheet(
       workbook,
-      this.templateToSheet(problem.nodes, sheets.nodes),
-      "结点信息"
+      this._TemplateToSheet(problem.nodes, sheets.nodes),
+      "节点信息"
     );
     xlsx.utils.book_append_sheet(
       workbook,
-      this.templateToSheet(problem.vehicles, sheets.vehicles),
+      this._TemplateToSheet(problem.vehicles, sheets.vehicles),
       "车辆信息"
     );
-    this.writeFile(me, workbook, fileName);
+    this._WriteFile(me, workbook, fileName);
   },
   routeToExcel(me, problem, fileName = "路线查询文件") {
     let workbook = xlsx.utils.book_new();
@@ -206,18 +206,18 @@ export default {
     xlsx.utils.book_append_sheet(
       workbook,
       xlsx.utils.aoa_to_sheet(aoa),
-      "结点信息"
+      "节点信息"
     );
 
     xlsx.utils.book_append_sheet(
       workbook,
-      this.templateToSheet(problem.vehicles, sheets.vehicles),
+      this._TemplateToSheet(problem.vehicles, sheets.vehicles),
       "车辆信息"
     );
 
-    this.writeFile(me, workbook, fileName);
+    this._WriteFile(me, workbook, fileName);
   },
-  writeFile(me, workbook, fileName) {
+  _WriteFile(me, workbook, fileName) {
     // let me = this;
     ipcRenderer.send("open-save-dialog", fileName);
     ipcRenderer.once("selectedItem", function (e, path) {

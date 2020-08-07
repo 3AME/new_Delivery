@@ -1,23 +1,11 @@
 <template>
-  <div class="d2-layout-header-aside-group" :class="{grayMode: grayActive}">
-    <!-- 半透明遮罩 -->
-    <div class="d2-layout-header-aside-mask"></div>
-    <!-- 主体内容 -->
-    <div class="d2-layout-header-aside-content" flex="dir:left">
-      <!-- 下面 主体 -->
-      <div class="d2-theme-container" flex-box="1" flex>
-        <div style="height:50px;background-color:red;"></div>
-        <!-- 主体 侧边栏 -->
-        <div
-          flex-box="0"
-          ref="aside"
-          :class="{'d2-theme-container-aside': true, 'd2-theme-container-transition': asideTransition}"
-          :style="{
-            width: asideCollapse ? asideWidthCollapse : asideWidth,
-            opacity: this.searchActive ? 0.5 : 1
-          }"
-        >
-          <!-- <d2-menu-side /> -->
+  <el-container class="content-container">
+    <el-aside
+      :width="asideCollapse ? asideWidthCollapse : asideWidth"
+      style="background-color: #f6f7fb;"
+    >
+      <el-container style="overflow: hidden; height: 100%">
+        <el-header height="auto">
           <div class="user-info drag">
             <div class="avatar no-drag" style="margin: 20px;">
               <img
@@ -30,95 +18,49 @@
               :style="'padding: 10px 40px; width: 160px;'"
               src="../../assets/images/small/app_name.png"
             />
-            <!-- <h3 v-if="!asideCollapse" class="mt-0 font-600 vertical-center" style="padding: 10px">川流配送</h3> -->
           </div>
-          <el-menu :default-active="this.$route.fullPath" :collapse="asideCollapse" router>
-            <!-- @open="handleOpen"
-            @close="handleClose"-->
+        </el-header>
+        <el-main style="padding: 0; overflow: auto;">
+          <el-menu
+            style="overflow: hidden;"
+            :default-active="this.$route.fullPath"
+            :collapse="asideCollapse"
+            router
+          >
             <el-menu-item v-for="(item, index) in children" :key="index" :index="item.path">
-              <!-- <i :class="'fa fa-' + item.icon"></i> -->
               <i :class="item.icon"></i>
               <span slot="title">{{ item.title }}</span>
             </el-menu-item>
           </el-menu>
-        </div>
-        <!-- 主体 -->
-        <div style="width: 100%" flex-box="1" flex>
-          <div class="d2-theme-container-main" flex-box="1" flex>
-            <!-- 搜索 -->
-            <transition name="fade-scale">
-              <div v-if="searchActive" class="d2-theme-container-main-layer" flex>
-                <d2-panel-search ref="panelSearch" @close="searchPanelClose" />
-              </div>
-            </transition>
-            <!-- 内容 -->
-            <transition name="fade-scale">
-              <div v-if="!searchActive" class="d2-theme-container-main-layer" flex="dir:top">
-                <!-- tab -->
-                <div class="d2-theme-container-main-header" flex-box="0">
-                  <!-- <d2-tabs /> -->
-                  <top-bar></top-bar>
-                </div>
-                <!-- 页面 -->
-                <div class="d2-theme-container-main-body" flex-box="1">
-                  <transition :name="transitionActive ? 'fade-transverse' : ''">
-                    <!-- :include="keepAlive" -->
-                    <keep-alive>
-                      <router-view />
-                    </keep-alive>
-                  </transition>
-                </div>
-              </div>
-            </transition>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+        </el-main>
+      </el-container>
+    </el-aside>
+    <el-container>
+      <el-header>
+        <top-bar></top-bar>
+      </el-header>
+      <el-main style="padding: 0; overflow: hidden;">
+        <transition :name="'fade-transverse'">
+          <keep-alive>
+            <router-view />
+          </keep-alive>
+        </transition>
+      </el-main>
+    </el-container>
+  </el-container>
 </template>
 
 <script>
 import TopBar from "../../views/demo/topbar";
-// import d2MenuSide from "./components/menu-side";
-import d2MenuHeader from "./components/menu-header";
-// import d2Tabs from "./components/tabs";
-// import d2HeaderFullscreen from './components/header-fullscreen'
-// import d2HeaderLocales from './components/header-locales'
-
-// import d2HeaderSize from './components/header-size'
-import d2HeaderTheme from "./components/header-theme";
-// import d2HeaderUser from './components/header-user'
-// import d2HeaderLog from './components/header-log'
-// import d2HeaderColor from './components/header-color'
-import { mapState, mapGetters, mapActions } from "vuex";
-import mixinSearch from "./mixins/search";
 export default {
   name: "d2-layout-header-aside",
-  mixins: [mixinSearch],
   components: {
-    // d2MenuSide,
-    // d2MenuHeader,
     TopBar,
-    // d2Tabs,
-
-    // d2HeaderFullscreen,
-    // d2HeaderLocales,
-    // d2HeaderSearch,
-    // d2HeaderSize,
-    // d2HeaderTheme
-    // d2HeaderUser,
-    // d2HeaderLog,
-    // d2HeaderColor
   },
   watch: {
     $route(to, from) {
       console.log(to.path);
       console.log(from.path);
-      // if (to.path == '/page_map' || to.path == '/page_result') {
-      //   this.asideCollapse = true;
-      // } else {
-      //   this.asideCollapse = false;
-      // }
       if (to.path != "/index") {
         this.asideCollapse = true;
       } else {
@@ -154,37 +96,7 @@ export default {
       ],
     };
   },
-  computed: {
-    ...mapState("d2admin", {
-      keepAlive: (state) => state.page.keepAlive,
-      grayActive: (state) => state.gray.active,
-      transitionActive: (state) => state.transition.active,
-      // asideCollapse: (state) => state.menu.asideCollapse,
-      asideTransition: (state) => state.menu.asideTransition,
-    }),
-    ...mapGetters("d2admin", {
-      themeActiveSetting: "theme/activeSetting",
-    }),
-    /**
-     * @description 最外层容器的背景图片样式
-     */
-    styleLayoutMainGroup() {
-      return this.themeActiveSetting.backgroundImage
-        ? {
-            backgroundImage: `url('${this.$baseUrl}${this.themeActiveSetting.backgroundImage}')`,
-          }
-        : {};
-    },
-  },
-  methods: {
-    ...mapActions("d2admin/menu", ["asideCollapseToggle"]),
-    /**
-     * 接收点击切换侧边栏的按钮
-     */
-    handleToggleAside() {
-      this.asideCollapseToggle();
-    },
-  },
+  methods: {},
 };
 </script>
 
@@ -196,6 +108,23 @@ export default {
   justify-content: center;
   align-items: center;
 }
+
+// 过渡动画 横向渐变
+.fade-transverse-leave-active,
+.fade-transverse-enter-active {
+  transition: all 0.5s;
+}
+.fade-transverse-enter {
+  opacity: 0;
+  // transform: translateX(30px);
+  // transform: translateX(-30%);
+}
+.fade-transverse-leave-to {
+  opacity: 0;
+  // transform: translateX(-30px);
+  // transform: translateX(30%);
+}
+
 // 注册主题
-@import "~@/assets/style/theme/register.scss";
+// @import "~@/assets/style/theme/register.scss";
 </style>

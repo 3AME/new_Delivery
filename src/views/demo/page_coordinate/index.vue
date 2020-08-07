@@ -4,13 +4,13 @@
       <div>
         <strong style="width: 140px; color: #5673ff; padding: 10px; font-size: 24px">坐标查询</strong>
         <el-button
-          v-if="fileName != undefined"
+          v-if="queryValue.fileName != undefined"
           class="btn-action"
           type="text"
           icon="el-icon-document"
           style="color: #5673ff;"
         >
-          <strong>{{ fileName }}</strong>
+          <strong>{{ queryValue.fileName }}</strong>
         </el-button>
       </div>
       <div style="margin-top: 20px">
@@ -79,7 +79,7 @@
       <!-- <el-scrollbar> -->
       <coordinate-list-side v-if="show" v-model="queryValue.problem" @onChange="showGraph" />
       <!-- </el-scrollbar> -->
-      <el-main style="padding: 10px 20px;" height="100%">
+      <el-main style="padding: 10px 20px; overflow: hidden;" height="100%">
         <div class="draguploader card" v-if="!show">
           <el-upload
             :before-upload="handleUpload"
@@ -179,8 +179,7 @@
     ></add-coordinate-dialog>
     <add-vehicle-dialog v-model="queryValue.problem" :visible.sync="visible"></add-vehicle-dialog>
 
-    <el-dialog title="加载中" :show-close="false"
-    :visible.sync="loading" width="20%" center>
+    <el-dialog title="加载中" :show-close="false" :visible.sync="loading" width="20%" center>
       <div class="cssload-container">
         <div class="cssload-item cssload-moon"></div>
       </div>
@@ -191,26 +190,16 @@
 <script>
 import * as d3 from "d3";
 import * as xlsx from "xlsx";
-import { ipcRenderer } from "electron";
-import Vue from "vue";
-import pluginImport from "@d2-projects/vue-table-import";
-import pluginExport from "@d2-projects/vue-table-export";
+
 import drawer from "../drawer/";
 import QueryDialog from "../dialog/query-dialog";
 import AddVehicleDialog from "../dialog/add-vehicle-dialog";
 import AddCoordinateDialog from "../dialog/add-coordinate-dialog";
-// import { Loading } from 'element-ui';
-// import AddCoordinatePopover from "../popover/add-coordinate-popover";
-// import VehicleDetailPopover from "../popover/popover-detail-vehicle";
 import CoordinateListSide from "../side/side-list-coordinate";
 import VehicleListSide from "../side/side-list-vehicle";
 
 import sheetFormat from "../../../util/sheet-format";
 import p2eu from "../../../util/problem-to-excel-utils";
-import { readFileSync } from 'fs';
-
-Vue.use(pluginExport);
-Vue.use(pluginImport);
 
 export default {
   components: {
@@ -218,8 +207,6 @@ export default {
     QueryDialog,
     AddVehicleDialog,
     AddCoordinateDialog,
-    // VehicleDetailPopover,
-    // AddCoordinatePopover,
     CoordinateListSide,
     VehicleListSide,
   },
@@ -242,7 +229,8 @@ export default {
       },
       queryValue: {
         show: false,
-        name: "", //距离优先
+        name: "",
+        fileName: undefined,
         problem: {},
         time: "",
         isHistory: false,
@@ -261,8 +249,7 @@ export default {
       visible: false,
       visible1: false,
       show: false,
-      fileName: undefined,
-      asideCollapse: true
+      asideCollapse: true,
     };
   },
 
@@ -283,40 +270,36 @@ export default {
       let svgChildren = d3.selectAll("svg#graph_coordinate > *");
       svgChildren.remove();
       this.queryValue.problem = {};
-      this.fileName = undefined;
+      this.queryValue.fileName = undefined;
     },
 
     handleUploadEnd() {
       this.loading = false;
-      console.log('this.loading = false;',this.loading);
-
+      console.log("this.loading = false;", this.loading);
     },
 
     handleUpload(file) {
-      let workbook = xlsx.read(file.path, {type: 'file'});
-      let dsNodes = xlsx.utils.sheet_to_json(workbook.Sheets['点信息']);
-      let dsVehicles = xlsx.utils.sheet_to_json(workbook.Sheets['车辆信息']);
+      this.queryValue.fileName = file.name;
+      let workbook = xlsx.read(file.path, { type: "file" });
+      let dsNodes = xlsx.utils.sheet_to_json(workbook.Sheets["节点信息"]);
+      let dsVehicles = xlsx.utils.sheet_to_json(workbook.Sheets["车辆信息"]);
       if (!dsNodes || !dsVehicles) {
-          this.$confirm(
-            "查询文件必须包含点信息和车辆信息",
-            "格式错误",
-            {
-              confirmButtonText: "确定",
-              showCancelButton: false,
-              type: "error",
-            }
-          );
-          return false;
+        this.$confirm("查询文件必须包含点信息和车辆信息", "格式错误", {
+          confirmButtonText: "确定",
+          showCancelButton: false,
+          type: "error",
+        });
+        return false;
       }
       if (sheetFormat.IsCoordinateFile(dsNodes, dsVehicles)) {
         this.loading = true;
         this.show = true;
-        var me=this
-        setTimeout(function(){
+        var me = this;
+        setTimeout(function () {
           me.sheetsToProblem(dsNodes, dsVehicles);
           me.showGraph();
-          setTimeout(function()  {
-            me.loading=false
+          setTimeout(function () {
+            me.loading = false;
           }, 0);
         }, 0);
         return false;
@@ -330,28 +313,28 @@ export default {
             confirmButtonText: "确定",
             type: "error",
           }
-        ).then(() => {
-          this.$router.push({
-            name: "page_route",
-            params: {
-              uploadFile: file
-            }});
-        }).catch(() => {
-          // pass
-        }).finally(() => {
-          return false;
-        });
+        )
+          .then(() => {
+            this.$router.push({
+              name: "page_route",
+              params: {
+                uploadFile: file,
+              },
+            });
+          })
+          .catch(() => {
+            // pass
+          })
+          .finally(() => {
+            return false;
+          });
       } else {
         var me = this;
-        this.$confirm(
-          "查询文件格式不正确",
-          "格式错误",
-          {
-            confirmButtonText: "确定",
-            showCancelButton: false,
-            type: "error",
-          }
-        );
+        this.$confirm("查询文件格式不正确", "格式错误", {
+          confirmButtonText: "确定",
+          showCancelButton: false,
+          type: "error",
+        });
         return false;
       }
       return false;
@@ -359,15 +342,15 @@ export default {
 
     sheetsToProblem(dsNodes, dsVehicles) {
       let problem = {
-        "routeMode": false,
-        "nodes": [],
-        "edges": "euc2d",
-        "vehicles": [],
-        "distancePrior": this.drawerValue.distancePrior,
-        "timePrior": this.drawerValue.timePrior,
-        "loadPrior": this.drawerValue.loadPrior,
-        "speed": this.drawerValue.speedValue,
-        "maxiter": this.drawerValue.maxIter
+        routeMode: false,
+        nodes: [],
+        edges: "euc2d",
+        vehicles: [],
+        distancePrior: this.drawerValue.distancePrior,
+        timePrior: this.drawerValue.timePrior,
+        loadPrior: this.drawerValue.loadPrior,
+        speed: this.drawerValue.speedValue,
+        maxiter: this.drawerValue.maxIter,
       };
 
       let aNodes = [];
@@ -375,10 +358,9 @@ export default {
         let tmp = {};
         for (let j in sheetFormat.CoordinateFile.nodes) {
           let it = sheetFormat.CoordinateFile.nodes[j];
-          if (typeof(dsNodes[i][it.label]) != undefined) {
+          if (typeof dsNodes[i][it.label] != undefined) {
             tmp[it.field] = dsNodes[i][it.label];
-          }
-          else if (!it.required && it.default) {
+          } else if (!it.required && it.default) {
             tmp[it.field] = it.default;
           }
         }
@@ -391,10 +373,9 @@ export default {
         let tmp = {};
         for (let j = 0; j < sheetFormat.CoordinateFile.vehicles.length; j++) {
           let it = sheetFormat.CoordinateFile.vehicles[j];
-          if (typeof(dsVehicles[i][it.label]) != undefined) {
+          if (typeof dsVehicles[i][it.label] != undefined) {
             tmp[it.field] = dsVehicles[i][it.label];
-          }
-          else if (!it.required && it.default) {
+          } else if (!it.required && it.default) {
             tmp[it.field] = it.default;
           }
         }
@@ -409,11 +390,10 @@ export default {
       this.polylinePath = problem["nodes"];
 
       this.queryValue.problem = problem;
-
     },
 
     inquery() {
-      if (JSON.stringify(this.queryValue.problem) === '{}') {
+      if (JSON.stringify(this.queryValue.problem) === "{}") {
         this.$confirm("还未选择文件打开哦", "温馨提示", {
           confirmButtonText: "确定",
           showCancelButton: false,
@@ -493,7 +473,7 @@ export default {
       p2eu.coordinateToExcel(
         this,
         this.queryValue.problem,
-        this.fileName == undefined ? "坐标查询文件" : this.fileName
+        this.queryValue.fileName == undefined ? "坐标查询文件" : this.queryValue.fileName
       );
     },
 
@@ -502,10 +482,7 @@ export default {
       svgChildren.remove();
       var problem = this.queryValue.problem;
       let data = problem.nodes;
-      // console.log("data=" + JSON.stringify(data));
 
-      // let width = this.$refs["svg_coordinate"].clientWidth;
-      // let height = this.$refs["svg_coordinate"].clientHeight;
       let width = document.getElementById("container_route").clientWidth * 0.6;
       let height = document.getElementById("container_route").clientHeight;
       console.log("width=" + width + " height=" + height);

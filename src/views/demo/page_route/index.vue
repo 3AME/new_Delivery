@@ -4,13 +4,13 @@
       <div>
         <strong style="width: 140px; color: #5673ff; padding: 10px; font-size: 24px">路线查询</strong>
         <el-button
-          v-if="fileName != undefined"
+          v-if="queryValue.fileName != undefined"
           class="btn-action"
           type="text"
           icon="el-icon-document"
           style="color: #5673ff;"
         >
-          <strong>{{ fileName }}</strong>
+          <strong>{{ queryValue.fileName }}</strong>
         </el-button>
       </div>
       <el-button-group class="card" style="margin-top: 20px">
@@ -80,7 +80,7 @@
         @onAddEdge="onAddEdge"
         @onShowDetail="onShowDetail"
       />
-      <el-main style="padding: 10px 20px" height="100%">
+      <el-main style="padding: 10px 20px; overflow: hidden;" height="100%">
         <div class="draguploader card" v-if="!show">
           <el-upload
             :before-upload="handleUpload"
@@ -200,10 +200,7 @@
 <script>
 import * as d3 from "d3";
 import * as xlsx from "xlsx";
-import { ipcRenderer } from "electron";
-import Vue from "vue";
-import pluginImport from "@d2-projects/vue-table-import";
-import pluginExport from "@d2-projects/vue-table-export";
+
 import drawer from "../drawer/";
 import QueryDialog from "../dialog/query-dialog";
 import AddRouteDialog from "../dialog/add-route-dialog";
@@ -215,9 +212,6 @@ import DetailEdgeDialog from "../dialog/detail-edge-dialog";
 
 import p2eu from "../../../util/problem-to-excel-utils";
 import sheetFormat from "../../../util/sheet-format";
-
-Vue.use(pluginExport);
-Vue.use(pluginImport);
 
 export default {
   inject: ["reload"], //注入依赖
@@ -245,7 +239,8 @@ export default {
       },
       queryValue: {
         show: false,
-        name: "", //距离优先
+        name: "",
+        fileName: undefined,
         problem: {},
         time: "",
         isHistory: false,
@@ -259,7 +254,6 @@ export default {
       temp_node: {},
       temp_edge: {},
       show: false,
-      fileName: undefined,
       asideCollapse: true,
     };
   },
@@ -317,12 +311,13 @@ export default {
       let svgChildren = d3.selectAll("svg#graph_route > *");
       svgChildren.remove();
       this.show = false;
-      this.fileName = undefined;
+      this.queryValue.fileName = undefined;
     },
 
     handleUpload(file) {
+      this.queryValue.fileName = file.name;
       let workbook = xlsx.read(file.path, { type: "file" });
-      let dsNodes = xlsx.utils.sheet_to_json(workbook.Sheets["结点信息"]);
+      let dsNodes = xlsx.utils.sheet_to_json(workbook.Sheets["节点信息"]);
       let dsVehicles = xlsx.utils.sheet_to_json(workbook.Sheets["车辆信息"]);
       if (
         !dsNodes ||
@@ -541,7 +536,7 @@ export default {
       p2eu.routeToExcel(
         this,
         this.queryValue.problem,
-        this.fileName == undefined ? "路线查询文件" : this.fileName
+        this.queryValue.fileName == undefined ? "路线查询文件" : this.queryValue.fileName
       );
     },
 

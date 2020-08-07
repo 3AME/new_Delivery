@@ -137,7 +137,7 @@ export default {
 <style>
 .el-message-box {
     display: inline-block;
-    width: 30%;
+    width: 25%;
     padding-bottom: 10px;
     vertical-align: middle;
     background-color: #FFF;

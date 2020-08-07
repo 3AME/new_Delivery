@@ -5,156 +5,179 @@
     element-loading-text="拼命加载中"
     element-loading-spinner="el-icon-loading"
   >
-    <el-aside width="280px" class="aside">
-      <el-card class="box-card">
-        <div slot="header" class="clearfix">
-          <span>最优结果</span>
-          <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
-          <el-popover
-            placement="top-start"
-            title="保存结果"
-            width="200"
-            trigger="hover"
-            content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。"
-          >
-            <!-- <el-button slot="reference">hover 激活</el-button> -->
-            <div style="text-align: center; margin-top: 40px;margin-bottom: 40px;">
-              <el-button type="primary" @click="saveResult(true)">保存为Excel文件</el-button>
-            </div>
-            <div style="text-align: center; margin-top: 40px;margin-bottom: 40px;">
-              <el-button class="btn-success" @click="saveResult(false)">保存为Html文件</el-button>
-            </div>
-            <!-- @click="saveResult"  -->
-            <el-button
-              slot="reference"
-              id="btn-save-result"
-              class="btn-success btn-save-result"
-              size="mini"
-              style="float: right;"
-            >保存</el-button>
-          </el-popover>
-        </div>
-        <div class="text-item" v-if="result">总路程: {{ result.distance.toFixed(2) }} 公里</div>
-        <div class="text-item" v-if="result">总时间: {{ result.time.toFixed(2) }} 小时</div>
-        <div class="text-item" v-if="result">平均满载率: {{ (result.loadFactor * 100).toFixed(2) }} %</div>
-        <div
-          class="text-item"
-          v-if="result && displayCost"
-        >预算成本: {{ result.vehicleCost.toFixed(2) }} 元</div>
-        <!-- <div class="text-item" v-if="result">车辆行驶成本: {{ result.time.toFixed(2) }} 小时</div> -->
-        <!-- <div class="text-item" v-if="result">平均满载率: {{ (result.loadFactor * 100).toFixed(2) }} %</div> -->
-      </el-card>
-
-      <el-card class="box-card">
-        <span>路线详情</span>
-        <el-checkbox
-          v-model="checked"
-          style="float: right; padding: 3px 0"
-          @change="onCheckboxChange"
-          class="checkbox-route"
-        ></el-checkbox>
-      </el-card>
-
-      <el-card
-        class="box-card"
-        style="margin-top: 10px;"
-        v-for="(route, index) in routes"
-        :key="index"
-        @click.native.prevent="toggleVisible(route, index)"
+    <el-header height="auto" style="padding: 20px">
+      <div>
+        <strong style="width: 140px; color: #5673ff; padding: 10px; font-size: 24px">查询结果</strong>
+        <el-button
+          v-if="problemName != undefined"
+          class="btn-action"
+          type="text"
+          icon="el-icon-document"
+          style="color: #5673ff;"
+        >
+          <strong>{{ problemName }}</strong>
+        </el-button>
+      </div>
+    </el-header>
+    <el-container style="display: flex;overflow: hidden; height: 100%; width: 100%;">
+      <el-aside
+        width="25%"
+        class="aside"
+        height="100%"
       >
-        <div slot="header" class="clearfix">
-          <span>车辆{{ route.id }}</span>
-          <label
-            class="el-checkbox is-checked checkbox-route"
-            style="margin-right: 4px; float: right"
-          >
-            <span class="el-checkbox__input is-checked">
-              <span
-                class="el-checkbox__inner"
-                :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
-              ></span>
-              <input
-                type="checkbox"
-                aria-hidden="false"
-                class="el-checkbox__original"
-                :value="route.checked"
-                :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
-              />
-            </span>
-          </label>
-        </div>
-        <!-- <div
+        <el-card class="box-card">
+          <div slot="header" class="clearfix">
+            <span>最优结果</span>
+            <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
+            <el-popover
+              placement="top-start"
+              title="保存结果"
+              width="200"
+              trigger="hover"
+              content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。"
+            >
+              <!-- <el-button slot="reference">hover 激活</el-button> -->
+              <div style="text-align: center; margin-top: 40px;margin-bottom: 40px;">
+                <el-button type="primary" @click="saveResult(true)">保存为Excel文件</el-button>
+              </div>
+              <div style="text-align: center; margin-top: 40px;margin-bottom: 40px;">
+                <el-button class="btn-success" @click="saveResult(false)">保存为Html文件</el-button>
+              </div>
+              <!-- @click="saveResult"  -->
+              <el-button
+                slot="reference"
+                id="btn-save-result"
+                class="btn-success btn-save-result"
+                size="mini"
+                style="float: right;"
+              >保存</el-button>
+            </el-popover>
+          </div>
+          <div class="text-item" v-if="result">总路程: {{ result.distance.toFixed(2) }} 公里</div>
+          <div class="text-item" v-if="result">总时间: {{ result.time.toFixed(2) }} 小时</div>
+          <div class="text-item" v-if="result">平均满载率: {{ (result.loadFactor * 100).toFixed(2) }} %</div>
+          <div
+            class="text-item"
+            v-if="result && displayCost"
+          >预算成本: {{ result.vehicleCost.toFixed(2) }} 元</div>
+          <!-- <div class="text-item" v-if="result">车辆行驶成本: {{ result.time.toFixed(2) }} 小时</div> -->
+          <!-- <div class="text-item" v-if="result">平均满载率: {{ (result.loadFactor * 100).toFixed(2) }} %</div> -->
+        </el-card>
+
+        <el-card class="box-card">
+          <span>路线详情</span>
+          <el-checkbox
+            v-model="checked"
+            style="float: right; padding: 3px 0"
+            @change="onCheckboxChange"
+            class="checkbox-route"
+          ></el-checkbox>
+        </el-card>
+
+        <el-card
+          class="box-card"
+          style="margin-top: 10px;"
+          v-for="(route, index) in routes"
+          :key="index"
+          @click.native.prevent="toggleVisible(route, index)"
+        >
+          <div slot="header" class="clearfix">
+            <span>车辆{{ route.id }}</span>
+            <label
+              class="el-checkbox is-checked checkbox-route"
+              style="margin-right: 4px; float: right"
+            >
+              <span class="el-checkbox__input is-checked">
+                <span
+                  class="el-checkbox__inner"
+                  :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
+                ></span>
+                <input
+                  type="checkbox"
+                  aria-hidden="false"
+                  class="el-checkbox__original"
+                  :value="route.checked"
+                  :style="'background-color:' + (route.checked ? route.color : 'transparent') + ';border-color:' + route.color"
+                />
+              </span>
+            </label>
+          </div>
+          <!-- <div
               :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
               :fill="route.color"
-        >车辆{{ route.id }}</div>-->
-        <div
-          :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-          :fill="route.color"
-        >路线：{{route.text}}</div>
-        <div
-          :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-          :fill="route.color"
-        >路程：{{ route.distance.toFixed(2) }}公里</div>
-        <div
-          :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
-          :fill="route.color"
-        >时间：{{ route.time.toFixed(2) }}小时</div>
-      </el-card>
-    </el-aside>
-    <el-main style="background-color: white">
-      <el-row style="height:100%; width: 100%;">
-        <el-col :span="24" style="height:100%;padding: 20px">
-          <el-card class="svg_card" style="height:100%; width: 100%;">
-            <div slot="header" class="clearfix">
-              <span>最优配送路线</span>
-              <div style="text-align: center; margin-bottom: 20px; float: right">
-                <el-switch
-                  v-model="hideRoute"
-                  @change="toggleRoute()"
-                  :active-text="problem.routeMode ? '隐藏无关路线' : '隐藏坐标文字'"
-                  class="switch-toggle-route"
-                ></el-switch>
+          >车辆{{ route.id }}</div>-->
+          <div
+            :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+            :fill="route.color"
+          >路线：{{route.text}}</div>
+          <div
+            :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+            :fill="route.color"
+          >路程：{{ route.distance.toFixed(2) }}公里</div>
+          <div
+            :style="'font-size: 12px; padding-top: 4px; padding-bottom: 4px;color:' + route.color"
+            :fill="route.color"
+          >时间：{{ route.time.toFixed(2) }}小时</div>
+        </el-card>
+      </el-aside>
+      <el-main style="background-color: white; padding: 10px 20px" height="100%">
+        <el-row style="height:100%; width: 100%;">
+          <el-col :span="24" style="height:100%; padding: 10px; padding-top: 0">
+            <el-card class="svg_card" style="height:100%; width: 100%;">
+              <div slot="header" class="clearfix">
+                <span>最优配送路线</span>
+                <div style="text-align: center; margin-bottom: 20px; float: right">
+                  <el-switch
+                    v-model="hideRoute"
+                    @change="toggleRoute()"
+                    :active-text="problem.routeMode ? '隐藏无关路线' : '隐藏坐标文字'"
+                    class="switch-toggle-route"
+                  ></el-switch>
+                </div>
               </div>
-            </div>
-            <svg id="graph_svg" style="height:90%; width: 100%;" ref="svg" />
-          </el-card>
-        </el-col>
-      </el-row>
-      <el-row style="height:50%; width: 100%;">
-        <el-col :span="12" style="height:100%; padding: 20px">
-          <el-card class="svg_card" style="height:100%; width: 100%;">
-            <!-- style="height:10%; width: 100%;" -->
-            <div slot="header" class="clearfix">
-              <span>算法收敛曲线</span>
-              <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
-            </div>
-            <svg id="test_svg" style="height:80%; width: 100%;" ref="test_svg" />
-          </el-card>
-        </el-col>
-        <el-col :span="12" style="height:100%;padding: 20px">
-          <el-card class="svg_card" style="height:100%; width: 100%;">
-            <!-- style="height:10%; width: 100%;" -->
-            <div slot="header" class="clearfix">
-              <span>车辆载重柱状图</span>
-              <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
-            </div>
-            <svg id="histogram_load" style="height:80%; width: 100%;" ref="histogram_load" />
-          </el-card>
-        </el-col>
-      </el-row>
-      <el-row style="height:50%; width: 100%;">
-        <el-col :span="24" style="height:100%;padding: 20px">
-          <el-card class="svg_card" style="height:100%; width: 100%;">
-            <!-- style="height:10%; width: 100%;" -->
-            <div slot="header" class="clearfix">
-              <span>车辆路程柱状图</span>
-              <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
-            </div>
-            <svg id="histogram_distance" style="height:80%; width: 100%;" ref="histogram_distance" />
-          </el-card>
-        </el-col>
-      </el-row>
-      <!-- <el-row style="height:50%; width: 100%;">
+              <svg id="graph_svg" style="height:90%; width: 100%;" ref="svg" />
+            </el-card>
+          </el-col>
+        </el-row>
+        <el-row style="height:50%; width: 100%;">
+          <el-col :span="12" style="height:100%; padding: 10px">
+            <el-card class="svg_card" style="height:100%; width: 100%;">
+              <!-- style="height:10%; width: 100%;" -->
+              <div slot="header" class="clearfix">
+                <span>算法收敛曲线</span>
+                <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
+              </div>
+              <svg id="test_svg" style="height:80%; width: 100%;" ref="test_svg" />
+            </el-card>
+          </el-col>
+          <el-col :span="12" style="height:100%; padding: 10px">
+            <el-card class="svg_card" style="height:100%; width: 100%;">
+              <!-- style="height:10%; width: 100%;" -->
+              <div slot="header" class="clearfix">
+                <span>车辆载重柱状图</span>
+                <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
+              </div>
+              <svg id="histogram_load" style="height:80%; width: 100%;" ref="histogram_load" />
+            </el-card>
+          </el-col>
+        </el-row>
+        <el-row style="height:50%; width: 100%;">
+          <el-col :span="24" style="height:100%; padding: 10px">
+            <el-card class="svg_card" style="height:100%; width: 100%;">
+              <!-- style="height:10%; width: 100%;" -->
+              <div slot="header" class="clearfix">
+                <span>车辆路程柱状图</span>
+                <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
+              </div>
+              <svg
+                id="histogram_distance"
+                style="height:80%; width: 100%;"
+                ref="histogram_distance"
+              />
+            </el-card>
+          </el-col>
+        </el-row>
+        <!-- <el-row style="height:50%; width: 100%;">
             <el-col :span="24" style="height:100%;padding: 20px">
               <el-card class="svg_card" style="height:100%; width: 100%;">
                 <div slot="header" class="clearfix">
@@ -167,30 +190,31 @@
                 />
               </el-card>
             </el-col>
-      </el-row>-->
-      <el-row v-if="displayCost" style="height:50%; width: 100%;">
-        <el-col :span="12" style="height:100%; padding: 20px">
-          <el-card class="svg_card" style="height:100%; width: 100%;">
-            <!-- style="height:10%; width: 100%;" -->
-            <div slot="header" class="clearfix">
-              <span>预估成本变化</span>
-              <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
-            </div>
-            <svg id="cost_svg" style="height:80%; width: 100%;" ref="cost_svg" />
-          </el-card>
-        </el-col>
-        <el-col :span="12" style="height:100%;padding: 20px">
-          <el-card class="svg_card" style="height:100%; width: 100%;">
-            <!-- style="height:10%; width: 100%;" -->
-            <div slot="header" class="clearfix">
-              <span>方案成本预估</span>
-              <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
-            </div>
-            <svg id="histogram_cost" style="height:80%; width: 100%;" ref="histogram_cost" />
-          </el-card>
-        </el-col>
-      </el-row>
-    </el-main>
+        </el-row>-->
+        <el-row v-if="displayCost" style="height:50%; width: 100%;">
+          <el-col :span="12" style="height:100%; padding: 10px">
+            <el-card class="svg_card" style="height:100%; width: 100%;">
+              <!-- style="height:10%; width: 100%;" -->
+              <div slot="header" class="clearfix">
+                <span>预估成本变化</span>
+                <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
+              </div>
+              <svg id="cost_svg" style="height:80%; width: 100%;" ref="cost_svg" />
+            </el-card>
+          </el-col>
+          <el-col :span="12" style="height:100%; padding: 10px">
+            <el-card class="svg_card" style="height:100%; width: 100%;">
+              <!-- style="height:10%; width: 100%;" -->
+              <div slot="header" class="clearfix">
+                <span>方案成本预估</span>
+                <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
+              </div>
+              <svg id="histogram_cost" style="height:80%; width: 100%;" ref="histogram_cost" />
+            </el-card>
+          </el-col>
+        </el-row>
+      </el-main>
+    </el-container>
   </el-container>
 </template>
 
@@ -776,7 +800,7 @@ export default {
       let data = problem.nodes;
 
       let nameMap = new Map();
-      problem.nodes.forEach(function(node, index) {
+      problem.nodes.forEach(function (node, index) {
         nameMap.set(node.id, node.name);
       });
 
@@ -1232,7 +1256,7 @@ export default {
     showGraph() {
       var problem = this.problem;
       let nameMap = new Map();
-      problem.nodes.forEach(function(node, index) {
+      problem.nodes.forEach(function (node, index) {
         nameMap.set(node.id, node.name);
       });
 
@@ -1738,7 +1762,7 @@ export default {
           });
       }
     },
-    
+
     showCurveGraph() {
       // console.log("msgs=" + JSON.stringify(this.msgs));
       let width = this.$refs["test_svg"].clientWidth;
@@ -2239,7 +2263,7 @@ export default {
 }
 
 .box-card {
-  margin: 10px;
+  margin: 10px 30px;
 }
 
 .container {

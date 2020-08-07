@@ -844,24 +844,6 @@
   dependencies:
     loader-utils "^1.4.0"
 
-"@d2-projects/vue-table-export@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@d2-projects/vue-table-export/-/vue-table-export-1.0.1.tgz#c4d3c3670ce8f59a6ca5e9610a8da05b446eb583"
-  integrity sha512-/F+ctYRSP79LmtiD+B53VBr0s7WhqHOgsxtxbnt9vN5zreMUkfd81wQKWxt2soH+FXiPDWxFi9cPSs29Iru30w==
-  dependencies:
-    file-saver "^2.0.0"
-    vue "^2.5.11"
-    xlsx "^0.14.1"
-
-"@d2-projects/vue-table-import@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.npm.taobao.org/@d2-projects/vue-table-import/download/@d2-projects/vue-table-import-1.0.0.tgz#2eae225097f5b17e3f7b5681b02d55b1f682a6ae"
-  integrity sha1-Lq4iUJf1sX4/e1aBsC1VsfaCpq4=
-  dependencies:
-    papaparse "^4.6.2"
-    vue "^2.5.11"
-    xlsx "^0.14.1"
-
 "@develar/schema-utils@~2.1.0":
   version "2.1.0"
   resolved "https://registry.npm.taobao.org/@develar/schema-utils/download/@develar/schema-utils-2.1.0.tgz#eceb1695bfbed6f6bb84666d5d3abe5e1fd54e17"
@@ -2866,7 +2848,7 @@ caseless@~0.12.0:
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
   integrity sha1-G2gcIf+EAzyCZUMJBolCDRhxUdw=
 
-cfb@^1.1.2, cfb@^1.1.4:
+cfb@^1.1.4:
   version "1.1.4"
   resolved "https://registry.npm.taobao.org/cfb/download/cfb-1.1.4.tgz?cache=0&sync_timestamp=1584080716545&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fcfb%2Fdownload%2Fcfb-1.1.4.tgz#81fd35ede4c919d8f0962a94582e1dfaf7051e2a"
   integrity sha1-gf017eTJGdjwliqUWC4d+vcFHio=
@@ -5334,7 +5316,7 @@ file-loader@^4.2.0:
     loader-utils "^1.2.3"
     schema-utils "^2.5.0"
 
-file-saver@^2.0.0, file-saver@^2.0.2:
+file-saver@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/file-saver/-/file-saver-2.0.2.tgz#06d6e728a9ea2df2cce2f8d9e84dfcdc338ec17a"
   integrity sha512-Wz3c3XQ5xroCxd1G8b7yL0Ehkf0TC9oYC6buPFkNnU9EnaPlifeAFCyCh+iewXTyFRcg0a6j3J7FmJsIhlhBdw==
@@ -8902,11 +8884,6 @@ pako@~1.0.2, pako@~1.0.5:
   resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.11.tgz#6c9599d340d54dfd3946380252a35705a6b992bf"
   integrity sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==
 
-papaparse@^4.6.2:
-  version "4.6.3"
-  resolved "https://registry.npm.taobao.org/papaparse/download/papaparse-4.6.3.tgz#742e5eaaa97fa6c7e1358d2934d8f18f44aee781"
-  integrity sha1-dC5eqql/psfhNY0pNNjxj0Su54E=
-
 parallel-transform@^1.1.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/parallel-transform/-/parallel-transform-1.2.0.tgz#9049ca37d6cb2182c3b1d2c720be94d14a5814fc"
@@ -10936,7 +10913,7 @@ sprintf-js@~1.0.2:
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
   integrity sha1-BOaSb2YolTVPPdAVIDYzuFcpfiw=
 
-ssf@~0.10.2, ssf@~0.10.3:
+ssf@~0.10.3:
   version "0.10.3"
   resolved "https://registry.npm.taobao.org/ssf/download/ssf-0.10.3.tgz#8eae1fc29c90a552e7921208f81892d6f77acb2b"
   integrity sha1-jq4fwpyQpVLnkhII+BiS1vd6yys=
@@ -12200,7 +12177,7 @@ vue-template-es2015-compiler@^1.6.0, vue-template-es2015-compiler@^1.9.0:
   resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
 
-vue@^2.5.11, vue@^2.5.16, vue@^2.6.11:
+vue@^2.5.16, vue@^2.6.11:
   version "2.6.11"
   resolved "https://registry.npm.taobao.org/vue/download/vue-2.6.11.tgz#76594d877d4b12234406e84e35275c6d514125c5"
   integrity sha1-dllNh31LEiNEBuhONSdcbVFBJcU=
@@ -12643,19 +12620,6 @@ xdg-basedir@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npm.taobao.org/xdg-basedir/download/xdg-basedir-3.0.0.tgz#496b2cc109eca8dbacfe2dc72b603c17c5870ad4"
   integrity sha1-SWsswQnsqNus/i3HK2A8F8WHCtQ=
-
-xlsx@^0.14.1:
-  version "0.14.5"
-  resolved "https://registry.npm.taobao.org/xlsx/download/xlsx-0.14.5.tgz?cache=0&sync_timestamp=1588264313170&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fxlsx%2Fdownload%2Fxlsx-0.14.5.tgz#3637e914d791bdca7382816e173f7d725ed0e0d2"
-  integrity sha1-NjfpFNeRvcpzgoFuFz99cl7Q4NI=
-  dependencies:
-    adler-32 "~1.2.0"
-    cfb "^1.1.2"
-    codepage "~1.14.0"
-    commander "~2.17.1"
-    crc-32 "~1.2.0"
-    exit-on-epipe "~1.0.1"
-    ssf "~0.10.2"
 
 xlsx@^0.16.0:
   version "0.16.0"
