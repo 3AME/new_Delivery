@@ -53,7 +53,7 @@ export default {
       this.value.show = false;
     },
     onOpen() {
-      let fmt = "yyyy年MM月dd日 HH时mm分";
+      let fmt = "yyyy年MM月dd日 HH时mm分ss秒";
       let date = new Date();
 
       var o = {

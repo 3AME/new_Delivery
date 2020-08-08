@@ -15,6 +15,13 @@
         >添加车辆</el-button>
         <el-button
           class="btn-action"
+          @click="query"
+          type="text"
+          icon="el-icon-search"
+          style="color: #02c58d;"
+        >查询</el-button>
+        <el-button
+          class="btn-action"
           type="text"
           @click="saveProblem"
           icon="el-icon-tickets"
@@ -28,13 +35,7 @@
           icon="el-icon-set-up"
           style="color: #607d8b;"
         >设置算法参数</el-button>
-        <el-button
-          class="btn-action"
-          @click="query"
-          type="text"
-          icon="el-icon-search"
-          style="color: #02c58d;"
-        >查询</el-button>
+        
         <el-switch
           v-model="selectMode"
           active-text="点击选点"
