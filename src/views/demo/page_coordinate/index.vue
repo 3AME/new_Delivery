@@ -1,5 +1,5 @@
 <template>
-  <el-container class="content-container" style="overflow:auto;overflow-x: hidden !important;">
+  <el-container class="content-container">
     <el-header height="auto" style="padding: 20px">
       <div>
         <strong style="width: 140px; color: #5673ff; padding: 10px; font-size: 24px">坐标查询</strong>
@@ -72,14 +72,24 @@
             style="color: #607d8b"
             :disabled="!queryValue.problem"
           >添加车辆</el-button>
+          <el-button
+            v-if="show"
+            class="btn-action"
+            @click="toggleShowMode"
+            type="text"
+            icon="el-icon-set-up"
+            style="color: #607d8b"
+          >{{ type == 'edit' ? '表格模式' : '编辑模式' }}</el-button>
         </el-button-group>
       </div>
     </el-header>
-    <el-container style="height:68%" id="container_route">
-      <!-- <el-scrollbar> -->
-      <coordinate-list-side v-if="show" v-model="queryValue.problem" @onChange="showGraph" />
-      <!-- </el-scrollbar> -->
-      <el-main style="padding: 10px 20px; overflow: hidden;" height="100%">
+    <el-container style="overflow:auto;overflow-x: hidden !important;" id="container_route">
+      <coordinate-list-side
+        v-if="type == 'edit' && show"
+        v-model="queryValue.problem"
+        @onChange="showGraph"
+      />
+      <el-main style="padding: 10px 20px; padding-bottom: 20px;" height="100%">
         <div class="draguploader card" v-if="!show">
           <el-upload
             :before-upload="handleUpload"
@@ -97,79 +107,22 @@
             </div>
           </el-upload>
         </div>
-        <svg id="graph_coordinate" height="100%" width="100%" ref="svg_coordinate" v-show="show" />
+        <svg
+          id="graph_coordinate"
+          height="100%"
+          width="100%"
+          ref="svg_coordinate"
+          v-show="type == 'edit' && show"
+        />
+        <detail-table
+          height="100%"
+          width="100%"
+          v-show="type == 'table' && show"
+          v-model="queryValue.problem"
+        />
       </el-main>
-      <vehicle-list-side v-if="show" v-model="queryValue.problem" />
+      <vehicle-list-side v-if="type == 'edit' && show" v-model="queryValue.problem" />
     </el-container>
-    <el-footer height="auto" style="padding: 20px; ">
-      <el-collapse
-        class="card"
-        @change="handleChange"
-        style="padding: 0.1em;background-color:#9fb6cd;"
-      >
-        <el-collapse-item name="1">
-          <template slot="title">
-            <div style="text-align:center;color:#000;width:100%">
-              <!-- <div style="text-align:center;"> -->
-              <b>坐标查询文件内容要求</b>
-              <!-- </div> -->
-            </div>
-          </template>
-          <el-divider></el-divider>
-          <span class="s" style="background-color:#f0f8ff;">
-            <div style="color:red;text-align:center;">
-              <b>坐标形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序可任意：</b>
-            </div>
-            <br />
-            <table border="1px" style="border-collapse:collapse;margin-left:1%">
-              <tr>
-                <th>type</th>
-                <th>name</th>
-                <th>X</th>
-                <th>Y</th>
-                <th>demand</th>
-                <th>serviceTime</th>
-                <th>beginTime</th>
-                <th>endTime</th>
-                <th>Vehicle_type</th>
-                <th>Vehicle_load</th>
-                <th>Vehicle_number</th>
-                <th>Vehicle_mileage</th>
-                <th>Center_name</th>
-              </tr>
-            </table>
-            <div class="s">
-              <br />
-              <b>type</b>：点的类型，depot——配送中心，customer——客户点，other——其他类型的点
-              <br />
-              <b>name</b>：点的名字或者编号
-              <br />
-              <b>X</b>：点的横坐标（单位默认：km)
-              <br />
-              <b>Y</b>：点的纵坐标（单位默认：km)
-              <br />
-              <b>demand</b>：点的需求量，配送中心也可以写，这不影响路线的计算
-              <br />
-              <b>serviceTime</b>：自定义该点的服务时间（默认：5min)
-              <br />
-              <b>beginTime</b>：客户点接受配送到达的最早时间（单位默认：min)
-              <br />
-              <b>endTime</b>：客户点接受配送到达的最迟时间（单位默认：min)
-              <br />
-              <b>Vehicle_type</b>：车辆类型
-              <br />
-              <b>Vehicle_load</b>：车辆载重
-              <br />
-              <b>Vehicle_number</b>：该车辆类型的数量
-              <br />
-              <b>Vehicle_mileage</b>：车辆里程
-              <br />
-              <b>Center_name</b>：车辆所在配送中心的名字，对应type=depot的name值
-            </div>
-          </span>
-        </el-collapse-item>
-      </el-collapse>
-    </el-footer>
     <drawer v-model="drawerValue" />
     <query-dialog v-model="queryValue"></query-dialog>
     <add-coordinate-dialog
@@ -184,6 +137,20 @@
         <div class="cssload-item cssload-moon"></div>
       </div>
     </el-dialog>
+    <el-dialog title="选择模式" width="30%" :visible.sync="showDialog">
+      <el-row>
+        <el-col :span="12">
+          <div style="text-align: center; margin-top: 40px;margin-bottom: 40px;">
+            <el-button height="40px" type="primary" @click="selectShowMode('table')">表格模式</el-button>
+          </div>
+        </el-col>
+        <el-col :span="12">
+          <div style="text-align: center; margin-top: 40px;margin-bottom: 40px;">
+            <el-button height="40px" class="btn-success" @click="selectShowMode('edit')">编辑模式</el-button>
+          </div>
+        </el-col>
+      </el-row>
+    </el-dialog>
   </el-container>
 </template>
 
@@ -197,6 +164,7 @@ import AddVehicleDialog from "../dialog/add-vehicle-dialog";
 import AddCoordinateDialog from "../dialog/add-coordinate-dialog";
 import CoordinateListSide from "../side/side-list-coordinate";
 import VehicleListSide from "../side/side-list-vehicle";
+import DetailTable from "../table/table-detail";
 
 import sheetFormat from "../../../util/sheet-format";
 import p2eu from "../../../util/problem-to-excel-utils";
@@ -209,6 +177,7 @@ export default {
     AddCoordinateDialog,
     CoordinateListSide,
     VehicleListSide,
+    DetailTable,
   },
 
   data() {
@@ -243,13 +212,15 @@ export default {
       need_options: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
       node_types: [
         { type: "depot", title: "中心节点" },
-        { type: "customer", title: "子节点" },
+        { type: "customer", title: "客户节点" },
         { type: "other", title: "其它节点" },
       ],
       visible: false,
       visible1: false,
       show: false,
       asideCollapse: true,
+      showDialog: false,
+      type: "",
     };
   },
 
@@ -278,6 +249,49 @@ export default {
       console.log("this.loading = false;", this.loading);
     },
 
+    selectShowMode(mode) {
+      console.log("test");
+      this.type = mode;
+      this.showDialog = false;
+      if (this.type == "edit") {
+        var me = this;
+        setTimeout(function () {
+          me.loading = true;
+
+          setTimeout(function () {
+            me.show = true;
+            console.log("showGraph");
+            me.showGraph();
+            setTimeout(function () {
+              me.loading = false;
+            }, 0);
+          }, 0);
+        }, 500);
+      } else if (this.type == "table") {
+        this.show = true;
+      }
+    },
+
+    toggleShowMode() {
+      console.log("toggleShowMode");
+      if (this.type == "table") {
+        var me = this;
+        me.loading = true;
+        setTimeout(function () {
+          me.type = "edit";
+          setTimeout(function () {
+            console.log("showGraph");
+            me.showGraph();
+            setTimeout(function () {
+              me.loading = false;
+            }, 0);
+          }, 0);
+        }, 100);
+      } else if (this.type == "edit") {
+        this.type = "table";
+      }
+    },
+
     handleUpload(file) {
       this.queryValue.fileName = file.name;
       let workbook = xlsx.read(file.path, { type: "file" });
@@ -292,16 +306,16 @@ export default {
         return false;
       }
       if (sheetFormat.IsCoordinateFile(dsNodes, dsVehicles)) {
-        this.loading = true;
-        this.show = true;
-        var me = this;
-        setTimeout(function () {
-          me.sheetsToProblem(dsNodes, dsVehicles);
-          me.showGraph();
-          setTimeout(function () {
-            me.loading = false;
-          }, 0);
-        }, 0);
+        this.sheetsToProblem(dsNodes, dsVehicles);
+        this.showDialog = true;
+        // var me = this;
+        // setTimeout(function () {
+        //   me.sheetsToProblem(dsNodes, dsVehicles);
+        //   me.showGraph();
+        //   setTimeout(function () {
+        //     me.loading = false;
+        //   }, 0);
+        // }, 0);
         return false;
       } else if (sheetFormat.IsRouteFile(dsNodes, dsVehicles)) {
         this.show = false;
@@ -425,7 +439,7 @@ export default {
         if (customers.length < 2) {
           this.$notify({
             title: "警告",
-            message: "子节点过少！请添加子节点",
+            message: "客户节点过少！请添加客户节点",
             type: "warning",
           });
           return;
@@ -473,7 +487,9 @@ export default {
       p2eu.coordinateToExcel(
         this,
         this.queryValue.problem,
-        this.queryValue.fileName == undefined ? "坐标查询文件" : this.queryValue.fileName
+        this.queryValue.fileName == undefined
+          ? "坐标查询文件"
+          : this.queryValue.fileName
       );
     },
 

@@ -1,5 +1,6 @@
 <template>
-  <el-container class="content-container" style="overflow:auto;overflow-x: hidden !important;">
+  <el-container class="content-container">
+    <!-- style="overflow:hidden" -->
     <el-header height="auto" style="padding: 20px">
       <div>
         <strong style="width: 140px; color: #5673ff; padding: 10px; font-size: 24px">路线查询</strong>
@@ -70,17 +71,25 @@
           style="color: #607d8b"
           :disabled="queryValue.problem.nodes == undefined"
         >添加车辆</el-button>
+        <el-button
+          v-if="show"
+          class="btn-action"
+          @click="toggleShowMode"
+          type="text"
+          icon="el-icon-set-up"
+          style="color: #607d8b"
+        >{{ type == 'edit' ? '表格模式' : '编辑模式' }}</el-button>
       </el-button-group>
     </el-header>
-    <el-container style="height:68%" id="container_route">
+    <el-container id="container_route" style="overflow:auto;overflow-x: hidden !important;">
       <route-list-side
-        v-if="show"
+        v-if="type == 'edit' && show"
         v-model="queryValue.problem"
         @onChange="showGraph"
         @onAddEdge="onAddEdge"
         @onShowDetail="onShowDetail"
       />
-      <el-main style="padding: 10px 20px; overflow: hidden;" height="100%">
+      <el-main style="padding: 10px 20px; padding-bottom: 20px;" height="100%">
         <div class="draguploader card" v-if="!show">
           <el-upload
             :before-upload="handleUpload"
@@ -97,81 +106,24 @@
             </div>
           </el-upload>
         </div>
-        <svg id="graph_route" height="100%" width="100%" ref="svg_route" v-show="show" />
+        <svg
+          style="overflow:hidden;"
+          id="graph_route"
+          height="100%"
+          width="100%"
+          ref="svg_route"
+          v-show="type == 'edit' && show"
+        />
+        <detail-table
+          style="overflow:auto !important;overflow-x: hidden !important;"
+          height="100%"
+          width="100%"
+          v-show="type == 'table' && show"
+          v-model="queryValue.problem"
+        />
       </el-main>
-      <vehicle-list-side v-if="show" v-model="queryValue.problem" />
+      <vehicle-list-side v-if="type == 'edit' && show" v-model="queryValue.problem" />
     </el-container>
-    <el-footer height="auto" style="padding: 20px">
-      <div style="height:0.5em"></div>
-      <el-collapse
-        class="card"
-        @change="handleChange"
-        style="padding: 0.1em;background-color:#add8e6"
-      >
-        <el-collapse-item name="1">
-          <template slot="title">
-            <div style="text-align:center;color:#000;width:100%">
-              <b>路线查询文件内容要求</b>
-            </div>
-          </template>
-          <el-divider></el-divider>
-          <span class="s">
-            <div style="color:red;text-align:center;">
-              <b>进入路线形式的查询，你需要按照要求调整文件格式，以下字段必须在文件的第一行出现，字段的顺序可任意：</b>
-            </div>
-            <br />
-            <table border="1px" style="border-collapse:collapse;margin-left:1%">
-              <tr>
-                <th>type</th>
-                <th>name_a</th>
-                <th>demand</th>
-                <th>serviceTime</th>
-                <th>beginTime</th>
-                <th>endTime</th>
-                <th>Vehicle_type</th>
-                <th>Vehicles_id</th>
-                <th>Vehicle_load</th>
-                <th>Vehicle_number</th>
-                <th>Vehicle_mileage</th>
-                <th>Center_name</th>
-                <th>0</th>
-                <th>1</th>
-                <th>2</th>
-                <th>3</th>
-                <th>4</th>
-                <th>5</th>
-                <th>6</th>
-                <th>7</th>
-                <th>...</th>
-              </tr>
-            </table>
-            <div class="s">
-              <b>type</b>：点的类型，depot——配送中心，customer——客户点，other——其他类型的点
-              <br />
-              <b>name_a</b>：点的数字编号
-              <br />
-              <b>demand</b>：客户的需求量，配送中心也可以写，这不影响路线的计算
-              <br />
-              <b>serviceTime</b>：自定义该点的服务时间（默认：5min)
-              <br />
-              <b>beginTime</b>：客户点接受配送到达的最早时间（单位默认：min)
-              <br />
-              <b>endTime</b>：客户点接受配送到达的最迟时间（单位默认：min)
-              <br />
-              <b>Vehicle_load</b>：车辆载重（单位默认：t)
-              <br />
-              <b>Vehicle_number</b>：该车辆类型的数量，可不做配置
-              <br />
-              <b>Vehicle_mileage</b>：车辆里程，（默认：35km)
-              <br />
-              <b>Center_name</b>：车辆所在配送中心的名字，对应type="depot"类型点的的编号
-              <br />
-              <b>0、1、2对应的字段为name_a</b>
-            </div>
-          </span>
-        </el-collapse-item>
-      </el-collapse>
-    </el-footer>
     <drawer v-model="drawerValue" />
     <query-dialog v-model="queryValue"></query-dialog>
     <add-route-dialog v-model="queryValue.problem" :visible.sync="visible1" @onAdd="showGraph"></add-route-dialog>
@@ -194,6 +146,20 @@
         <div class="cssload-item cssload-moon"></div>
       </div>
     </el-dialog>
+    <el-dialog title="选择模式" width="30%" :visible.sync="showDialog">
+      <el-row>
+        <el-col :span="12">
+          <div style="text-align: center; margin-top: 40px;margin-bottom: 40px;">
+            <el-button height="40px" type="primary" @click="selectShowMode('table')">表格模式</el-button>
+          </div>
+        </el-col>
+        <el-col :span="12">
+          <div style="text-align: center; margin-top: 40px;margin-bottom: 40px;">
+            <el-button height="40px" class="btn-success" @click="selectShowMode('edit')">编辑模式</el-button>
+          </div>
+        </el-col>
+      </el-row>
+    </el-dialog>
   </el-container>
 </template>
 
@@ -209,6 +175,7 @@ import RouteListSide from "../side/side-list-route";
 import VehicleListSide from "../side/side-list-vehicle";
 import AddEdgeDialog from "../dialog/add-edge-dialog";
 import DetailEdgeDialog from "../dialog/detail-edge-dialog";
+import DetailTable from "../table/table-detail";
 
 import p2eu from "../../../util/problem-to-excel-utils";
 import sheetFormat from "../../../util/sheet-format";
@@ -224,6 +191,7 @@ export default {
     VehicleListSide,
     AddEdgeDialog,
     DetailEdgeDialog,
+    DetailTable,
   },
 
   data() {
@@ -255,6 +223,8 @@ export default {
       temp_edge: {},
       show: false,
       asideCollapse: true,
+      showDialog: false,
+      type: "",
     };
   },
 
@@ -270,6 +240,49 @@ export default {
   },
 
   methods: {
+    selectShowMode(mode) {
+      console.log("test");
+      this.type = mode;
+      this.showDialog = false;
+      if (this.type == "edit") {
+        var me = this;
+        setTimeout(function () {
+          me.loading = true;
+
+          setTimeout(function () {
+            me.show = true;
+            console.log("showGraph");
+            me.showGraph();
+            setTimeout(function () {
+              me.loading = false;
+            }, 0);
+          }, 0);
+        }, 500);
+      } else if (this.type == "table") {
+        this.show = true;
+      }
+    },
+
+    toggleShowMode() {
+      console.log("toggleShowMode");
+      if (this.type == "table") {
+        var me = this;
+        me.loading = true;
+        setTimeout(function () {
+          me.type = "edit";
+          setTimeout(function () {
+            console.log("showGraph");
+            me.showGraph();
+            setTimeout(function () {
+              me.loading = false;
+            }, 0);
+          }, 0);
+        }, 100);
+      } else if (this.type == "edit") {
+        this.type = "table";
+      }
+    },
+
     onAddEdge(node) {
       this.temp_node = node;
       this.visible2 = true;
@@ -333,16 +346,18 @@ export default {
         return false;
       }
       if (sheetFormat.IsRouteFile(dsNodes, dsVehicles)) {
-        this.loading = true;
-        this.show = true;
-        var me = this;
-        setTimeout(function () {
-          me.sheetsToProblem(dsNodes, dsVehicles);
-          me.showGraph();
-          setTimeout(function () {
-            me.loading = false;
-          }, 0);
-        }, 0);
+        this.sheetsToProblem(dsNodes, dsVehicles);
+        this.showDialog = true;
+        // this.loading = true;
+        // this.show = true;
+        // var me = this;
+        // setTimeout(function () {
+        //   me.sheetsToProblem(dsNodes, dsVehicles);
+        //   me.showGraph();
+        //   setTimeout(function () {
+        //     me.loading = false;
+        //   }, 0);
+        // }, 0);
         return false;
       } else if (sheetFormat.IsCoordinateFile(dsNodes, dsVehicles)) {
         this.show = false;
@@ -484,7 +499,7 @@ export default {
         if (customers.length < 2) {
           this.$notify({
             title: "警告",
-            message: "子节点过少！请添加子节点",
+            message: "客户节点过少！请添加客户节点",
             type: "warning",
           });
           return;
@@ -539,7 +554,9 @@ export default {
       p2eu.routeToExcel(
         this,
         this.queryValue.problem,
-        this.queryValue.fileName == undefined ? "路线查询文件" : this.queryValue.fileName
+        this.queryValue.fileName == undefined
+          ? "路线查询文件"
+          : this.queryValue.fileName
       );
     },
 

@@ -1,5 +1,5 @@
 <template>
-  <el-container class="content-container" v-loading="loading">
+  <el-container v-loading="loading" class="content-container" style="overflow:hidden">
     <el-header height="auto" style="padding: 20px">
       <div>
         <strong style="width: 140px; color: #5673ff; padding: 10px; font-size: 24px">地图查询</strong>
@@ -341,7 +341,7 @@ export default {
       need_options: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
       node_types: [
         { type: "depot", title: "中心节点" },
-        { type: "customer", title: "子节点" },
+        { type: "customer", title: "客户节点" },
         { type: "other", title: "其它节点" },
       ],
       loadOptions: [1, 2, 3, 4, 5],
@@ -460,7 +460,7 @@ export default {
       if (customers.length < 2) {
         this.$notify({
           title: "警告",
-          message: "子节点过少！请添加子节点",
+          message: "客户节点过少！请添加客户节点",
           type: "warning",
         });
         return;

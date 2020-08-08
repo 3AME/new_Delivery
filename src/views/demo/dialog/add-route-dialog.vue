@@ -71,7 +71,7 @@ export default {
       need_options: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
       node_types: [
         { type: "depot", title: "中心节点" },
-        { type: "customer", title: "子节点" },
+        { type: "customer", title: "客户节点" },
         { type: "other", title: "其它节点" },
       ],
     };
