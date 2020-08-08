@@ -272,7 +272,11 @@ export default {
     let costSvg = d3.selectAll("svg#cost_svg > *");
     // console.log("d3.selectAll()=" + svgChildren.size());
     let queryValue = this.$route.query.queryValue;
-    console.log(queryValue);
+    console.log('queryValue=' + JSON.stringify(queryValue));
+    if (!queryValue.problem) {
+      this.$router.go(-1);
+      return;
+    }
     if (
       svgChildren.size() > 0 &&
       this.problemName === queryValue.name
@@ -296,7 +300,7 @@ export default {
     this.hideRoute = false;
     this.problem = queryValue.problem;
     this.problemName = queryValue.name;
-    console.log("tttttttttt=" + JSON.stringify(this.problem));
+    // console.log("tttttttttt=" + JSON.stringify(this.problem));
     this.solve(queryValue);
   },
   deactivated() {},
@@ -512,6 +516,7 @@ export default {
             type: "error",
           }).then(() => {
             this.$router.go(-1);
+            this.problemName = undefined;
           });
         } else {
           let flag = this.result.flags;
@@ -536,6 +541,7 @@ export default {
               type: "error",
             }).then(() => {
               this.$router.go(-1);
+              this.problemName = undefined;
             });
             return;
           }
@@ -735,6 +741,7 @@ export default {
         html.innerHTML = test;
 
         let body = html.getElementsByTagName("body")[0];
+        body.setAttribute('id', 'app');
         let children = body.childNodes;
         for (var i = children.length - 1; i >= 0; i--) {
           body.removeChild(children[i]);
