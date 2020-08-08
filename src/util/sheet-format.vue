@@ -104,11 +104,11 @@ export default {
                 field: "type",
                 required: true
             },
-            {
-                label: "name_a",
-                field: "name",
-                required: true
-            },
+            // {
+            //     label: "name_a",
+            //     field: "name",
+            //     required: true
+            // },
             {
                 label: "name_a",
                 field: "id",

@@ -408,6 +408,9 @@ export default {
         }
         aNodes.push(tmp);
       }
+      for (let i = 0; i < aNodes.length; i++) {
+        aNodes[i]['name'] = aNodes[i]['id'];
+      }
       problem["nodes"] = aNodes;
 
       let aVehicles = [];
