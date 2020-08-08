@@ -622,6 +622,8 @@ export default {
       var problem = this.problem;
       var table = [];
 
+      console.log(' problem.nodes', problem.nodes)
+      
       let depots = problem.nodes.filter((node) => {
         return node.type == "depot";
       });
@@ -631,10 +633,11 @@ export default {
           let row0 = [
             "物流中心" + node.id + "(" + node.x + ", " + node.y + ")",
           ];
+          // console.log('物流中心 ！routeMode',node)
           table.push(row0);
         });
 
-        var header1 = ["配送节点", "横坐标x(km)", "纵坐标y(km)", "需求量q(t)"];
+        let header1 = ["配送节点", "横坐标x(km)", "纵坐标y(km)", "需求量q(t)"];
 
         table.push(header1);
 
@@ -650,10 +653,19 @@ export default {
         });
       } else {
         depots.forEach((node) => {
-          let row0 = [
-            "物流中心" + node.id + "(" + node.x + ", " + node.y + ")",
-          ];
-          table.push(row0);
+          
+          if(node.lat!=null){
+            let row0 = [
+              "物流中心" + node.id + "(" + node.lat + ", " + node.lng + ")",
+            ];
+            table.push(row0);
+          }else{
+              let row0 = [
+              "物流中心" + node.id + "(" + node.name +")",
+            ];
+            table.push(row0);
+          }
+          
         });
 
         let row0 = ["各配送点与配送中心的距离（/KM）"];
@@ -664,7 +676,7 @@ export default {
           header1.push(node.id);
         });
         table.push(header1);
-
+        // console.log('header1',header1)
         problem.nodes.forEach((node, i) => {
           let row = [];
           row.push(node.id);
@@ -679,11 +691,12 @@ export default {
         });
 
         problem.nodes.forEach((node, i) => {
-          let row = table[i + 2];
+          // let row = table[i + 2];
           problem.edges.forEach((item, j) => {
             if (item.u === node.id) {
-              row[item.v + 1] = item.w;
-              table[item.v + 2][item.u + 1] = item.w;
+              // row[item.v + 1] = item.w;
+              table[item.v + 3][item.u + 1] = item.w;
+              table[item.u + 3][item.v + 1] = item.w;
             }
           });
         });

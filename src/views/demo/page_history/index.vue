@@ -146,6 +146,7 @@ export default {
       })
         .then(() => {
           this.$store.commit("d2admin/DELETE_ALL_QUERY_DATA");
+          this.handleCurrentChange(this.currentPage);
           this.$notify({
             title: "成功",
             message: "全部删除成功",
@@ -184,6 +185,7 @@ export default {
     },
     deleteQuery(index, row) {
       this.$store.commit("d2admin/DELETE_QUERY_DATA", index);
+      this.handleCurrentChange(this.currentPage);
       this.$notify({
         title: "成功",
         message: "删除" + row.title + "成功",
@@ -296,17 +298,27 @@ export default {
       // });
     },
     handleCurrentChange(val) {
+      console.log(this.querys);
+      const PAGE_LENGTH = 20;
       console.log(`当前页: ${val}`);
       let length = this.querys.length;
-      let end = val * 20;
-      let start = end - 20;
-      if (end > length) {
-        end = length;
+      // if (val <= 0) return;
+      // let start = (val - 1) * PAGE_LENGTH;
+      // let end = start + PAGE_LENGTH;
+      // if (end > length) {
+      //   end = length;
+      // }
+      // this.tasks = this.querys.slice(start, end);
+      // ** reversed **
+      let start = length - val * PAGE_LENGTH;
+      let end = start + PAGE_LENGTH;
+      if (start < 0) {
+        start = 0;
       }
-      if (start > length) {
+      if (start >= length || end <= 0) {
         return;
       }
-      this.tasks = this.querys.slice(start, end);
+      this.tasks = this.querys.slice(start, end).reverse();
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;

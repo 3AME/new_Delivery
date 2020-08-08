@@ -16,9 +16,9 @@
         <el-button
           class="btn-action"
           type="text"
-          icon="el-icon-delete"
           @click="saveProblem"
-          style="color: #409eff;"
+          icon="el-icon-tickets"
+          style="color: #fcbe2d"
           :disabled="queryValue.problem.nodes.length == 0"
         >保存</el-button>
         <el-button
