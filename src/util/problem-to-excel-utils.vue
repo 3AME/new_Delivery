@@ -118,6 +118,8 @@ export default {
       }
     }
     
+    let worksheet = xlsx.utils.aoa_to_sheet(aoa);
+
     // 格式说明
     const A = 'A'.charCodeAt();
     for (let i = 0; i < sheetFormat.length; i++) {
@@ -129,7 +131,6 @@ export default {
       worksheet[cell].c.hidden = true;
     }
     
-    let worksheet = xlsx.utils.aoa_to_sheet(aoa);
     return worksheet;
   },
   coordinateToExcel(me, problem, fileName = "坐标查询文件") {
