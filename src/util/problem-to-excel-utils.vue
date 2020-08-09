@@ -117,6 +117,18 @@ export default {
         aoa.push(row);
       }
     }
+    
+    // 格式说明
+    const A = 'A'.charCodeAt();
+    for (let i = 0; i < sheetFormat.length; i++) {
+      let cell = String.fromCharCode(A + i) + '1';
+      xlsx.utils.cell_add_comment(
+        worksheet[cell],
+        sheetFormat[i].comment,
+        "格式说明");
+      worksheet[cell].c.hidden = true;
+    }
+    
     let worksheet = xlsx.utils.aoa_to_sheet(aoa);
     return worksheet;
   },
@@ -203,9 +215,21 @@ export default {
       aoa.push(row);
     });
 
+    // 格式说明
+    let nodeSheet = xlsx.utils.aoa_to_sheet(aoa);
+    const A = 'A'.charCodeAt();
+    for (let i = 0; i < sheets.nodes.length; i++) {
+      let cell = String.fromCharCode(A + i) + '1';
+      xlsx.utils.cell_add_comment(
+        nodeSheet[cell],
+        sheets.nodes[i].comment,
+        "格式说明");
+      nodeSheet[cell].c.hidden = true;
+    }
+    
     xlsx.utils.book_append_sheet(
       workbook,
-      xlsx.utils.aoa_to_sheet(aoa),
+      nodeSheet,
       "节点信息"
     );
 
