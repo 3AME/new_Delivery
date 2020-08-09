@@ -480,7 +480,7 @@ export default {
               const PENALTY_FLAG_DISTANCE = 1;
               const PENALTY_FLAG_TIME = 2;
               const PENALTY_FLAG_LOAD = 4;
-              const PENALTY_FLAG_TIMEWINDOW = 8;
+              const PENALTY_FLAG_TIMEWINDOW = 0;
 
               console.log("sol");
               console.log(payload);
@@ -523,7 +523,7 @@ export default {
           const PENALTY_FLAG_DISTANCE = 1;
           const PENALTY_FLAG_TIME = 2;
           const PENALTY_FLAG_LOAD = 4;
-          const PENALTY_FLAG_TIMEWINDOW = 8;
+          const PENALTY_FLAG_TIMEWINDOW = 0;
 
           console.log("sol");
           let error = "";
