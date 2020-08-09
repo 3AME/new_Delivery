@@ -27,13 +27,13 @@
     <el-tab-pane label="车辆信息" name="third">
       <el-table :data="value.vehicles" height="100%" style="width: 100%; overflow:auto;overflow-x: hidden !important;">
         <el-table-column prop="id" label="类型"></el-table-column>
-        <el-table-column prop="load" label="载重"></el-table-column>
+        <el-table-column prop="load" label="车辆载重"></el-table-column>
         <el-table-column prop="count" label="数量"></el-table-column>
-        <el-table-column prop="mileage" label="里程"></el-table-column>
+        <el-table-column prop="mileage" label="最大往返里程"></el-table-column>
         <el-table-column prop="depot" label="配送中心"></el-table-column>
-        <el-table-column prop="useCost" label="useCost"></el-table-column>
-        <el-table-column prop="drivingCost" label="drivingCost"></el-table-column>
-        <el-table-column prop="waitingCost" label="waitingCost"></el-table-column>
+        <el-table-column prop="useCost" label="车辆使用成本"></el-table-column>
+        <el-table-column prop="drivingCost" label="每公里行驶成本"></el-table-column>
+        <el-table-column prop="waitingCost" label="空闲等待成本"></el-table-column>
       </el-table>
     </el-tab-pane>
   </el-tabs>

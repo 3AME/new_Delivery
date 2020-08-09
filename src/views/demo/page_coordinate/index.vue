@@ -629,7 +629,7 @@ export default {
 .draguploader .el-upload-dragger {
   height: 100%;
   width: 100%;
-  /* padding: 12%; */
+  padding-top: 14%;
 }
 .draguploader .el-upload.el-upload--text {
   height: 100%;

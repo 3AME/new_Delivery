@@ -8,7 +8,7 @@
         <el-button
           class="btn-action"
           type="text"
-          icon="el-icon-delete"
+          icon="el-icon-set-up"
           @click="visible = true"
           style="color: #409eff;"
           :disabled="queryValue.problem.nodes.length == 0"
