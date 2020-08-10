@@ -293,11 +293,15 @@ export default {
     },
 
     handleUpload(file) {
-      this.queryValue.fileName = file.name;
       let workbook = xlsx.read(file.path, { type: "file" });
       let dsNodes = xlsx.utils.sheet_to_json(workbook.Sheets["节点信息"]);
       let dsVehicles = xlsx.utils.sheet_to_json(workbook.Sheets["车辆信息"]);
-      if (!dsNodes || !dsVehicles) {
+      if (
+        !dsNodes ||
+        !dsVehicles ||
+        dsNodes.length == 0 ||
+        dsVehicles.length == 0
+      ) {
         this.$confirm("查询文件必须包含点信息和车辆信息", "格式错误", {
           confirmButtonText: "确定",
           showCancelButton: false,
@@ -306,6 +310,7 @@ export default {
         return false;
       }
       if (sheetFormat.IsCoordinateFile(dsNodes, dsVehicles)) {
+        this.queryValue.fileName = file.name;
         this.sheetsToProblem(dsNodes, dsVehicles);
         this.showDialog = true;
         // var me = this;
