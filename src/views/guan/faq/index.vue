@@ -22,10 +22,9 @@
                     <i class="fas fa-question-circle font-24 mt-2 text-success"></i>
                   </div>
                   <h5 class="text-success">01.</h5>
-                  <h5 class="font-20 mb-3 mt-4">查询结果无响应或提示错误？</h5>
+                  <h5 class="font-20 mb-3 mt-4">配送问题按何种格式输入？</h5>
                   <p class="text-muted mb-0">
-                    检查导入文档表头是否与导入文档提示一致.同时检查输入问题的可能性
-                    ，对于无法实现的约束条件程序可能发生错误.
+                    对于路线、坐标方式查询，相应界面选择【模板】下载，Excel中预置了相应的格式及说明；地图查询中可通过搜索框输入或者直接标记。
                   </p>
                 </div>
               </div>
@@ -38,8 +37,8 @@
                     <i class="fas fa-question-circle font-24 mt-2 text-primary"></i>
                   </div>
                   <h5 class="text-primary">02.</h5>
-                  <h5 class="font-20 mb-3 mt-4">如何清除上一次导入的excel文件？</h5>
-                  <p class="text-muted mb-0">点击导入.xlsx/.xls按钮，自动覆盖内容，不会影响下一次查询，也可以点击清除按钮或者刷新按钮，再重新导入</p>
+                  <h5 class="font-20 mb-3 mt-4">表格模式与图形模式有什么区别？</h5>
+                  <p class="text-muted mb-0">表格模式与图形模式都可以实时编辑配送问题，表格模式精简、消耗资源少，图形模式直观、加载时间长，用户可根据需求选择模式。</p>
                 </div>
               </div>
             </div>
@@ -51,8 +50,8 @@
                     <i class="fas fa-question-circle font-24 mt-2 text-warning"></i>
                   </div>
                   <h5 class="text-warning">03.</h5>
-                  <h5 class="font-20 mb-3 mt-4">点击查询以后没有页面跳转？</h5>
-                  <p class="text-muted mb-0">可能是因为运行环境的问题导致响应时间的差异，请耐心等待。也可能是因为数据量大，查询需要一定时间。</p>
+                  <h5 class="font-20 mb-3 mt-4">地图无法显示?</h5>
+                  <p class="text-muted mb-0">地图显示不出来可能跟你的网络原因有关，本系统通过调用百度地图API来实现地图显示，请确保你的网络环境良好。</p>
                 </div>
               </div>
             </div>
@@ -66,8 +65,8 @@
                     <i class="fas fa-question-circle font-24 mt-2 text-danger"></i>
                   </div>
                   <h5 class="text-danger">04.</h5>
-                  <h5 class="font-20 mb-3 mt-4">地图选择页面地图显示不出来？</h5>
-                  <p class="text-muted mb-0">地图显示不出来可能跟你的网络原因有关，本系统通过调用百度地图API来实现地图显示，请确保你的网络环境良好。</p>
+                  <h5 class="font-20 mb-3 mt-4">查询提示违反里程约束?</h5>
+                  <p class="text-muted mb-0">车辆最大行驶里程过小，目标配送点距离过远导致车辆无法往返，问题无法解决，建议增大车辆里程。</p>
                 </div>
               </div>
             </div>
@@ -79,8 +78,8 @@
                     <i class="fas fa-question-circle font-24 mt-2 text-info"></i>
                   </div>
                   <h5 class="text-info">05.</h5>
-                  <h5 class="font-20 mb-3 mt-4">使用地图进行查询结果显示错误？</h5>
-                  <p class="text-muted mb-0">车辆预置有最大里程，地图选择跨省或者大范围的配送点不符合真实情况，程序无法得到解决方案，考虑检查输入.</p>
+                  <h5 class="font-20 mb-3 mt-4">查询提示违反时间约束?</h5>
+                  <p class="text-muted mb-0">工作人员时间过短或车辆速度过低，配送中工作人员时间耗尽，问题无法解决，建议延长工作时间或提高车辆速度。</p>
                 </div>
               </div>
             </div>
@@ -92,11 +91,55 @@
                     <i class="fas fa-question-circle font-24 mt-2 text-dark"></i>
                   </div>
                   <h5 class="text-dark">06.</h5>
-                  <h5 class="font-20 mb-3 mt-4">界面长时间无响应？</h5>
-                  <p class="text-muted mb-0">可能由于格式等问题程序发生错误，顶部导航条提供了界面刷新，可根据自己的需求进行选择.</p>
+                  <h5 class="font-20 mb-3 mt-4">查询提示违反载重约束?</h5>
+                  <p class="text-muted mb-0">车辆载重过小，甚至无法满足一个配送点的需求，问题无法解决，建议增大车辆载重。.</p>
                 </div>
               </div>
             </div>
+          </div>
+          <div style="height:1em"></div>
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="card faq-box border-warning">
+                <div class="card-body" style="height:15em">
+                  <div class="faq-icon float-right">
+                    <i class="fas fa-question-circle font-24 mt-2 text-warning"></i>
+                  </div>
+                  <h5 class="text-warning">07.</h5>
+                  <h5 class="font-20 mb-3 mt-4">查询加载等待时间过长</h5>
+                  <p class="text-muted mb-0">运行环境、配送问题规模与复杂度与算法迭代次数会导致响应时间的差异，尝试改善配置或调节算法迭代次数。</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="card faq-box border-success">
+                <div class="card-body" style="height:15em">
+                  <div class="faq-icon float-right">
+                    <i class="fas fa-question-circle font-24 mt-2 text-success"></i>
+                  </div>
+                  <h5 class="text-success">08.</h5>
+                  <h5 class="font-20 mb-3 mt-4">怎么进行更细致的需求定制?</h5>
+                  <p class="text-muted mb-0">
+                    补充车辆成本等描述与修改算法参数可更贴近实际问题，更详细的实例可以参考用户文档。
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="card faq-box border-primary">
+                <div class="card-body" style="height:15em">
+                  <div class="faq-icon float-right">
+                    <i class="fas fa-question-circle font-24 mt-2 text-primary"></i>
+                  </div>
+                  <h5 class="text-primary">09.</h5>
+                  <h5 class="font-20 mb-3 mt-4">怎么使用产品算法API?</h5>
+                  <p class="text-muted mb-0">产品的算法进行了exe封装与调用及js调用，用户可根据API文档中的示例进行自定义。</p>
+                </div>
+              </div>
+            </div>
+
+            
           </div>
           <!-- container-fluid -->
         </div>

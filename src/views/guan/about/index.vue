@@ -21,7 +21,7 @@
         </div>
         <div style="height:3em"></div>
         <div class="row">
-          <el-card shadow="hover" :body-style="{ padding: '3em' }">
+          <el-card shadow="hover" :body-style="{ padding: '2em' }">
             <br />
             <p style="text-indent:2em">
               随着信息技术的发展，现代
@@ -45,7 +45,7 @@
         <div class="row">
           <el-card
             shadow="hover"
-            :body-style="{ padding: '3em' }"
+            :body-style="{ padding: '2em' }"
             style="margin:auto;padding:0.5em;width:100%"
           >
             <img
@@ -74,6 +74,7 @@
         </div>
         <div style="height:5em"></div>
         <!-- <el-divider></el-divider> -->
+        
         <div class="row">
           <div class="col-md-12 section-title">
             <h2 style="text-align:center">团队名称</h2>
@@ -81,15 +82,12 @@
         </div>
         <div style="height:3em"></div>
         <div class="row">
-          <el-card shadow="hover" style="margin:auto;padding:4.5em">
+          <el-card shadow="hover" :body-style="{ padding: '2em' }">
             <br />
-            <p style="text-indent: 2em">
-              团队名称为
-              <b>“微逻辑”</b>，其与产品的定位与愿景息息相关。
-              产品致力于物流配送方案的优化，在提供技术支持的同时希望全方位服务用户。
-            </p>
             <p style="text-indent:2em">
-              考虑到使用的算法约束十分复杂，将算法逻辑隐藏，对用户透明，同时给用户提供
+               团队名称为
+              <b>“微逻辑”</b>，其与产品的定位与愿景息息相关。
+              产品致力于物流配送方案的优化，在提供技术支持的同时希望全方位服务用户。考虑到使用的算法约束十分复杂，将算法逻辑隐藏，对用户透明，同时给用户提供
               <b>简单实用</b>的操作逻辑，是“微逻辑”的不懈追求。
             </p>
           </el-card>
