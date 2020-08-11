@@ -31,7 +31,7 @@
     <el-row style="padding: 10px">
       <el-col :span="8">车辆载重：</el-col>
       <el-col :span="16">
-        <el-input-number v-model="temp_vehicle.load" :min="1" :max="10" label="车辆载重" size="mini"></el-input-number>
+        <el-input-number v-model="temp_vehicle.load" :min="1" :max="1000" label="车辆载重" size="mini"></el-input-number>
       </el-col>
     </el-row>
     <el-row style="padding: 10px">
@@ -41,7 +41,7 @@
           v-model="temp_vehicle.mileage"
           :step="5"
           :min="10"
-          :max="120"
+          :max="1000"
           label="车辆里程"
           size="mini"
         ></el-input-number>
@@ -50,7 +50,7 @@
     <el-row style="padding: 10px">
       <el-col :span="8">车辆数量：</el-col>
       <el-col :span="16">
-        <el-input-number v-model="temp_vehicle.count" :min="1" :max="10" label="车辆里程" size="mini"></el-input-number>
+        <el-input-number v-model="temp_vehicle.count" :min="1" :max="100" label="车辆数量" size="mini"></el-input-number>
       </el-col>
     </el-row>
     <span slot="footer" class="dialog-footer">
@@ -73,7 +73,7 @@ export default {
   },
   data() {
     return {
-      temp_vehicle: { id: "xx", depot: 1, load: 2, mileage: 50, count: 5 },
+      temp_vehicle: { id: "xx", depot: 1, load: 100, mileage: 50, count: 5 },
       // dialog_visible: this.visible,
     };
   },

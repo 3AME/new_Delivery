@@ -15,6 +15,7 @@
             icon="el-icon-delete"
             :style="'color: ' + (multipleSelection.length != 0 ? '#409eff' : '#cccccc') + ';'"
             :disabled="multipleSelection.length == 0"
+            @click="deleteSelected"
           >删除</el-button>
           <el-button
             class="btn-action"
@@ -36,7 +37,7 @@
             class="btn-action"
             type="text"
             icon="el-icon-search"
-            :style="'color: ' + (querys.length != 0 ? '#red' : '#cccccc') + ';'"
+            :style="'color: ' + (tasks.length != 0 ? '#red' : '#cccccc') + ';'"
             @click="deleteAll()"
             :disabled="querys.length == 0"
           >清空</el-button>
@@ -98,7 +99,7 @@
         layout="prev, pager, next, jumper"
         :current-page.sync="currentPage"
         :total="querys.length"
-        :page-size="20"
+        :page-size="10"
         @current-change="handleCurrentChange"
         style="padding: 20px"
       ></el-pagination>
@@ -169,6 +170,31 @@ export default {
       //   type: 'success'
       // })
     },
+    deleteSelected() {
+      this.$confirm("此操作将删除已选择的查询任务, 是否继续?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.$store.commit(
+            "d2admin/DELETE_QUERY_DATAS",
+            this.multipleSelection
+          );
+          this.handleCurrentChange(this.currentPage);
+          this.$notify({
+            title: "成功",
+            message: "删除成功",
+            type: "success",
+          });
+        })
+        .catch(() => {
+          this.$notify.info({
+            title: "消息",
+            message: "已取消删除",
+          });
+        });
+    },
     queryProblem(row) {
       let queryValue = {
         name: row.title, //距离优先
@@ -184,7 +210,9 @@ export default {
       });
     },
     deleteQuery(index, row) {
-      this.$store.commit("d2admin/DELETE_QUERY_DATA", index);
+      let datas = [];
+      datas.push(row);
+      this.$store.commit("d2admin/DELETE_QUERY_DATAS", row);
       this.handleCurrentChange(this.currentPage);
       this.$notify({
         title: "成功",
@@ -302,6 +330,10 @@ export default {
       const PAGE_LENGTH = 20;
       console.log(`当前页: ${val}`);
       let length = this.querys.length;
+      if (length == 0) {
+        this.tasks = [];
+        return;
+      }
       // if (val <= 0) return;
       // let start = (val - 1) * PAGE_LENGTH;
       // let end = start + PAGE_LENGTH;

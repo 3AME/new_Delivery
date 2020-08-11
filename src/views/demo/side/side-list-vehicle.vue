@@ -81,7 +81,7 @@
             v-model="vehicle.mileage"
             :step="5"
             :min="10"
-            :max="120"
+            :max="1000"
             label="车辆里程"
             size="mini"
           ></el-input-number>
@@ -90,7 +90,7 @@
       <el-row style="padding: 10px">
         <el-col :span="8">车辆数量：</el-col>
         <el-col :span="16">
-          <el-input-number v-model="vehicle.count" :min="1" :max="10" label="车辆里程" size="mini"></el-input-number>
+          <el-input-number v-model="vehicle.count" :min="1" :max="100" label="车辆数量" size="mini"></el-input-number>
         </el-col>
       </el-row>
       <div style="text-align: center; padding: 10px">

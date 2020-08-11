@@ -16,6 +16,11 @@ export default {
     },
     DELETE_ALL_QUERY_DATA: (state) => {
       state.querys.splice(0, state.querys.length)
+    },
+    DELETE_QUERY_DATAS: (state, querys) => {
+      for (let query of querys) {
+        state.querys.splice(state.querys.indexOf(query), 1);
+      }
     }
   },
   actions: {

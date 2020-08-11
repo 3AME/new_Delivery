@@ -109,21 +109,21 @@ export default {
   align-items: center;
 }
 
-// 过渡动画 横向渐变
-.fade-transverse-leave-active,
-.fade-transverse-enter-active {
-  transition: all 0.5s;
-}
-.fade-transverse-enter {
-  opacity: 0;
-  // transform: translateX(30px);
-  // transform: translateX(-30%);
-}
-.fade-transverse-leave-to {
-  opacity: 0;
-  // transform: translateX(-30px);
-  // transform: translateX(30%);
-}
+// // 过渡动画 横向渐变
+// .fade-transverse-leave-active,
+// .fade-transverse-enter-active {
+//   transition: all 0.5s;
+// }
+// .fade-transverse-enter {
+//   opacity: 0;
+//   // transform: translateX(30px);
+//   // transform: translateX(-30%);
+// }
+// .fade-transverse-leave-to {
+//   opacity: 0;
+//   // transform: translateX(-30px);
+//   // transform: translateX(30%);
+// }
 
 // 注册主题
 // @import "~@/assets/style/theme/register.scss";

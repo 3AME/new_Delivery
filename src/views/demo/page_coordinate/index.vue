@@ -221,6 +221,7 @@ export default {
       asideCollapse: true,
       showDialog: false,
       type: "",
+      temp_name: undefined,
     };
   },
 
@@ -253,6 +254,7 @@ export default {
       console.log("test");
       this.type = mode;
       this.showDialog = false;
+      this.queryValue.fileName = this.temp_name;
       if (this.type == "edit") {
         var me = this;
         setTimeout(function () {
@@ -293,7 +295,7 @@ export default {
     },
 
     handleUpload(file) {
-      this.queryValue.fileName = file.name;
+      this.temp_name = file.name;
       let workbook = xlsx.read(file.path, { type: "file" });
       let dsNodes = xlsx.utils.sheet_to_json(workbook.Sheets["节点信息"]);
       let dsVehicles = xlsx.utils.sheet_to_json(workbook.Sheets["车辆信息"]);
@@ -355,6 +357,9 @@ export default {
     },
 
     sheetsToProblem(dsNodes, dsVehicles) {
+      let svgChildren = d3.selectAll("svg#graph_coordinate > *");
+      svgChildren.remove();
+      this.queryValue.problem = {};
       let problem = {
         routeMode: false,
         nodes: [],
