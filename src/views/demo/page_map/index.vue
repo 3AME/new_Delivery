@@ -35,7 +35,7 @@
           icon="el-icon-set-up"
           style="color: #607d8b;"
         >设置算法参数</el-button>
-        
+
         <el-switch
           v-model="selectMode"
           active-text="点击选点"
@@ -773,6 +773,12 @@ export default {
         var item = this.drivingPath[i];
         if (item.start.name === tag.name || item.end.name === tag.name) {
           this.drivingPath.splice(i, 1);
+        }
+      }
+      for (var i = this.queryValue.problem.edges.length - 1; i >= 0; i--) {
+        var item = this.queryValue.problem.edges[i];
+        if (item.start.name === tag.name || item.end.name === tag.name) {
+          this.queryValue.problem.edges.splice(i, 1);
         }
       }
     },
