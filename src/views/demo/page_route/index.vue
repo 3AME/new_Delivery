@@ -81,7 +81,7 @@
         >{{ type == 'edit' ? '表格模式' : '图形模式' }}</el-button>
       </el-button-group>
     </el-header>
-    <el-container id="container_route" style="overflow:auto;overflow-x: hidden !important;">
+    <el-container style="overflow: auto" id="container_route">
       <route-list-side
         v-if="type == 'edit' && show"
         v-model="queryValue.problem"
@@ -89,7 +89,7 @@
         @onAddEdge="onAddEdge"
         @onShowDetail="onShowDetail"
       />
-      <el-main style="padding: 10px 20px; padding-bottom: 20px;" height="100%">
+      <el-main style="overflow:hidden; padding: 10px 20px; padding-bottom: 20px;" height="100%">
         <div class="draguploader card" v-if="!show">
           <el-upload
             :before-upload="handleUpload"
@@ -107,7 +107,6 @@
           </el-upload>
         </div>
         <svg
-          style="overflow:hidden;"
           id="graph_route"
           height="100%"
           width="100%"
@@ -115,10 +114,9 @@
           v-show="type == 'edit' && show"
         />
         <detail-table
-          style="overflow:auto !important;overflow-x: hidden !important;"
           height="100%"
           width="100%"
-          v-show="type == 'table' && show"
+          v-if="type == 'table' && show"
           v-model="queryValue.problem"
         />
       </el-main>

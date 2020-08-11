@@ -623,7 +623,7 @@ export default {
       var table = [];
 
       console.log(' problem.nodes', problem.nodes)
-      
+
       let depots = problem.nodes.filter((node) => {
         return node.type == "depot";
       });
@@ -653,7 +653,7 @@ export default {
         });
       } else {
         depots.forEach((node) => {
-          
+
           if(node.lat!=null){
             let row0 = [
               "物流中心" + node.id + "(" + node.lat + ", " + node.lng + ")",
@@ -665,7 +665,7 @@ export default {
             ];
             table.push(row0);
           }
-          
+
         });
 
         let row0 = ["各配送点与配送中心的距离（/KM）"];
@@ -1290,9 +1290,11 @@ export default {
       var edges = [];
 
       var map = new Map();
+      let indexs = new Map();
 
-      for (var i = 0; i < problem.nodes.length; i++) {
-        let node = problem.nodes[i];
+      problem.nodes.forEach((node, index) => {
+        console.log('id=' + node.id + " index=" + index);
+        indexs.set(node.id, index);
         let group = 1;
         if (node.type === "depot") {
           group = 2;
@@ -1301,21 +1303,28 @@ export default {
         } else if (node.type === "other") {
           group = 1;
         } else {
-          continue;
+          return;
         }
         nodes.push({ name: node.id.toString(), group: group });
-        // var name = i.toString()
-        // var group = 1;
-        // if (i === 0) {
-        //   group = 2;
-        // } else if (i <= problem.customers.length) {
-        //   group = 1.5;
-        // }
-        // nodes.push({ name: i.toString(), group: group });
-      }
+      });
+
+      // for (var i = 0; i < problem.nodes.length; i++) {
+      //   let node = problem.nodes[i];
+      //   let group = 1;
+      //   if (node.type === "depot") {
+      //     group = 2;
+      //   } else if (node.type === "customer") {
+      //     group = 1.5;
+      //   } else if (node.type === "other") {
+      //     group = 1;
+      //   } else {
+      //     continue;
+      //   }
+      //   nodes.push({ name: node.id.toString(), group: group });
+      // }
 
       problem.edges.forEach(function (edge) {
-        map.set(edge.u + "" + edge.v, edge.w);
+        map.set(edge.u + " " + edge.v, edge.w);
       });
 
       var legendTexts = [];
@@ -1341,15 +1350,16 @@ export default {
 
           trip.route.forEach(function (route, i) {
             if (i !== 0) {
-              var value = map.get(tempRoute + "" + route);
+              var value = map.get(tempRoute + " " + route);
               if (!value) {
-                value = map.get(route + "" + tempRoute);
+                value = map.get(route + " " + tempRoute);
               }
               // console.log("value=" + value);
               if (value > 0) {
+                console.log('tempRoute=' + tempRoute + " route=" + route);
                 edges.push({
-                  source: tempRoute,
-                  target: route,
+                  source: indexs.get(tempRoute),
+                  target: indexs.get(route),
                   value: value,
                   // vid: item.vid
                   vid: legendTexts.length,
@@ -1385,21 +1395,24 @@ export default {
         for (var i = 0; i < edges.length; i++) {
           var item = edges[i];
           if (
-            (edge.u === item.source && edge.v === item.target) ||
-            (edge.u === item.target && edge.v === item.source)
+            (indexs.get(edge.u) === item.source && indexs.get(edge.v) === item.target) ||
+            (indexs.get(edge.u) === item.target && indexs.get(edge.v) === item.source)
           ) {
             has = true;
             break;
           }
         }
         if (!has) {
+          console.log('u=' + edge.u + " v=" + edge.v);
           edges.push({
-            source: edge.u,
-            target: edge.v,
+            source: indexs.get(edge.u),
+            target: indexs.get(edge.v),
             value: edge.w,
           });
         }
       });
+
+      console.log('edges=' + JSON.stringify(edges));
 
       // var legendColors = d3
       //   .scaleOrdinal()

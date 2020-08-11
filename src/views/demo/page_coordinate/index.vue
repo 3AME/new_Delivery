@@ -83,13 +83,13 @@
         </el-button-group>
       </div>
     </el-header>
-    <el-container style="overflow:auto;overflow-x: hidden !important;" id="container_route">
+    <el-container style="overflow:auto" id="container_route">
       <coordinate-list-side
         v-if="type == 'edit' && show"
         v-model="queryValue.problem"
         @onChange="showGraph"
       />
-      <el-main style="padding: 10px 20px; padding-bottom: 20px;" height="100%">
+      <el-main style="overflow:hidden; padding: 10px 20px; padding-bottom: 20px;" height="100%">
         <div class="draguploader card" v-if="!show">
           <el-upload
             :before-upload="handleUpload"
@@ -117,7 +117,7 @@
         <detail-table
           height="100%"
           width="100%"
-          v-show="type == 'table' && show"
+          v-if="type == 'table' && show"
           v-model="queryValue.problem"
         />
       </el-main>

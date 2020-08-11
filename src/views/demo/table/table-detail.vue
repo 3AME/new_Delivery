@@ -53,6 +53,7 @@ export default {
     };
   },
   mounted () {
+    console.log('table-detail mounted');
       // 实现表头固定
       this.$nextTick(() => {
         // 初始化表格高度
@@ -72,6 +73,7 @@ export default {
       let padding = 30;
       console.log('tableTop = ' + tableTop);
       this.fixedHeight = windowHeight - tableTop - padding;
+      console.log('fixedHeight=' + this.fixedHeight);
     }
   }
 };
