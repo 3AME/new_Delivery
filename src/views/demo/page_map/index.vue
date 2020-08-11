@@ -8,7 +8,7 @@
         <el-button
           class="btn-action"
           type="text"
-          icon="el-icon-delete"
+          icon="el-icon-set-up"
           @click="visible = true"
           style="color: #409eff;"
           :disabled="queryValue.problem.nodes.length == 0"
@@ -632,6 +632,7 @@ export default {
               city: rs.addressComponents.city,
             };
             if (me.queryValue.problem.nodes.length == 0) {
+              path.demand = 0;
               path.type = "depot";
             } else {
               path.demand = 0.5;
@@ -734,6 +735,7 @@ export default {
               lat: point.lat,
             };
             if (me.queryValue.problem.nodes.length == 0) {
+              path.demand = 0;
               path.type = "depot";
             } else {
               path.demand = 0.1;

@@ -78,7 +78,7 @@
           type="text"
           icon="el-icon-set-up"
           style="color: #607d8b"
-        >{{ type == 'edit' ? '表格模式' : '编辑模式' }}</el-button>
+        >{{ type == 'edit' ? '表格模式' : '图形模式' }}</el-button>
       </el-button-group>
     </el-header>
     <el-container id="container_route" style="overflow:auto;overflow-x: hidden !important;">
@@ -155,7 +155,7 @@
         </el-col>
         <el-col :span="12">
           <div style="text-align: center; margin-top: 40px;margin-bottom: 40px;">
-            <el-button height="40px" class="btn-success" @click="selectShowMode('edit')">编辑模式</el-button>
+            <el-button height="40px" class="btn-success" @click="selectShowMode('edit')">图形模式</el-button>
           </div>
         </el-col>
       </el-row>
@@ -328,7 +328,6 @@ export default {
     },
 
     handleUpload(file) {
-      this.queryValue.fileName = file.name;
       let workbook = xlsx.read(file.path, { type: "file" });
       let dsNodes = xlsx.utils.sheet_to_json(workbook.Sheets["节点信息"]);
       let dsVehicles = xlsx.utils.sheet_to_json(workbook.Sheets["车辆信息"]);
@@ -346,6 +345,7 @@ export default {
         return false;
       }
       if (sheetFormat.IsRouteFile(dsNodes, dsVehicles)) {
+        this.queryValue.fileName = file.name;
         this.sheetsToProblem(dsNodes, dsVehicles);
         this.showDialog = true;
         // this.loading = true;

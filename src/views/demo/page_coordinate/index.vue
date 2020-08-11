@@ -79,7 +79,7 @@
             type="text"
             icon="el-icon-set-up"
             style="color: #607d8b"
-          >{{ type == 'edit' ? '表格模式' : '编辑模式' }}</el-button>
+          >{{ type == 'edit' ? '表格模式' : '图形模式' }}</el-button>
         </el-button-group>
       </div>
     </el-header>
@@ -146,7 +146,7 @@
         </el-col>
         <el-col :span="12">
           <div style="text-align: center; margin-top: 40px;margin-bottom: 40px;">
-            <el-button height="40px" class="btn-success" @click="selectShowMode('edit')">编辑模式</el-button>
+            <el-button height="40px" class="btn-success" @click="selectShowMode('edit')">图形模式</el-button>
           </div>
         </el-col>
       </el-row>
@@ -299,7 +299,12 @@ export default {
       let workbook = xlsx.read(file.path, { type: "file" });
       let dsNodes = xlsx.utils.sheet_to_json(workbook.Sheets["节点信息"]);
       let dsVehicles = xlsx.utils.sheet_to_json(workbook.Sheets["车辆信息"]);
-      if (!dsNodes || !dsVehicles) {
+      if (
+        !dsNodes ||
+        !dsVehicles ||
+        dsNodes.length == 0 ||
+        dsVehicles.length == 0
+      ) {
         this.$confirm("查询文件必须包含点信息和车辆信息", "格式错误", {
           confirmButtonText: "确定",
           showCancelButton: false,
@@ -308,6 +313,7 @@ export default {
         return false;
       }
       if (sheetFormat.IsCoordinateFile(dsNodes, dsVehicles)) {
+        this.queryValue.fileName = file.name;
         this.sheetsToProblem(dsNodes, dsVehicles);
         this.showDialog = true;
         // var me = this;
@@ -384,6 +390,9 @@ export default {
           }
         }
         aNodes.push(tmp);
+      }
+      for (let i = 0; i < aNodes.length; i++) {
+        aNodes[i]['name'] = aNodes[i]['id'];
       }
       problem["nodes"] = aNodes;
 
@@ -634,7 +643,7 @@ export default {
 .draguploader .el-upload-dragger {
   height: 100%;
   width: 100%;
-  /* padding: 12%; */
+  padding-top: 14%;
 }
 .draguploader .el-upload.el-upload--text {
   height: 100%;
