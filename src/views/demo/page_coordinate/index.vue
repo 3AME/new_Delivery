@@ -79,7 +79,7 @@
             type="text"
             icon="el-icon-set-up"
             style="color: #607d8b"
-          >{{ type == 'edit' ? '表格模式' : '编辑模式' }}</el-button>
+          >{{ type == 'edit' ? '表格模式' : '图形模式' }}</el-button>
         </el-button-group>
       </div>
     </el-header>
@@ -146,7 +146,7 @@
         </el-col>
         <el-col :span="12">
           <div style="text-align: center; margin-top: 40px;margin-bottom: 40px;">
-            <el-button height="40px" class="btn-success" @click="selectShowMode('edit')">编辑模式</el-button>
+            <el-button height="40px" class="btn-success" @click="selectShowMode('edit')">图形模式</el-button>
           </div>
         </el-col>
       </el-row>
