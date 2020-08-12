@@ -46,7 +46,7 @@
                     />
                     <!-- </div> -->
 
-                    <div class="media-body">
+                    <div class="media-body" style="vertical-align:center">
                          <ul>
                         川流系统主要用来解决
                         <code>VRP</code>与

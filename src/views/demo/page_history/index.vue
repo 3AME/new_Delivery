@@ -36,8 +36,8 @@
           <el-button
             class="btn-action"
             type="text"
-            icon="el-icon-search"
-            :style="'color: ' + (tasks.length != 0 ? '#red' : '#cccccc') + ';'"
+            icon="el-icon-circle-close"
+            :style="'color: ' + (tasks.length != 0 ? '#666666' : '#cccccc') + ';'"
             @click="deleteAll()"
             :disabled="querys.length == 0"
           >清空</el-button>
@@ -99,7 +99,7 @@
         layout="prev, pager, next, jumper"
         :current-page.sync="currentPage"
         :total="querys.length"
-        :page-size="10"
+        :page-size="5"
         @current-change="handleCurrentChange"
         style="padding: 20px"
       ></el-pagination>
@@ -327,7 +327,7 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(this.querys);
-      const PAGE_LENGTH = 20;
+      const PAGE_LENGTH = 5;
       console.log(`当前页: ${val}`);
       let length = this.querys.length;
       if (length == 0) {

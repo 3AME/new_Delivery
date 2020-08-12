@@ -73,14 +73,14 @@ export default {
   },
   data() {
     return {
-      temp_vehicle: { id: "xx", depot: 1, load: 100, mileage: 50, count: 5 },
+      temp_vehicle: { id: "五菱", depot: 1, load: 100, mileage: 50, count: 5 },
       // dialog_visible: this.visible,
     };
   },
   methods: {
     onOpen() {
       this.temp_vehicle = {
-        id: "xx",
+        id: "五菱",
         depot: 1,
         load: 2,
         mileage: 50,
