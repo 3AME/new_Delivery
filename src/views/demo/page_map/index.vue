@@ -796,6 +796,7 @@ export default {
         0,
         this.queryValue.problem.vehicles.length
       );
+      this.drivingPath.splice(0, this.drivingPath.length);
     },
     // 显示输入框
     showInput() {

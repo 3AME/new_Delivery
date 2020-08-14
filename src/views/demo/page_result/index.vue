@@ -25,7 +25,7 @@
         class="aside"
         height="100%"
       >
-        <el-card class="box-card">
+        <el-card style="margin: 10px 30px;">
           <div slot="header" class="clearfix">
             <span>最优结果</span>
             <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
@@ -64,7 +64,7 @@
           <!-- <div class="text-item" v-if="result">平均满载率: {{ (result.loadFactor * 100).toFixed(2) }} %</div> -->
         </el-card>
 
-        <el-card class="box-card">
+        <el-card style="margin: 10px 30px;">
           <span>路线详情</span>
           <el-checkbox
             v-model="checked"
@@ -75,8 +75,7 @@
         </el-card>
 
         <el-card
-          class="box-card"
-          style="margin-top: 10px;"
+          style="margin: 10px 30px;"
           v-for="(route, index) in routes"
           :key="index"
           @click.native.prevent="toggleVisible(route, index)"
@@ -755,6 +754,7 @@ export default {
 
         let body = html.getElementsByTagName("body")[0];
         body.setAttribute('id', 'app');
+        body.setAttribute('style', 'display: flex; overflow: hidden; height: 100%; width: 100%;');
         let children = body.childNodes;
         for (var i = children.length - 1; i >= 0; i--) {
           body.removeChild(children[i]);
@@ -2293,10 +2293,6 @@ export default {
   font-size: 14px;
   padding-top: 4px;
   padding-bottom: 4px;
-}
-
-.box-card {
-  margin: 10px 30px;
 }
 
 .container {

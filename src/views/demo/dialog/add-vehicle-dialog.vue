@@ -73,7 +73,7 @@ export default {
   },
   data() {
     return {
-      temp_vehicle: { id: "xx", depot: 1, load: 100, mileage: 50, count: 5 },
+      temp_vehicle: { id: "xx", depot: 1, load: 100, mileage: 100, count: 5 },
       // dialog_visible: this.visible,
     };
   },
@@ -82,8 +82,8 @@ export default {
       this.temp_vehicle = {
         id: "xx",
         depot: 1,
-        load: 2,
-        mileage: 50,
+        load: 50,
+        mileage: 100,
         count: 5,
       };
       let depots = this.value.nodes.filter(node => {return node.type == 'depot'});

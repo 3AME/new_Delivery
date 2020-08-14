@@ -132,12 +132,13 @@ export default {
         this.value.speedValue = 10;
       }
       if (this.value.maxIter == "") {
-        this.value.maxIter = 200;
+        this.value.maxIter = 300;
       }
       console.log(this.value.distancePrior);
       console.log(this.value.timePrior);
       console.log(this.value.loadPrior);
       console.log(this.value.speedValue);
+      console.log(this.value.maxIter);
       done();
       this.$notify({
         title: "成功",
