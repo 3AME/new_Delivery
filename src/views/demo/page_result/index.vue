@@ -457,7 +457,14 @@ export default {
           let [flag, payload] = data.split(" ");
           // console.log("flag=" + flag);
           // console.log("payload=" + payload);
-          payload = eval("(" + payload + ")");
+          try {
+            payload = eval("(" + payload + ")");
+          } catch (ex) {
+            console.log('后端返回错误数据，可能是输入有误');
+            solver.kill();
+            this.$route.go(-1);
+          }
+          
 
           switch (flag) {
             case "msg":

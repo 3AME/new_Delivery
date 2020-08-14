@@ -1,11 +1,22 @@
 <template>
   <el-container class="content-container" style="overflow:auto;overflow-x: hidden !important;">
     <!-- <template slot="header">常见的一些问题</template> -->
+    <el-header height="auto" style="padding: 20px">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="text-center">
+            <strong style="color: #5673ff; font-size: 24px">常见问题</strong>
+            <p class="text-muted">热点问题快速解答</p>
+          </div>
+        </div>
+      </div>
+    </el-header>
+    <el-main>
     <div class="row" style="margin-right: 2em; margin-left: 2em;">
       <div class="col-lg-12">
         <div>
           <!-- class="card" -->
-          <div style="height:2em"></div>
+          <!-- <div style="height:2em"></div>
           <div class="row justify-content-center">
             <div class="col-md-6">
               <div class="text-center">
@@ -13,7 +24,7 @@
                 <p class="text-muted">热点问题快速解答</p>
               </div>
             </div>
-          </div>
+          </div> -->
           <div class="row m-t-30">
             <div class="col-lg-4">
               <div class="card faq-box border-success">
@@ -145,7 +156,7 @@
         </div>
       </div>
     </div>
-    <d2-module-index-banner slot="footer" v-bind="banner" />
+    </el-main>
     <!-- </template> -->
   </el-container>
 </template>

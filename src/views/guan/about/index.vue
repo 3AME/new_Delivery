@@ -1,26 +1,36 @@
 <template>
   <el-container class="content-container">
-    <el-main style="width: 100%;">
+    <el-header height="auto" style="padding: 20px">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="text-center">
+            <strong style="color: #5673ff; font-size: 24px">关于我们</strong>
+            <p class="text-muted">川流诞生的背后</p>
+          </div>
+        </div>
+      </div>
+    </el-header>
+    <el-main>
       <section id="cd-timeline" class="cd-container">
         <div style="height:2em"></div>
-        <div style="text-align:center;width:100%">
+        <!-- <div style="text-align:center;width:100%">
           <img
             height="10%"
             width="45%"
-            style="padding: 10px"
+            style="padding: 20px"
             alt="200x200"
             src="../../../assets/images/small/app_name_with_logo.png"
           />
-        </div>
-        <div style="height:5em"></div>
+        </div> -->
+        <!-- <div style="height:5em"></div> -->
         <!-- <el-divider></el-divider> -->
-        <div class="row">
+        <div class="row;padding:2em">
           <div class="col-md-12 section-title">
             <h2 style="text-align:center">系统背景</h2>
           </div>
         </div>
         <div style="height:3em"></div>
-        <div class="row">
+        <div class="row;padding:2em">
           <el-card shadow="hover" :body-style="{ padding: '2em' }">
             <br />
             <p style="text-indent:2em">
@@ -42,7 +52,7 @@
           </div>
         </div>
         <div style="height:3em"></div>
-        <div class="row">
+        <div class="row;padding:2em">
           <el-card
             shadow="hover"
             :body-style="{ padding: '2em' }"
@@ -81,7 +91,7 @@
           </div>
         </div>
         <div style="height:3em"></div>
-        <div class="row">
+        <div class="row;padding:2em">
           <el-card shadow="hover" :body-style="{ padding: '2em' }">
             <br />
             <p style="text-indent:2em">
@@ -103,9 +113,10 @@
         <div class="row">
           <div class="col-lg-5">
             <div class="card m-b-30">
-              <el-card shadow="hover">
-                <h3>队长</h3>
-                <h5 style="margin-left:2em">刘安芳</h5>
+              <el-card shadow="hover" :body-style="{ padding: '2em' }">
+                <h3 style="display:inline">队长</h3>
+                <h5 style="display:inline;margin-left:2em">刘安芳</h5>
+                <div style="height:2em"></div>
                 <img src="../../../assets/images/people1.png" />
                 <ul style="margin-left:6em;margin-top:-6em">
                   <li>项目统筹规划</li>
@@ -122,9 +133,10 @@
           </div>
           <div class="col-lg-5">
             <div class="card m-b-30">
-              <el-card shadow="hover">
-                <h3>副队长</h3>
-                <h5 style="margin-left:2em">江良伟</h5>
+              <el-card shadow="hover" :body-style="{ padding: '2em' }">
+                <h3 style="display:inline">副队长</h3>
+                <h5 style="display:inline;margin-left:2em">江良伟</h5>
+                <div style="height:2em"></div>
                 <img src="../../../assets/images/people2.png" />
                 <ul style="margin-left:6em;margin-top:-6em">
                   <li>协助项目统筹规划</li>
@@ -141,9 +153,10 @@
         <div class="row">
           <div class="col-lg-5">
             <div class="card m-b-30">
-              <el-card shadow="hover">
-                <h3>队员</h3>
-                <h5 style="margin-left:2em">王凯槟</h5>
+              <el-card shadow="hover" :body-style="{ padding: '2em' }">
+                <h3 style="display:inline">队员</h3>
+                <h5 style="display:inline;margin-left:2em">王凯槟</h5>
+                <div style="height:2em"></div>
                 <img src="../../../assets/images/people3.png" />
                 <ul style="margin-left:6em;margin-top:-6em">
                   <li>HGA择优算法编写</li>
@@ -160,9 +173,11 @@
           </div>
           <div class="col-lg-5">
             <div class="card m-b-30">
-              <el-card shadow="hover">
-                <h3>队员</h3>
-                <h5 style="margin-left:2em">张彭俊</h5>
+              <el-card shadow="hover" :body-style="{ padding: '2em' }">
+                <h3 style="display:inline">队员</h3>
+                <h5 style="display:inline;margin-left:2em">张彭俊</h5>
+                <div style="height:2em"></div>
+                
                 <img src="../../../assets/images/people3.png" />
                 <ul style="margin-left:6em;margin-top:-6em">
                   <li>地图选择功能制作</li>
