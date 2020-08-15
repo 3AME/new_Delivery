@@ -1,6 +1,6 @@
 <template>
   <el-drawer
-    :before-close="handleClose"
+    :beforeClose="handleClose"
     :visible.sync="value.drawerShow"
     direction="rtl"
     custom-class="demo-drawer"
@@ -18,6 +18,7 @@
                 autocomplete="off"
                 clearable
                 placeholder="200"
+                @change="ParameterChanged"
               ></el-input>
             </el-form-item>
             <el-form-item label="距离优先参数" :label-width="formLabelWidth">
@@ -27,6 +28,7 @@
                 autocomplete="off"
                 clearable
                 placeholder="5"
+                @change="ParameterChanged"
               ></el-input>
             </el-form-item>
             <el-form-item label="时间优先参数" :label-width="formLabelWidth">
@@ -36,6 +38,7 @@
                 autocomplete="off"
                 clearable
                 placeholder="1"
+                @change="ParameterChanged"
               ></el-input>
             </el-form-item>
             <el-form-item label="满载率优先参数" :label-width="formLabelWidth">
@@ -45,25 +48,18 @@
                 autocomplete="off"
                 clearable
                 placeholder="4"
+                @change="ParameterChanged"
               ></el-input>
             </el-form-item>
             <el-form-item label="车辆速度(km/h)" :label-width="formLabelWidth">
-              <el-select
-                size="medium"
+              <el-input
+                size="mini"
                 v-model="value.speedValue"
-                filterable
-                allow-create
-                style="font-size:12px"
-                placeholder="10"
+                autocomplete="off"
                 clearable
-              >
-                <el-option
-                  v-for="item in vehicles_speed"
-                  :key="item.speed_value"
-                  :label="item.label"
-                  :value="item.speed_value"
-                ></el-option>
-              </el-select>
+                placeholder="10"
+                @change="ParameterChanged"
+              ></el-input>
             </el-form-item>
           </el-card>
           <el-card style="margin: 10px;">
@@ -76,10 +72,6 @@
             </el-form-item>
           </el-card>
         </el-form>
-        <div class="demo-drawer__footer" style="text-align: center;">
-          <el-button style="margin-right:40px;" @click="$refs.drawer.closeDrawer()">取 消</el-button>
-          <el-button class="btn-success" @click="closeDrawer" style="margin-left:40px;">确 定</el-button>
-        </div>
       </div>
     </d2-container>
   </el-drawer>
@@ -92,53 +84,62 @@ export default {
       type: Object
     }
   },
+
   data() {
     return {
       saveConfig: false,
-      formLabelWidth: "110px",
-      vehicles_speed: [
-        {
-          speed_value: 10,
-          label: 10
-        },
-        {
-          speed_value: 60,
-          label: 60
-        }
-      ]
+      formLabelWidth: "110px"
     };
   },
+
   methods: {
-    closeDrawer() {
-      this.saveConfig = true;
-      this.$refs.drawer.closeDrawer();
+    _NumberFilter(s, low, upper) {
+      let num = parseInt(s.toString().replace(/\D/g, ''));
+      if (num < low) return low;
+      if (num > upper) return upper;
+      return num;
     },
+
+    ParameterChanged() {
+      this.value.maxIter = this._NumberFilter(this.value.maxIter, 1, 20000);
+      this.value.distancePrior = this._NumberFilter(this.value.distancePrior, 0, 100);
+      this.value.timePrior = this._NumberFilter(this.value.timePrior, 0, 100);
+      this.value.loadPrior = this._NumberFilter(this.value.loadPrior, 0, 100);
+      this.value.speedValue = this._NumberFilter(this.value.speedValue, 1, 120);
+      this.saveConfig = true;
+    },
+
+    // closeDrawer() {
+    //   this.saveConfig = true;
+    //   this.$refs.drawer.closeDrawer();
+    // },
+    
     handleClose(done) {
       if (!this.saveConfig) {
         done();
         return;
       }
       this.saveConfig = false;
-      if (this.value.distancePrior == "") {
-        this.value.distancePrior = 5;
-      }
-      if (this.value.timePrior == "") {
-        this.value.timePrior = 1;
-      }
-      if (this.value.loadPrior == "") {
-        this.value.loadPrior = 4;
-      }
-      if (this.value.speedValue == "") {
-        this.value.speedValue = 10;
-      }
-      if (this.value.maxIter == "") {
-        this.value.maxIter = 300;
-      }
-      console.log(this.value.distancePrior);
-      console.log(this.value.timePrior);
-      console.log(this.value.loadPrior);
-      console.log(this.value.speedValue);
-      console.log(this.value.maxIter);
+      // if (this.value.distancePrior == "") {
+      //   this.value.distancePrior = 5;
+      // }
+      // if (this.value.timePrior == "") {
+      //   this.value.timePrior = 1;
+      // }
+      // if (this.value.loadPrior == "") {
+      //   this.value.loadPrior = 4;
+      // }
+      // if (this.value.speedValue == "") {
+      //   this.value.speedValue = 10;
+      // }
+      // if (this.value.maxIter == "") {
+      //   this.value.maxIter = 300;
+      // }
+      // console.log(this.value.distancePrior);
+      // console.log(this.value.timePrior);
+      // console.log(this.value.loadPrior);
+      // console.log(this.value.speedValue);
+      // console.log(this.value.maxIter);
       done();
       this.$notify({
         title: "成功",
