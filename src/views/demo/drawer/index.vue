@@ -1,6 +1,6 @@
 <template>
   <el-drawer
-    :beforeClose="handleClose"
+    :before-close="handleClose"
     :visible.sync="value.drawerShow"
     direction="rtl"
     custom-class="demo-drawer"
@@ -73,12 +73,12 @@
           </el-card>
         </el-form>
       </el-main>
-      <el-footer height="auto" style="padding: 40px">
+      <!-- <el-footer height="auto" style="padding: 40px">
         <el-row justify="space-around">
           <el-col :span="12" style="text-align: center"><el-button @click="$refs.drawer.closeDrawer()">取 消</el-button></el-col>
           <el-col :span="12" style="text-align: center"><el-button class="btn-success" @click="closeDrawer">确 定</el-button></el-col>
         </el-row>
-      </el-footer>
+      </el-footer> -->
     </el-container>
   </el-drawer>
 </template>

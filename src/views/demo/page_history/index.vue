@@ -212,7 +212,7 @@ export default {
     deleteQuery(index, row) {
       let datas = [];
       datas.push(row);
-      this.$store.commit("d2admin/DELETE_QUERY_DATAS", row);
+      this.$store.commit("d2admin/DELETE_QUERY_DATAS", datas);
       this.handleCurrentChange(this.currentPage);
       this.$notify({
         title: "成功",
