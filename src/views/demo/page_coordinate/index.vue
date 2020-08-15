@@ -123,7 +123,7 @@
       </el-main>
       <vehicle-list-side v-if="type == 'edit' && show" v-model="queryValue.problem" />
     </el-container>
-    <drawer v-model="drawerValue" />
+    <drawer v-model="drawerValue" height="100%"/>
     <query-dialog v-model="queryValue"></query-dialog>
     <add-coordinate-dialog
       v-model="queryValue.problem.nodes"

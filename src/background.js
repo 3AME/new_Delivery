@@ -74,15 +74,22 @@ function createWindow () {
   })
 
 
-  ipcMain.on('open-save-dialog', (event, fileName) => {
+  ipcMain.on('open-save-dialog', (event, fileName, suffix) => {
     console.log('event=' + Object.keys(event))
     console.log('fileName=' + fileName)
+    console.log('suffix=' + suffix);
+    let filters = [];
+    if (suffix == 'html') {
+      filters.push({ name: 'Html Files', extensions: ['html', 'htm'] })
+    } else if (suffix == 'xlsx') {
+      filters.push({ name: 'Excel Files', extensions: ['xlsx', 'xls'] })
+    }
+    filters.push({ name: 'All Files', extensions: ['*'] })
+
     dialog.showSaveDialog({
       defaultPath: fileName, // '导出数据'
       title: '导出',
-      filters: [
-        { name: 'Excel Files', extensions: ['xlsx', 'xls'] },
-        { name: 'All Files', extensions: ['*'] } ]
+      filters: filters
     }, res => {
       win.webContents.send('selectedItem', res)
     })

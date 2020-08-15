@@ -7,9 +7,9 @@
     ref="drawer"
     :with-header="false"
   >
-    <d2-container>
-      <div class="demo-drawer__content">
-        <el-form>
+    <el-container style="overflow: hidden" class="content-container">
+      <el-main :height="fixedHeight" style="overflow: auto;">
+        <el-form :height="fixedHeight">
           <el-card style="margin: 10px;">
             <el-form-item label="迭代次数" :label-width="formLabelWidth">
               <el-input
@@ -76,12 +76,14 @@
             </el-form-item>
           </el-card>
         </el-form>
-        <div class="demo-drawer__footer" style="text-align: center;">
-          <el-button style="margin-right:40px;" @click="$refs.drawer.closeDrawer()">取 消</el-button>
-          <el-button class="btn-success" @click="closeDrawer" style="margin-left:40px;">确 定</el-button>
-        </div>
-      </div>
-    </d2-container>
+      </el-main>
+      <el-footer height="auto" style="padding: 40px">
+        <el-row justify="space-around">
+          <el-col :span="12" style="text-align: center"><el-button @click="$refs.drawer.closeDrawer()">取 消</el-button></el-col>
+          <el-col :span="12" style="text-align: center"><el-button class="btn-success" @click="closeDrawer">确 定</el-button></el-col>
+        </el-row>
+      </el-footer>
+    </el-container>
   </el-drawer>
 </template>
 
@@ -96,6 +98,7 @@ export default {
     return {
       saveConfig: false,
       formLabelWidth: "110px",
+      fixedHeight: 300,
       vehicles_speed: [
         {
           speed_value: 10,

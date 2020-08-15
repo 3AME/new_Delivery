@@ -98,6 +98,10 @@ body {
   background-color: transparent;
 }
 
+#app .el-drawer {
+    flex-direction: row;
+}
+
 #app .btn-action {
   padding-top: 20px;
   padding-bottom: 20px;
