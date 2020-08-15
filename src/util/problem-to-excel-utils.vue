@@ -117,7 +117,7 @@ export default {
         aoa.push(row);
       }
     }
-    
+
     let worksheet = xlsx.utils.aoa_to_sheet(aoa);
 
     // 格式说明
@@ -130,7 +130,7 @@ export default {
         "格式说明");
       worksheet[cell].c.hidden = true;
     }
-    
+
     return worksheet;
   },
   coordinateToExcel(me, problem, fileName = "坐标查询文件") {
@@ -227,7 +227,7 @@ export default {
         "格式说明");
       nodeSheet[cell].c.hidden = true;
     }
-    
+
     xlsx.utils.book_append_sheet(
       workbook,
       nodeSheet,
@@ -244,7 +244,7 @@ export default {
   },
   _WriteFile(me, workbook, fileName) {
     // let me = this;
-    ipcRenderer.send("open-save-dialog", fileName);
+    ipcRenderer.send("open-save-dialog", fileName, 'xlsx');
     ipcRenderer.once("selectedItem", function (e, path) {
       console.log("writeFile e.name=" + e.name);
       console.log("writeFile e.message=" + e.message);

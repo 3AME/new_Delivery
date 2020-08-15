@@ -123,7 +123,7 @@
       </el-main>
       <vehicle-list-side v-if="type == 'edit' && show" v-model="queryValue.problem" />
     </el-container>
-    <drawer v-model="drawerValue" />
+    <drawer v-model="drawerValue" height="100%"/>
     <query-dialog v-model="queryValue"></query-dialog>
     <add-coordinate-dialog
       v-model="queryValue.problem.nodes"
@@ -489,12 +489,16 @@ export default {
             return node.name;
           }
         );
+
+        // 设置参数
+        this.queryValue.problem.distancePrior = this.drawerValue.distancePrior,
+        this.queryValue.problem.timePrior = this.drawerValue.timePrior,
+        this.queryValue.problem.loadPrior = this.drawerValue.loadPrior,
+        this.queryValue.problem.speed = this.drawerValue.speedValue,
+        this.queryValue.problem.maxiter = this.drawerValue.maxIter,
+
         this.queryValue.show = true;
       }
-    },
-
-    handleChange(val) {
-      // console.log(val);
     },
 
     handleDownload() {

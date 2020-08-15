@@ -464,7 +464,7 @@ export default {
             solver.kill();
             this.$route.go(-1);
           }
-          
+
 
           switch (flag) {
             case "msg":
@@ -787,10 +787,10 @@ export default {
 
       let me = this;
 
-      ipcRenderer.send("open-save-dialog", fileName);
+      ipcRenderer.send("open-save-dialog", fileName, isExcel ? 'xlsx' : 'html');
       // let jsonObj = JSON.stringify(this.result);
       ipcRenderer.once("selectedItem", function (e, path) {
-        if (path != null) {
+        if (path) {
           if (isExcel) {
             xlsx.writeFile(sourse, path);
             me.$notify({
