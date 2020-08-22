@@ -16,7 +16,7 @@ protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: tru
 
 function createWindow () {
   // Create the browser window.
-  // Menu.setApplicationMenu(null)
+  Menu.setApplicationMenu(null)
   let size = screen.getPrimaryDisplay().workAreaSize
   let width = parseInt(size.width * 0.8)
   let height = parseInt(size.height * 0.8)
@@ -29,8 +29,8 @@ function createWindow () {
       nodeIntegration: true
     },
     show: false,
-    // transparent: true,
-    // frame: false,
+    transparent: true,
+    frame: false,
   })
   // win.maximize()
   win.show()
