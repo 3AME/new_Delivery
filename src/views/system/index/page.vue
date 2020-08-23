@@ -10,7 +10,7 @@
             src="../../../assets/images/small/app_name_with_logo.png"
           />
           <div
-            class="card"
+            class="shadow-card"
             style="margin-left: 15%; margin-top: 10px; margin-right: 15%; margin-bottom: 10px;padding: 2%"
           >
             <el-row>
@@ -29,7 +29,7 @@
           <el-row style="margin-left: 15%; margin-right: 15%;">
             <el-col :span="12" style="height:100%; padding-right: 1%">
               <div
-                class="card"
+                class="shadow-card"
                 style="height:100%; width: 100%; padding-top: 5%; padding-bottom: 5%;"
                 @click="goToPage('page_coordinate')"
               >
@@ -52,7 +52,7 @@
             </el-col>
             <el-col :span="12" style="height:100%; padding-left: 1%">
               <div
-                class="card"
+                class="shadow-card"
                 style="height:100%; width: 100%; padding-top: 5%; padding-bottom: 5%;"
                 @click="goToPage('page_route')"
               >
@@ -74,7 +74,7 @@
             </el-col>
           </el-row>
           <div
-            class="card"
+            class="shadow-card"
             style="margin-left: 15%; margin-top: 10px; margin-right: 15%; margin-bottom: 10px; padding: 2%"
             @click="goToPage('page_map')"
           >

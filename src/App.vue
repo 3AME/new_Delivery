@@ -114,8 +114,22 @@ body {
 #app .card {
   border-radius: 12px;
   /* box-shadow: 2px 2px 2px 2px grey; */
-  box-shadow: 0 2px 12px 0 #eeeeee;
+  // box-shadow: 0 2px 12px 0 #eeeeee;
+  background:#f6f7fb;
   // padding: 10px;
+}
+
+#app .shadow-card {
+  border-radius: 12px;
+  /* box-shadow: 2px 2px 2px 2px grey; */
+  box-shadow: 0 2px 12px 0 #eeeeee;
+  background:#fff;
+  // padding: 10px;
+}
+
+#app .el-card {
+  background:#f6f7fb;
+  box-shadow: 0 2px 12px 0 #f3f3f3;
 }
 
 #app .vertical-center {

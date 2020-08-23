@@ -20,11 +20,7 @@
       </div>
     </el-header>
     <el-container style="display: flex;overflow: hidden; height: 100%; width: 100%;">
-      <el-aside
-        width="25%"
-        class="aside"
-        height="100%"
-      >
+      <el-aside width="25%" class="aside" height="100%">
         <el-card style="margin: 10px 30px;">
           <div slot="header" class="clearfix">
             <span>最优结果</span>
@@ -271,7 +267,7 @@ export default {
     let costSvg = d3.selectAll("svg#cost_svg > *");
     // console.log("d3.selectAll()=" + svgChildren.size());
     let queryValue = this.$route.query.queryValue;
-    console.log('queryValue=' + JSON.stringify(queryValue));
+    console.log("queryValue=" + JSON.stringify(queryValue));
     if (!queryValue.problem) {
       this.$router.go(-1);
       return;
@@ -460,11 +456,10 @@ export default {
           try {
             payload = eval("(" + payload + ")");
           } catch (ex) {
-            console.log('后端返回错误数据，可能是输入有误');
+            console.log("后端返回错误数据，可能是输入有误");
             solver.kill();
             this.$route.go(-1);
           }
-
 
           switch (flag) {
             case "msg":
@@ -628,7 +623,7 @@ export default {
       var problem = this.problem;
       var table = [];
 
-      console.log(' problem.nodes', problem.nodes)
+      console.log(" problem.nodes", problem.nodes);
 
       let depots = problem.nodes.filter((node) => {
         return node.type == "depot";
@@ -659,19 +654,15 @@ export default {
         });
       } else {
         depots.forEach((node) => {
-
-          if(node.lat!=null){
+          if (node.lat != null) {
             let row0 = [
               "物流中心" + node.id + "(" + node.lat + ", " + node.lng + ")",
             ];
             table.push(row0);
-          }else{
-              let row0 = [
-              "物流中心" + node.id + "(" + node.name +")",
-            ];
+          } else {
+            let row0 = ["物流中心" + node.id + "(" + node.name + ")"];
             table.push(row0);
           }
-
         });
 
         let row0 = ["各配送点与配送中心的距离（/KM）"];
@@ -760,8 +751,11 @@ export default {
         html.innerHTML = test;
 
         let body = html.getElementsByTagName("body")[0];
-        body.setAttribute('id', 'app');
-        body.setAttribute('style', 'display: flex; overflow: hidden; height: 100%; width: 100%;');
+        body.setAttribute("id", "app");
+        body.setAttribute(
+          "style",
+          "display: flex; overflow: hidden; height: 100%; width: 100%;"
+        );
         let children = body.childNodes;
         for (var i = children.length - 1; i >= 0; i--) {
           body.removeChild(children[i]);
@@ -787,7 +781,7 @@ export default {
 
       let me = this;
 
-      ipcRenderer.send("open-save-dialog", fileName, isExcel ? 'xlsx' : 'html');
+      ipcRenderer.send("open-save-dialog", fileName, isExcel ? "xlsx" : "html");
       // let jsonObj = JSON.stringify(this.result);
       ipcRenderer.once("selectedItem", function (e, path) {
         if (path) {
@@ -1300,7 +1294,7 @@ export default {
       let indexs = new Map();
 
       problem.nodes.forEach((node, index) => {
-        console.log('id=' + node.id + " index=" + index);
+        console.log("id=" + node.id + " index=" + index);
         indexs.set(node.id, index);
         let group = 1;
         if (node.type === "depot") {
@@ -1363,7 +1357,7 @@ export default {
               }
               // console.log("value=" + value);
               if (value > 0) {
-                console.log('tempRoute=' + tempRoute + " route=" + route);
+                console.log("tempRoute=" + tempRoute + " route=" + route);
                 edges.push({
                   source: indexs.get(tempRoute),
                   target: indexs.get(route),
@@ -1402,15 +1396,17 @@ export default {
         for (var i = 0; i < edges.length; i++) {
           var item = edges[i];
           if (
-            (indexs.get(edge.u) === item.source && indexs.get(edge.v) === item.target) ||
-            (indexs.get(edge.u) === item.target && indexs.get(edge.v) === item.source)
+            (indexs.get(edge.u) === item.source &&
+              indexs.get(edge.v) === item.target) ||
+            (indexs.get(edge.u) === item.target &&
+              indexs.get(edge.v) === item.source)
           ) {
             has = true;
             break;
           }
         }
         if (!has) {
-          console.log('u=' + edge.u + " v=" + edge.v);
+          console.log("u=" + edge.u + " v=" + edge.v);
           edges.push({
             source: indexs.get(edge.u),
             target: indexs.get(edge.v),
@@ -1419,7 +1415,7 @@ export default {
         }
       });
 
-      console.log('edges=' + JSON.stringify(edges));
+      console.log("edges=" + JSON.stringify(edges));
 
       // var legendColors = d3
       //   .scaleOrdinal()
@@ -1982,10 +1978,13 @@ export default {
         .attr("fill", "#02c58d");
 
       gs.append("text")
-        .attr("x", (d) => xScale(d.id)) //  + xScale.bandwidth()/4
+        .attr("x", (d) => xScale(d.id) + xScale.bandwidth() / 4) //  + xScale.bandwidth()/4
         .attr("y", (d) => yScale(d.load) - 2)
         .attr("dx", xScale.step() / 4)
         .attr("dy", 0)
+        // .attr("transform", `translate(-50%, 50%)`)
+        .attr("text-anchor", "middle")
+        .attr("class", "mytest")
         .style("font-size", "10px")
         .text(function (d) {
           return d.load;
@@ -2100,10 +2099,12 @@ export default {
         .attr("fill", "#409EFF");
 
       gs.append("text")
-        .attr("x", (d) => xScale(d.id)) //  + xScale.bandwidth()/4
+        .attr("x", (d) => xScale(d.id) + xScale.bandwidth() / 4) //  + xScale.bandwidth()/4
         .attr("y", (d) => yScale(d.distance) - 5)
         .attr("dx", xScale.step() / 4) // xScale.step()/2
         .attr("dy", 0)
+        .attr("text-anchor", "middle")
+        .attr("class", "mytest")
         .style("font-size", "12px")
         .text(function (d) {
           return d.distance.toFixed(1);
@@ -2169,7 +2170,7 @@ export default {
       test
         .selectAll("text")
         // .style("font-size", "8px")
-        .style("text-anchor", "start");
+        .style("text-anchor", "middle");
       // .attr("transform", "rotate(45, -10, 10)");
       test
         .append("text")
@@ -2209,10 +2210,12 @@ export default {
         .attr("fill", "#409EFF");
 
       gs.append("text")
-        .attr("x", (d) => xScale(d.id)) //  + xScale.bandwidth()/4
+        .attr("x", (d) => xScale(d.id) + xScale.bandwidth() / 4) //  + xScale.bandwidth()/4
         .attr("y", (d) => yScale(d.distance) - 5)
         .attr("dx", xScale.step() / 4) // xScale.step()/2
         .attr("dy", 0)
+        .attr("text-anchor", "middle")
+        .attr("class", "mytest")
         .style("font-size", "12px")
         .text(function (d) {
           return d.distance.toFixed(1);
@@ -2295,7 +2298,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 .text-item {
   font-size: 14px;
   padding-top: 4px;

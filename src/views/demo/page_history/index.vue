@@ -46,10 +46,10 @@
     </el-header>
     <el-main>
       <el-table
-        class="card"
+        class="shadow-card"
         :data="tasks"
         height="100%"
-        style="padding: 20px 0"
+        style="padding: 20px 0;"
         @selection-change="handleSelectionChange"
       >
         >

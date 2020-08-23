@@ -46,7 +46,7 @@
 
     <el-container style="overflow:auto;overflow-x: hidden !important; margin: 10px">
       <el-aside width="20%" class="aside" style="margin: 10px;">
-        <div class="card" style="margin: 10px">
+        <div class="shadow-card" style="margin: 10px">
           <div style="text-align: center; padding: 20px">
             <img width="40%" src="../../../assets/images/small/地点.png" />
           </div>
@@ -170,7 +170,7 @@
 
       <el-container>
         <el-main
-          class="card"
+          class="shadow-card"
           height="100%"
           style="padding: 0px; margin: 20px 10px; border: 1px solid #ccc;"
         >

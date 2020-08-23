@@ -1,6 +1,6 @@
 <template>
 <el-aside width="20%" height="100%" style="margin: 10px;">
-  <div class="card" style="margin: 10px">
+  <div class="shadow-card" style="margin: 10px">
     <div style="text-align: center; padding: 20px">
       <img width="40%" src="../../../assets/images/small/车辆.png" />
     </div>
