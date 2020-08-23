@@ -35,21 +35,21 @@ export default {
             },
             {
                 label: "serviceTime",
-                field: "serviceTime",
+                field: "service_time",
                 required: false,
                 default: 0,
                 comment: "自定义该点的服务时间（默认：5min)"
             },
             {
                 label: "beginTime",
-                field: "beginTime",
+                field: "tw_beg",
                 required: false,
                 default: -1,
                 comment: "客户点接受配送到达的最早时间"
             },
             {
                 label: "endTime",
-                field: "endTime",
+                field: "tw_end",
                 required: false,
                 default: -1,
                 comment: "客户点接受配送到达的最迟时间（单位默认：min)"
@@ -130,21 +130,21 @@ export default {
             },
             {
                 label: "serviceTime",
-                field: "serviceTime",
+                field: "service_time",
                 required: false,
                 default: 0,
                 comment: "自定义该点的服务时间（默认：5min)"
             },
             {
                 label: "beginTime",
-                field: "beginTime",
+                field: "tw_beg",
                 required: false,
                 default: -1,
                 comment: "客户点接受配送到达的最早时间（单位默认：min)"
             },
             {
                 label: "endTime",
-                field: "endTime",
+                field: "tw_end",
                 required: false,
                 default: -1,
                 comment: "客户点接受配送到达的最迟时间（单位默认：min)"

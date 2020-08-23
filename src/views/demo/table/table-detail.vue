@@ -12,9 +12,9 @@
         <el-table-column v-if="!value.routeMode" prop="x" label="横坐标"></el-table-column>
         <el-table-column v-if="!value.routeMode" prop="y" label="纵坐标"></el-table-column>
         <el-table-column prop="demand" label="需求量"></el-table-column>
-        <el-table-column prop="serviceTime" label="服务时间"></el-table-column>
-        <el-table-column prop="beginTime" label="最早时间"></el-table-column>
-        <el-table-column prop="endTime" label="最迟时间"></el-table-column>
+        <el-table-column prop="service_time" label="服务时间"></el-table-column>
+        <el-table-column prop="tw_beg" label="最早时间"></el-table-column>
+        <el-table-column prop="tw_end" label="最迟时间"></el-table-column>
       </el-table>
     </el-tab-pane>
     <el-tab-pane v-if="value.routeMode" label="路线信息" name="second">
